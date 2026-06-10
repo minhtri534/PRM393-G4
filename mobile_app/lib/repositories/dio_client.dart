@@ -1,0 +1,242 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../core/constants/app_constants.dart';
+import '../core/constants/environment.dart';
+import '../core/utils/logger.dart';
+import '../../models/common/api_error.dart';
+
+/// HTTP client using Dio for all API communications
+class DioClient {
+  late Dio _dio;
+  final FlutterSecureStorage _secureStorage;
+
+  DioClient({FlutterSecureStorage? secureStorage})
+      : _secureStorage = secureStorage ?? const FlutterSecureStorage() {
+    _initializeDio();
+  }
+
+  void _initializeDio() {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: Environment.baseUrl,
+        connectTimeout: AppConstants.httpTimeout,
+        receiveTimeout: AppConstants.httpTimeout,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ),
+    );
+
+    // Add interceptors
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: _onRequest,
+        onResponse: _onResponse,
+        onError: _onError,
+      ),
+    );
+  }
+
+  Future<void> _onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    Logger.debug('🔗 Request: ${options.method} ${options.path}');
+    
+    // Add authorization token if available
+    final token = await _secureStorage.read(key: AppConstants.tokenKey);
+    if (token != null) {
+      options.headers['Authorization'] = 'Bearer $token';
+    }
+
+    return handler.next(options);
+  }
+
+  Future<void> _onResponse(
+    Response response,
+    ResponseInterceptorHandler handler,
+  ) async {
+    Logger.debug(
+      '✅ Response: ${response.statusCode} from ${response.requestOptions.path}',
+    );
+    return handler.next(response);
+  }
+
+  Future<void> _onError(
+    DioException error,
+    ErrorInterceptorHandler handler,
+  ) async {
+    Logger.error(
+      'ℹ️ Error: ${error.type} - ${error.message}',
+      error,
+      error.stackTrace,
+    );
+    return handler.next(error);
+  }
+
+  /// Generic GET request
+  Future<Response<dynamic>> get(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
+    try {
+      final response = await _dio.get(
+        path,
+        queryParameters: queryParameters,
+        options: options,
+      );
+      return response;
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    }
+  }
+
+  /// Generic POST request
+  Future<Response<dynamic>> post(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
+    try {
+      final response = await _dio.post(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
+      );
+      return response;
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    }
+  }
+
+  /// Generic PUT request
+  Future<Response<dynamic>> put(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
+    try {
+      final response = await _dio.put(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
+      );
+      return response;
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    }
+  }
+
+  /// Generic DELETE request
+  Future<Response<dynamic>> delete(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
+    try {
+      final response = await _dio.delete(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
+      );
+      return response;
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    }
+  }
+
+  String? _extractServerMessage(dynamic responseData) {
+    if (responseData is Map<String, dynamic>) {
+      final message = responseData['message'];
+      if (message is String && message.isNotEmpty) {
+        return message;
+      }
+    }
+    return null;
+  }
+
+  List<String>? _extractServerErrors(dynamic responseData) {
+    if (responseData is Map<String, dynamic>) {
+      final errors = responseData['errors'];
+      if (errors is List) {
+        return errors.whereType<String>().toList();
+      }
+    }
+    return null;
+  }
+
+  /// Handle DioException and convert to ApiError
+  ApiError _handleDioException(DioException error) {
+    String message = AppConstants.errorGeneric;
+    String? code;
+
+    if (error.type == DioExceptionType.connectionTimeout ||
+        error.type == DioExceptionType.receiveTimeout ||
+        error.type == DioExceptionType.sendTimeout) {
+      message = 'Connection timeout. Please check your network.';
+      code = 'TIMEOUT';
+    } else if (error.type == DioExceptionType.badResponse) {
+      final statusCode = error.response?.statusCode;
+      final responseData = error.response?.data;
+      code = 'HTTP_$statusCode';
+
+      final serverMessage = _extractServerMessage(responseData);
+      final serverErrors = _extractServerErrors(responseData);
+
+      switch (statusCode) {
+        case 400:
+          message = serverMessage ??
+              serverErrors?.first ??
+              'Invalid request. Please check your input.';
+          break;
+        case 401:
+          message = serverMessage ?? AppConstants.errorUnauthorized;
+          break;
+        case 403:
+          message = serverMessage ?? 'Access forbidden.';
+          break;
+        case 404:
+          message = serverMessage ?? 'Resource not found.';
+          break;
+        case 500:
+          message = serverMessage ?? AppConstants.errorServerError;
+          break;
+        default:
+          message = serverMessage ?? AppConstants.errorGeneric;
+      }
+    } else if (error.type == DioExceptionType.unknown) {
+      message = AppConstants.errorNetworkConnection;
+      code = 'NETWORK_ERROR';
+    }
+
+    return ApiError(
+      message: message,
+      code: code,
+      originalError: error,
+    );
+  }
+
+  /// Update authorization token
+  Future<void> setAuthToken(String token) async {
+    await _secureStorage.write(key: AppConstants.tokenKey, value: token);
+  }
+
+  /// Clear authorization token
+  Future<void> clearAuthToken() async {
+    await _secureStorage.delete(key: AppConstants.tokenKey);
+  }
+
+  /// Check if token exists
+  Future<bool> hasAuthToken() async {
+    final token = await _secureStorage.read(key: AppConstants.tokenKey);
+    return token != null;
+  }
+}

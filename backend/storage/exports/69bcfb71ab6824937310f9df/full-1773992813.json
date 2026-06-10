@@ -1,0 +1,74 @@
+{
+  "projectId": "69bcfb71ab6824937310f9df",
+  "generatedAt": "2026-03-20T07:47:00.9641478Z",
+  "filters": {},
+  "labels": [
+    {
+      "Id": "69bcfb7246547b862e10f9f5",
+      "Name": "Label-1773992813-upd",
+      "YoloClassId": 1,
+      "CategoryId": "69bcfb722656dcdc4c10f9f1",
+      "AnnotationTypeId": "69bcfb726569eeac0510f9f3"
+    }
+  ],
+  "tasks": [
+    {
+      "Id": "69bcfb73659339126010f9fd",
+      "DataItemId": "69bcfb72c620e2844310f9ea",
+      "AnnotatorId": "69bcfb6e8d723b279c10f9d9",
+      "Status": "Cancelled",
+      "AssignedAt": "2026-03-20T07:46:59.2646798",
+      "CompletedAt": null
+    },
+    {
+      "Id": "69bcfb73b62f25ff3c10f9fa",
+      "DataItemId": "69bcfb72c620e2844310f9ea",
+      "AnnotatorId": "69bcfb6e8d723b279c10f9d9",
+      "Status": "Submitted",
+      "AssignedAt": "2026-03-20T07:46:59.4052015",
+      "CompletedAt": "2026-03-20T14:46:59.8936562"
+    }
+  ],
+  "reviews": [
+    {
+      "Id": "69bcfa266bcdb73b33391b81",
+      "AnnotationSetId": "69bcfa25b0de93792f391b7e",
+      "ReviewerId": "69bcfa23ec2732ccf8391b48",
+      "Result": "Approved",
+      "Score": 95,
+      "Comment": "ok",
+      "ReviewedAt": "2026-03-20T14:41:26.1233828"
+    },
+    {
+      "Id": "69bcfb74e30dc56b6610fa14",
+      "AnnotationSetId": "69bcfb73d89bcc3b6c10fa10",
+      "ReviewerId": "69bcfb6f7a169d269b10f9da",
+      "Result": "Approved",
+      "Score": 96,
+      "Comment": "upd",
+      "ReviewedAt": "2026-03-20T14:47:00.3528399"
+    }
+  ],
+  "annotations": [
+    {
+      "Id": "69bcfa2575661450da391b7f",
+      "AnnotationSetId": "69bcfa25b0de93792f391b7e",
+      "LabelId": "69bcfa2565604e5052391b63",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\r\n                                             \u0022y\u0022:  20,\r\n                                             \u0022width\u0022:  100,\r\n                                             \u0022height\u0022:  80,\r\n                                             \u0022x\u0022:  10\r\n                                         }",
+      "Version": 1,
+      "CreatedAt": "2026-03-20T14:41:25.9663344",
+      "UpdatedAt": "2026-03-20T14:41:25.9663344"
+    },
+    {
+      "Id": "69bcfb73ed48939d2f10fa11",
+      "AnnotationSetId": "69bcfb73d89bcc3b6c10fa10",
+      "LabelId": "69bcfb7246547b862e10f9f5",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\r\n                                             \u0022y\u0022:  20,\r\n                                             \u0022width\u0022:  100,\r\n                                             \u0022height\u0022:  80,\r\n                                             \u0022x\u0022:  10\r\n                                         }",
+      "Version": 1,
+      "CreatedAt": "2026-03-20T14:46:59.8942695",
+      "UpdatedAt": "2026-03-20T14:46:59.8942695"
+    }
+  ]
+}

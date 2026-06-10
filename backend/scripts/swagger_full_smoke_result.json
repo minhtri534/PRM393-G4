@@ -1,0 +1,793 @@
+﻿[
+    {
+        "Operation":  "POST /api/auth/register",
+        "Phase":  "auth-setup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/register",
+        "Phase":  "auth-setup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/register",
+        "Phase":  "auth-setup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/register",
+        "Phase":  "auth-setup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/register",
+        "Phase":  "auth-setup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/login",
+        "Phase":  "auth",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/login",
+        "Phase":  "auth",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/login",
+        "Phase":  "auth",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/login",
+        "Phase":  "auth",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/login",
+        "Phase":  "auth",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/refresh-token",
+        "Phase":  "auth",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/forgot-password",
+        "Phase":  "auth",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/reset-password",
+        "Phase":  "auth",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/login",
+        "Phase":  "auth",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/change-password",
+        "Phase":  "auth",
+        "Ok":  true,
+        "Status":  401,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/login-google",
+        "Phase":  "auth",
+        "Ok":  true,
+        "Status":  401,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/auth/logout",
+        "Phase":  "auth",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/roles",
+        "Phase":  "admin",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/roles",
+        "Phase":  "admin",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "PUT /api/roles/{roleId}",
+        "Phase":  "admin",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/users",
+        "Phase":  "admin",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/users",
+        "Phase":  "admin",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/users/{userId}",
+        "Phase":  "admin",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "PUT /api/users/{userId}",
+        "Phase":  "admin",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/projects",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/projects",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/projects/{projectId}",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "PUT /api/manager/projects/{projectId}",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "PATCH /api/manager/projects/{projectId}/status",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "PATCH /api/manager/projects/{projectId}/guideline",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/project-roles",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/projects/{projectId}/project-roles",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/datasets",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/projects/{projectId}/datasets",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/datasets/{datasetId}",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "PUT /api/manager/datasets/{datasetId}",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/datasets/upload",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/datasets/import-external",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/dataset-versions",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/datasets/{datasetId}/versions",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/dataset-versions/{versionId}/restore",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/label-categories",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/annotation-types",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/labels",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/projects/{projectId}/label-categories",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/projects/{projectId}/annotation-types",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/projects/{projectId}/labels",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "PUT /api/manager/label-categories/{categoryId}",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "PUT /api/manager/annotation-types/{annotationTypeId}",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "PUT /api/manager/labels/{labelId}",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/tasks",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/tasks",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/tasks/{taskId}/assign",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/tasks/bulk-assign",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/tasks/{taskId}/reassign",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/tasks/{taskId}/pause",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/tasks/{taskId}/resume",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/tasks/{taskId}/relabel",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/tasks/{taskId}/cancel",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/tasks/{taskId}/history",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/projects/{projectId}/tasks/progress",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/annotator/tasks",
+        "Phase":  "annotator",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/annotator/tasks/{taskId}/start",
+        "Phase":  "annotator",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/annotator/tasks/{taskId}/items",
+        "Phase":  "annotator",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/annotator/tasks/{taskId}/labels",
+        "Phase":  "annotator",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/annotator/tasks/{taskId}/guideline",
+        "Phase":  "annotator",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/annotator/tasks/{taskId}/data-item/content",
+        "Phase":  "annotator",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "PUT /api/annotator/tasks/{taskId}/annotations/draft",
+        "Phase":  "annotator",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/annotator/tasks/{taskId}/annotations",
+        "Phase":  "annotator",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/annotator/tasks/{taskId}/annotations/submit",
+        "Phase":  "annotator",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/annotator/tasks/{taskId}/ai-suggest",
+        "Phase":  "annotator",
+        "Ok":  false,
+        "Status":  500,
+        "Note":  "{\"IsSuccess\":false,\"Data\":null,\"Message\":\"Internal server error\",\"Errors\":[\"An unexpected error occurred\"]}"
+    },
+    {
+        "Operation":  "POST /api/error_type",
+        "Phase":  "review",
+        "Ok":  false,
+        "Status":  403,
+        "Note":  "unexpected status"
+    },
+    {
+        "Operation":  "GET /api/error_type",
+        "Phase":  "review",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/error_type/{id}",
+        "Phase":  "review",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "PUT /api/error_type",
+        "Phase":  "review",
+        "Ok":  false,
+        "Status":  403,
+        "Note":  "unexpected status"
+    },
+    {
+        "Operation":  "POST /api/reviews",
+        "Phase":  "review",
+        "Ok":  false,
+        "Status":  405,
+        "Note":  "unexpected status"
+    },
+    {
+        "Operation":  "GET /api/reviews/{id}",
+        "Phase":  "review",
+        "Ok":  false,
+        "Status":  403,
+        "Note":  "unexpected status"
+    },
+    {
+        "Operation":  "GET /api/reviews/reviewer/{id}",
+        "Phase":  "review",
+        "Ok":  false,
+        "Status":  404,
+        "Note":  "unexpected status"
+    },
+    {
+        "Operation":  "PUT /api/reviews",
+        "Phase":  "review",
+        "Ok":  false,
+        "Status":  405,
+        "Note":  "unexpected status"
+    },
+    {
+        "Operation":  "GET /api/reviews",
+        "Phase":  "review",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/review_errors",
+        "Phase":  "review",
+        "Ok":  false,
+        "Status":  405,
+        "Note":  "unexpected status"
+    },
+    {
+        "Operation":  "GET /api/review_errors/review/{id}",
+        "Phase":  "review",
+        "Ok":  false,
+        "Status":  404,
+        "Note":  "unexpected status"
+    },
+    {
+        "Operation":  "GET /api/review_errors/type/{id}",
+        "Phase":  "review",
+        "Ok":  true,
+        "Status":  404,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/review_errors",
+        "Phase":  "review",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "DELETE /api/review_errors",
+        "Phase":  "review",
+        "Ok":  false,
+        "Status":  405,
+        "Note":  "unexpected status"
+    },
+    {
+        "Operation":  "DELETE /api/error_type",
+        "Phase":  "review",
+        "Ok":  false,
+        "Status":  403,
+        "Note":  "unexpected status"
+    },
+    {
+        "Operation":  "GET /api/tasks",
+        "Phase":  "task-crud",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/tasks/{id}",
+        "Phase":  "task-crud",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/tasks/submitted",
+        "Phase":  "task-crud",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/tasks",
+        "Phase":  "task-crud",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "PUT /api/tasks",
+        "Phase":  "task-crud",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "DELETE /api/tasks",
+        "Phase":  "task-crud",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/projects/{projectId}/monitoring/overview",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/projects/{projectId}/monitoring/annotator-performance",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/projects/{projectId}/monitoring/review-stats",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/projects/{projectId}/monitoring/inconsistent-labels",
+        "Phase":  "manager",
+        "Ok":  false,
+        "Status":  500,
+        "Note":  "{\"IsSuccess\":false,\"Data\":null,\"Message\":\"Internal server error\",\"Errors\":[\"An unexpected error occurred\"]}"
+    },
+    {
+        "Operation":  "GET /api/manager/projects/{projectId}/monitoring/quality-report",
+        "Phase":  "manager",
+        "Ok":  false,
+        "Status":  500,
+        "Note":  "{\"IsSuccess\":false,\"Data\":null,\"Message\":\"Internal server error\",\"Errors\":[\"An unexpected error occurred\"]}"
+    },
+    {
+        "Operation":  "GET /api/manager/projects/{projectId}/exports/validate",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/exports",
+        "Phase":  "manager",
+        "Ok":  false,
+        "Status":  500,
+        "Note":  "{\"IsSuccess\":false,\"Data\":null,\"Message\":\"Internal server error\",\"Errors\":[\"An unexpected error occurred\"]}"
+    },
+    {
+        "Operation":  "GET /api/manager/projects/{projectId}/exports",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/manager/exports/{exportId}/download",
+        "Phase":  "manager",
+        "Ok":  false,
+        "Status":  404,
+        "Note":  "unexpected status"
+    },
+    {
+        "Operation":  "GET /api/manager/activity-logs",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "GET /api/exports/yolo/tasks/{taskId}",
+        "Phase":  "manager",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "DELETE /api/users/{userId}",
+        "Phase":  "cleanup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "DELETE /api/roles/{roleId}",
+        "Phase":  "cleanup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "DELETE /api/manager/labels/{labelId}",
+        "Phase":  "cleanup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "DELETE /api/manager/annotation-types/{annotationTypeId}",
+        "Phase":  "cleanup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "DELETE /api/manager/label-categories/{categoryId}",
+        "Phase":  "cleanup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/projects",
+        "Phase":  "cleanup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/datasets",
+        "Phase":  "cleanup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "POST /api/manager/projects/{projectId}/archive",
+        "Phase":  "cleanup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "DELETE /api/manager/datasets/{datasetId}",
+        "Phase":  "cleanup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    },
+    {
+        "Operation":  "DELETE /api/manager/projects/{projectId}",
+        "Phase":  "cleanup",
+        "Ok":  true,
+        "Status":  200,
+        "Note":  "ok"
+    }
+]

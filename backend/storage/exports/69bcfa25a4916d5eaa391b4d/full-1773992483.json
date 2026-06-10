@@ -1,0 +1,55 @@
+{
+  "projectId": "69bcfa25a4916d5eaa391b4d",
+  "generatedAt": "2026-03-20T07:41:26.5898105Z",
+  "filters": {},
+  "labels": [
+    {
+      "Id": "69bcfa2565604e5052391b63",
+      "Name": "Label-1773992483-upd",
+      "YoloClassId": 1,
+      "CategoryId": "69bcfa253b7d431e86391b5f",
+      "AnnotationTypeId": "69bcfa25e7ae2472f1391b61"
+    }
+  ],
+  "tasks": [
+    {
+      "Id": "69bcfa250205f19548391b68",
+      "DataItemId": "69bcfa2569277c3025391b58",
+      "AnnotatorId": "69bcfa23ea69692365391b47",
+      "Status": "Submitted",
+      "AssignedAt": "2026-03-20T07:41:25.823471",
+      "CompletedAt": "2026-03-20T14:41:25.966214"
+    },
+    {
+      "Id": "69bcfa25ac268b6a12391b6b",
+      "DataItemId": "69bcfa2569277c3025391b58",
+      "AnnotatorId": "69bcfa23ea69692365391b47",
+      "Status": "Cancelled",
+      "AssignedAt": "2026-03-20T07:41:25.7887316",
+      "CompletedAt": null
+    }
+  ],
+  "reviews": [
+    {
+      "Id": "69bcfa266bcdb73b33391b81",
+      "AnnotationSetId": "69bcfa25b0de93792f391b7e",
+      "ReviewerId": "69bcfa23ec2732ccf8391b48",
+      "Result": "Approved",
+      "Score": 95,
+      "Comment": "ok",
+      "ReviewedAt": "2026-03-20T14:41:26.1233828"
+    }
+  ],
+  "annotations": [
+    {
+      "Id": "69bcfa2575661450da391b7f",
+      "AnnotationSetId": "69bcfa25b0de93792f391b7e",
+      "LabelId": "69bcfa2565604e5052391b63",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\r\n                                             \u0022y\u0022:  20,\r\n                                             \u0022width\u0022:  100,\r\n                                             \u0022height\u0022:  80,\r\n                                             \u0022x\u0022:  10\r\n                                         }",
+      "Version": 1,
+      "CreatedAt": "2026-03-20T14:41:25.9663344",
+      "UpdatedAt": "2026-03-20T14:41:25.9663344"
+    }
+  ]
+}

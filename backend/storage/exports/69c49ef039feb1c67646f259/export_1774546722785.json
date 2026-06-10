@@ -1,0 +1,356 @@
+{
+  "projectId": "69c49ef039feb1c67646f259",
+  "generatedAt": "2026-03-26T17:38:42.9048274Z",
+  "filters": {},
+  "labels": [
+    {
+      "Id": "69c49fdd2aef0de25446f25b",
+      "Name": "cat",
+      "YoloClassId": 0,
+      "CategoryId": null,
+      "AnnotationTypeId": null
+    },
+    {
+      "Id": "69c49fe0a261d32f0946f25d",
+      "Name": "dog",
+      "YoloClassId": 1,
+      "CategoryId": null,
+      "AnnotationTypeId": null
+    }
+  ],
+  "tasks": [
+    {
+      "Id": "69c4bbe8cda1cf2ee18e15da",
+      "DataItemId": "69c4bbba92d7f623a48e15d7",
+      "AnnotatorId": "69be1b4ed06c174222eb5e35",
+      "Status": "Completed",
+      "AssignedAt": "2026-03-26T04:54:00.3024521",
+      "CompletedAt": "2026-03-27T00:00:12.9679843"
+    },
+    {
+      "Id": "69c55e65641591c953631b86",
+      "DataItemId": "69c55e4dc3f87b80c1631b84",
+      "AnnotatorId": "69be1b4ed06c174222eb5e35",
+      "Status": "Completed",
+      "AssignedAt": "2026-03-26T16:27:17.065066",
+      "CompletedAt": "2026-03-27T00:05:17.0339201"
+    },
+    {
+      "Id": "69c569c5dd1f001830631bbd",
+      "DataItemId": "69c569b783bf018325631bbb",
+      "AnnotatorId": "69be1b4ed06c174222eb5e35",
+      "Status": "Completed",
+      "AssignedAt": "2026-03-26T17:15:49.084472",
+      "CompletedAt": "2026-03-27T00:17:11.0787615"
+    }
+  ],
+  "reviews": [
+    {
+      "Id": "69c5654c6c24daa626631b9b",
+      "AnnotationSetId": "69c564162e751c0622631b95",
+      "ReviewerId": "69c41ce506d1f5b2e2c9b504",
+      "Result": "Approved",
+      "Score": 100,
+      "Comment": "ok",
+      "ReviewedAt": "2026-03-26T23:56:44.8312751"
+    },
+    {
+      "Id": "69c5661c816f3052cd631bab",
+      "AnnotationSetId": "69c565fa362d8096bd631ba5",
+      "ReviewerId": "69c41ce506d1f5b2e2c9b504",
+      "Result": "Approved",
+      "Score": 100,
+      "Comment": "ok",
+      "ReviewedAt": "2026-03-27T00:00:12.9653707"
+    },
+    {
+      "Id": "69c566237f528c82cc631bad",
+      "AnnotationSetId": "69c565f17a87eed423631b9d",
+      "ReviewerId": "69c41ce506d1f5b2e2c9b504",
+      "Result": "Approved",
+      "Score": 100,
+      "Comment": "ok",
+      "ReviewedAt": "2026-03-27T00:00:19.0580032"
+    },
+    {
+      "Id": "69c5674d22dcea26cd631bb9",
+      "AnnotationSetId": "69c567307c276ac8b6631baf",
+      "ReviewerId": "69c41ce506d1f5b2e2c9b504",
+      "Result": "Approved",
+      "Score": 100,
+      "Comment": "ok",
+      "ReviewedAt": "2026-03-27T00:05:17.0307168"
+    },
+    {
+      "Id": "69c56a1729574a5a87631bc7",
+      "AnnotationSetId": "69c569f46a95603ceb631bc1",
+      "ReviewerId": "69c41ce506d1f5b2e2c9b504",
+      "Result": "Approved",
+      "Score": 100,
+      "Comment": "ok",
+      "ReviewedAt": "2026-03-27T00:17:11.0766174"
+    }
+  ],
+  "annotations": [
+    {
+      "Id": "69c56416098b1e1591631b98",
+      "AnnotationSetId": "69c564162e751c0622631b95",
+      "LabelId": "69c49fe0a261d32f0946f25d",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:227,\u0022y\u0022:25,\u0022width\u0022:308,\u0022height\u0022:436}",
+      "Version": 1,
+      "CreatedAt": "2026-03-26T23:51:34.284439",
+      "UpdatedAt": "2026-03-26T23:51:34.284439"
+    },
+    {
+      "Id": "69c5641612d9a4612d631b96",
+      "AnnotationSetId": "69c564162e751c0622631b95",
+      "LabelId": "69c49fdd2aef0de25446f25b",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:561,\u0022y\u0022:124,\u0022width\u0022:159,\u0022height\u0022:328}",
+      "Version": 1,
+      "CreatedAt": "2026-03-26T23:51:34.284439",
+      "UpdatedAt": "2026-03-26T23:51:34.284439"
+    },
+    {
+      "Id": "69c56416429300d993631b97",
+      "AnnotationSetId": "69c564162e751c0622631b95",
+      "LabelId": "69c49fe0a261d32f0946f25d",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:227,\u0022y\u0022:25,\u0022width\u0022:308,\u0022height\u0022:436}",
+      "Version": 1,
+      "CreatedAt": "2026-03-26T23:51:34.284439",
+      "UpdatedAt": "2026-03-26T23:51:34.284439"
+    },
+    {
+      "Id": "69c56416b613988ded631b99",
+      "AnnotationSetId": "69c564162e751c0622631b95",
+      "LabelId": "69c49fdd2aef0de25446f25b",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:561,\u0022y\u0022:124,\u0022width\u0022:159,\u0022height\u0022:328}",
+      "Version": 1,
+      "CreatedAt": "2026-03-26T23:51:34.284439",
+      "UpdatedAt": "2026-03-26T23:51:34.284439"
+    },
+    {
+      "Id": "69c565f1118f1925d0631b9f",
+      "AnnotationSetId": "69c565f17a87eed423631b9d",
+      "LabelId": "69c49fe0a261d32f0946f25d",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:227,\u0022y\u0022:25,\u0022width\u0022:308,\u0022height\u0022:436}",
+      "Version": 1,
+      "CreatedAt": "2026-03-26T23:59:29.6220659",
+      "UpdatedAt": "2026-03-26T23:59:29.6220659"
+    },
+    {
+      "Id": "69c565f11d692cd11a631ba3",
+      "AnnotationSetId": "69c565f17a87eed423631b9d",
+      "LabelId": "69c49fdd2aef0de25446f25b",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:561,\u0022y\u0022:124,\u0022width\u0022:159,\u0022height\u0022:328}",
+      "Version": 1,
+      "CreatedAt": "2026-03-26T23:59:29.6220659",
+      "UpdatedAt": "2026-03-26T23:59:29.6220659"
+    },
+    {
+      "Id": "69c565f1712d2e88b4631ba1",
+      "AnnotationSetId": "69c565f17a87eed423631b9d",
+      "LabelId": "69c49fdd2aef0de25446f25b",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:561,\u0022y\u0022:124,\u0022width\u0022:159,\u0022height\u0022:328}",
+      "Version": 1,
+      "CreatedAt": "2026-03-26T23:59:29.6220659",
+      "UpdatedAt": "2026-03-26T23:59:29.6220659"
+    },
+    {
+      "Id": "69c565f18407715c08631ba0",
+      "AnnotationSetId": "69c565f17a87eed423631b9d",
+      "LabelId": "69c49fe0a261d32f0946f25d",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:227,\u0022y\u0022:25,\u0022width\u0022:308,\u0022height\u0022:436}",
+      "Version": 1,
+      "CreatedAt": "2026-03-26T23:59:29.6220659",
+      "UpdatedAt": "2026-03-26T23:59:29.6220659"
+    },
+    {
+      "Id": "69c565f1a5bb0a4ba7631ba2",
+      "AnnotationSetId": "69c565f17a87eed423631b9d",
+      "LabelId": "69c49fe0a261d32f0946f25d",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:227,\u0022y\u0022:25,\u0022width\u0022:308,\u0022height\u0022:436}",
+      "Version": 1,
+      "CreatedAt": "2026-03-26T23:59:29.6220659",
+      "UpdatedAt": "2026-03-26T23:59:29.6220659"
+    },
+    {
+      "Id": "69c565f1ce20b909f4631b9e",
+      "AnnotationSetId": "69c565f17a87eed423631b9d",
+      "LabelId": "69c49fdd2aef0de25446f25b",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:561,\u0022y\u0022:124,\u0022width\u0022:159,\u0022height\u0022:328}",
+      "Version": 1,
+      "CreatedAt": "2026-03-26T23:59:29.6220659",
+      "UpdatedAt": "2026-03-26T23:59:29.6220659"
+    },
+    {
+      "Id": "69c565fa2a809a700f631ba9",
+      "AnnotationSetId": "69c565fa362d8096bd631ba5",
+      "LabelId": "69c49fe0a261d32f0946f25d",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:214,\u0022y\u0022:23,\u0022width\u0022:321,\u0022height\u0022:441}",
+      "Version": 1,
+      "CreatedAt": "2026-03-26T23:59:38.5330882",
+      "UpdatedAt": "2026-03-26T23:59:38.5330882"
+    },
+    {
+      "Id": "69c565faa08c5bcef3631ba8",
+      "AnnotationSetId": "69c565fa362d8096bd631ba5",
+      "LabelId": "69c49fdd2aef0de25446f25b",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:538,\u0022y\u0022:128,\u0022width\u0022:195,\u0022height\u0022:319}",
+      "Version": 1,
+      "CreatedAt": "2026-03-26T23:59:38.5330882",
+      "UpdatedAt": "2026-03-26T23:59:38.5330882"
+    },
+    {
+      "Id": "69c565fae5800addf3631ba7",
+      "AnnotationSetId": "69c565fa362d8096bd631ba5",
+      "LabelId": "69c49fdd2aef0de25446f25b",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:538,\u0022y\u0022:128,\u0022width\u0022:195,\u0022height\u0022:319}",
+      "Version": 1,
+      "CreatedAt": "2026-03-26T23:59:38.5330882",
+      "UpdatedAt": "2026-03-26T23:59:38.5330882"
+    },
+    {
+      "Id": "69c565faf271e701aa631ba6",
+      "AnnotationSetId": "69c565fa362d8096bd631ba5",
+      "LabelId": "69c49fe0a261d32f0946f25d",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:214,\u0022y\u0022:23,\u0022width\u0022:321,\u0022height\u0022:441}",
+      "Version": 1,
+      "CreatedAt": "2026-03-26T23:59:38.5330882",
+      "UpdatedAt": "2026-03-26T23:59:38.5330882"
+    },
+    {
+      "Id": "69c56730175134eff3631bb6",
+      "AnnotationSetId": "69c567307c276ac8b6631baf",
+      "LabelId": "69c49fe0a261d32f0946f25d",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:227,\u0022y\u0022:25,\u0022width\u0022:308,\u0022height\u0022:436}",
+      "Version": 1,
+      "CreatedAt": "2026-03-27T00:04:48.5821451",
+      "UpdatedAt": "2026-03-27T00:04:48.5821451"
+    },
+    {
+      "Id": "69c5673057c2ded33e631bb4",
+      "AnnotationSetId": "69c567307c276ac8b6631baf",
+      "LabelId": "69c49fdd2aef0de25446f25b",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:561,\u0022y\u0022:124,\u0022width\u0022:159,\u0022height\u0022:328}",
+      "Version": 1,
+      "CreatedAt": "2026-03-27T00:04:48.5821451",
+      "UpdatedAt": "2026-03-27T00:04:48.5821451"
+    },
+    {
+      "Id": "69c567306410caacd3631bb0",
+      "AnnotationSetId": "69c567307c276ac8b6631baf",
+      "LabelId": "69c49fdd2aef0de25446f25b",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:561,\u0022y\u0022:124,\u0022width\u0022:159,\u0022height\u0022:328}",
+      "Version": 1,
+      "CreatedAt": "2026-03-27T00:04:48.5821451",
+      "UpdatedAt": "2026-03-27T00:04:48.5821451"
+    },
+    {
+      "Id": "69c567309013c6a319631bb3",
+      "AnnotationSetId": "69c567307c276ac8b6631baf",
+      "LabelId": "69c49fdd2aef0de25446f25b",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:561,\u0022y\u0022:124,\u0022width\u0022:159,\u0022height\u0022:328}",
+      "Version": 1,
+      "CreatedAt": "2026-03-27T00:04:48.5821451",
+      "UpdatedAt": "2026-03-27T00:04:48.5821451"
+    },
+    {
+      "Id": "69c56730bcf1a8608c631bb1",
+      "AnnotationSetId": "69c567307c276ac8b6631baf",
+      "LabelId": "69c49fe0a261d32f0946f25d",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:227,\u0022y\u0022:25,\u0022width\u0022:308,\u0022height\u0022:436}",
+      "Version": 1,
+      "CreatedAt": "2026-03-27T00:04:48.5821451",
+      "UpdatedAt": "2026-03-27T00:04:48.5821451"
+    },
+    {
+      "Id": "69c56730bd53f050df631bb2",
+      "AnnotationSetId": "69c567307c276ac8b6631baf",
+      "LabelId": "69c49fe0a261d32f0946f25d",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:227,\u0022y\u0022:25,\u0022width\u0022:308,\u0022height\u0022:436}",
+      "Version": 1,
+      "CreatedAt": "2026-03-27T00:04:48.5821451",
+      "UpdatedAt": "2026-03-27T00:04:48.5821451"
+    },
+    {
+      "Id": "69c56730c3bd9566cf631bb5",
+      "AnnotationSetId": "69c567307c276ac8b6631baf",
+      "LabelId": "69c49fe0a261d32f0946f25d",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:227,\u0022y\u0022:25,\u0022width\u0022:308,\u0022height\u0022:436}",
+      "Version": 1,
+      "CreatedAt": "2026-03-27T00:04:48.5821451",
+      "UpdatedAt": "2026-03-27T00:04:48.5821451"
+    },
+    {
+      "Id": "69c56730e192d5467f631bb7",
+      "AnnotationSetId": "69c567307c276ac8b6631baf",
+      "LabelId": "69c49fdd2aef0de25446f25b",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:561,\u0022y\u0022:124,\u0022width\u0022:159,\u0022height\u0022:328}",
+      "Version": 1,
+      "CreatedAt": "2026-03-27T00:04:48.5821451",
+      "UpdatedAt": "2026-03-27T00:04:48.5821451"
+    },
+    {
+      "Id": "69c569f41c833fe4ea631bc5",
+      "AnnotationSetId": "69c569f46a95603ceb631bc1",
+      "LabelId": "69c49fdd2aef0de25446f25b",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:535,\u0022y\u0022:320,\u0022width\u0022:154,\u0022height\u0022:159}",
+      "Version": 1,
+      "CreatedAt": "2026-03-27T00:16:36.8922225",
+      "UpdatedAt": "2026-03-27T00:16:36.8922225"
+    },
+    {
+      "Id": "69c569f46c5df1d248631bc4",
+      "AnnotationSetId": "69c569f46a95603ceb631bc1",
+      "LabelId": "69c49fe0a261d32f0946f25d",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:347,\u0022y\u0022:137,\u0022width\u0022:174,\u0022height\u0022:347}",
+      "Version": 1,
+      "CreatedAt": "2026-03-27T00:16:36.8922225",
+      "UpdatedAt": "2026-03-27T00:16:36.8922225"
+    },
+    {
+      "Id": "69c569f4a0a99243a6631bc2",
+      "AnnotationSetId": "69c569f46a95603ceb631bc1",
+      "LabelId": "69c49fdd2aef0de25446f25b",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:91,\u0022y\u0022:253,\u0022width\u0022:124,\u0022height\u0022:234}",
+      "Version": 1,
+      "CreatedAt": "2026-03-27T00:16:36.8922225",
+      "UpdatedAt": "2026-03-27T00:16:36.8922225"
+    },
+    {
+      "Id": "69c569f4ee2747dc0a631bc3",
+      "AnnotationSetId": "69c569f46a95603ceb631bc1",
+      "LabelId": "69c49fe0a261d32f0946f25d",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:195,\u0022y\u0022:177,\u0022width\u0022:162,\u0022height\u0022:306}",
+      "Version": 1,
+      "CreatedAt": "2026-03-27T00:16:36.8922225",
+      "UpdatedAt": "2026-03-27T00:16:36.8922225"
+    }
+  ]
+}

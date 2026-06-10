@@ -1,0 +1,17 @@
+{
+  "projectId": "69bcee5b7bb1b204b371c586",
+  "generatedAt": "2026-03-20T07:00:00.8986266Z",
+  "filters": {},
+  "labels": [
+    {
+      "Id": "69bcee5b7c027d353371c594",
+      "Name": "car-1773989467",
+      "YoloClassId": 0,
+      "CategoryId": "69bcee5bd7829ec8fe71c590",
+      "AnnotationTypeId": "69bcee5be33b57c98571c592"
+    }
+  ],
+  "tasks": [],
+  "reviews": [],
+  "annotations": []
+}

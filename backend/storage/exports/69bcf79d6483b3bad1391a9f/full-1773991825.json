@@ -1,0 +1,17 @@
+{
+  "projectId": "69bcf79d6483b3bad1391a9f",
+  "generatedAt": "2026-03-20T07:30:42.1854532Z",
+  "filters": {},
+  "labels": [
+    {
+      "Id": "69bcf7a0b3186bd9e8391ab5",
+      "Name": "Label-1773991825-upd",
+      "YoloClassId": 1,
+      "CategoryId": "69bcf79fb95a2254c0391ab1",
+      "AnnotationTypeId": "69bcf79feef3138320391ab3"
+    }
+  ],
+  "tasks": [],
+  "reviews": [],
+  "annotations": []
+}

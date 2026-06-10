@@ -1,0 +1,34 @@
+{
+  "projectId": "69bcf889f99a37d7cd391acd",
+  "generatedAt": "2026-03-20T07:34:35.7588183Z",
+  "filters": {},
+  "labels": [
+    {
+      "Id": "69bcf8894dc60454cc391ae3",
+      "Name": "Label-1773992070-upd",
+      "YoloClassId": 1,
+      "CategoryId": "69bcf88952e770e0d5391adf",
+      "AnnotationTypeId": "69bcf88943a167eea4391ae1"
+    }
+  ],
+  "tasks": [
+    {
+      "Id": "69bcf889e005e928d4391ae8",
+      "DataItemId": "69bcf889a97e14376e391ad8",
+      "AnnotatorId": "69bcf887afb7d92a54391ac7",
+      "Status": "Submitted",
+      "AssignedAt": "2026-03-20T07:34:34.0742623",
+      "CompletedAt": "2026-03-20T14:34:34.479353"
+    },
+    {
+      "Id": "69bcf88a9574e933d9391aeb",
+      "DataItemId": "69bcf889a97e14376e391ad8",
+      "AnnotatorId": "69bcf887afb7d92a54391ac7",
+      "Status": "Cancelled",
+      "AssignedAt": "2026-03-20T07:34:34.0001225",
+      "CompletedAt": null
+    }
+  ],
+  "reviews": [],
+  "annotations": []
+}

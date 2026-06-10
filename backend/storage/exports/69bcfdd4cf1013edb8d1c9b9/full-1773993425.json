@@ -1,0 +1,131 @@
+{
+  "projectId": "69bcfdd4cf1013edb8d1c9b9",
+  "generatedAt": "2026-03-20T07:57:10.6654492Z",
+  "filters": {},
+  "labels": [
+    {
+      "Id": "69bcfdd5f1e24a8e0dd1c9cf",
+      "Name": "Label-1773993425-upd",
+      "YoloClassId": 1,
+      "CategoryId": "69bcfdd596429280b7d1c9cb",
+      "AnnotationTypeId": "69bcfdd5255e05b823d1c9cd"
+    }
+  ],
+  "tasks": [
+    {
+      "Id": "69bcfdd5084e3d05f8d1c9d7",
+      "DataItemId": "69bcfdd4cccb0f4b09d1c9c4",
+      "AnnotatorId": "69bcfdd204c8cfabfcd1c9b3",
+      "Status": "Cancelled",
+      "AssignedAt": "2026-03-20T07:57:09.45421",
+      "CompletedAt": null
+    },
+    {
+      "Id": "69bcfdd57406bb6ff1d1c9d4",
+      "DataItemId": "69bcfdd4cccb0f4b09d1c9c4",
+      "AnnotatorId": "69bcfdd204c8cfabfcd1c9b3",
+      "Status": "Submitted",
+      "AssignedAt": "2026-03-20T07:57:09.657578",
+      "CompletedAt": "2026-03-20T14:57:09.9255001"
+    }
+  ],
+  "reviews": [
+    {
+      "Id": "69bcfa266bcdb73b33391b81",
+      "AnnotationSetId": "69bcfa25b0de93792f391b7e",
+      "ReviewerId": "69bcfa23ec2732ccf8391b48",
+      "Result": "Approved",
+      "Score": 95,
+      "Comment": "ok",
+      "ReviewedAt": "2026-03-20T14:41:26.1233828"
+    },
+    {
+      "Id": "69bcfb74e30dc56b6610fa14",
+      "AnnotationSetId": "69bcfb73d89bcc3b6c10fa10",
+      "ReviewerId": "69bcfb6f7a169d269b10f9da",
+      "Result": "Approved",
+      "Score": 96,
+      "Comment": "upd",
+      "ReviewedAt": "2026-03-20T14:47:00.3528399"
+    },
+    {
+      "Id": "69bcfbd46c2596f380a5388a",
+      "AnnotationSetId": "69bcfbd42c697db03ca53886",
+      "ReviewerId": "69bcfbcfd8f2be5555a53850",
+      "Result": "Approved",
+      "Score": 96,
+      "Comment": "upd",
+      "ReviewedAt": "2026-03-20T14:48:36.6297202"
+    },
+    {
+      "Id": "69bcfc38f0608c2ea7d1c9a7",
+      "AnnotationSetId": "69bcfc38223311aad9d1c9a2",
+      "ReviewerId": "69bcfc31394261f96bd1c96c",
+      "Result": "Approved",
+      "Score": 96,
+      "Comment": "upd",
+      "ReviewedAt": "2026-03-20T14:50:16.8170408"
+    },
+    {
+      "Id": "69bcfdd6cc06cbb7bbd1c9ef",
+      "AnnotationSetId": "69bcfdd52c26b8ab0fd1c9ea",
+      "ReviewerId": "69bcfdd286abfd23cdd1c9b4",
+      "Result": "Approved",
+      "Score": 96,
+      "Comment": "upd",
+      "ReviewedAt": "2026-03-20T14:57:10.2694462"
+    }
+  ],
+  "annotations": [
+    {
+      "Id": "69bcfa2575661450da391b7f",
+      "AnnotationSetId": "69bcfa25b0de93792f391b7e",
+      "LabelId": "69bcfa2565604e5052391b63",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\r\n                                             \u0022y\u0022:  20,\r\n                                             \u0022width\u0022:  100,\r\n                                             \u0022height\u0022:  80,\r\n                                             \u0022x\u0022:  10\r\n                                         }",
+      "Version": 1,
+      "CreatedAt": "2026-03-20T14:41:25.9663344",
+      "UpdatedAt": "2026-03-20T14:41:25.9663344"
+    },
+    {
+      "Id": "69bcfb73ed48939d2f10fa11",
+      "AnnotationSetId": "69bcfb73d89bcc3b6c10fa10",
+      "LabelId": "69bcfb7246547b862e10f9f5",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\r\n                                             \u0022y\u0022:  20,\r\n                                             \u0022width\u0022:  100,\r\n                                             \u0022height\u0022:  80,\r\n                                             \u0022x\u0022:  10\r\n                                         }",
+      "Version": 1,
+      "CreatedAt": "2026-03-20T14:46:59.8942695",
+      "UpdatedAt": "2026-03-20T14:46:59.8942695"
+    },
+    {
+      "Id": "69bcfbd492e48b7ca4a53887",
+      "AnnotationSetId": "69bcfbd42c697db03ca53886",
+      "LabelId": "69bcfbd36904dc5d42a5386b",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\r\n                                             \u0022y\u0022:  20,\r\n                                             \u0022width\u0022:  100,\r\n                                             \u0022height\u0022:  80,\r\n                                             \u0022x\u0022:  10\r\n                                         }",
+      "Version": 1,
+      "CreatedAt": "2026-03-20T14:48:36.2115879",
+      "UpdatedAt": "2026-03-20T14:48:36.2115879"
+    },
+    {
+      "Id": "69bcfc38b5adf592fcd1c9a3",
+      "AnnotationSetId": "69bcfc38223311aad9d1c9a2",
+      "LabelId": "69bcfc36d174031c92d1c987",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\r\n                                             \u0022y\u0022:  20,\r\n                                             \u0022width\u0022:  100,\r\n                                             \u0022height\u0022:  80,\r\n                                             \u0022x\u0022:  10\r\n                                         }",
+      "Version": 1,
+      "CreatedAt": "2026-03-20T14:50:16.2429167",
+      "UpdatedAt": "2026-03-20T14:50:16.2429167"
+    },
+    {
+      "Id": "69bcfdd53d74a5123fd1c9eb",
+      "AnnotationSetId": "69bcfdd52c26b8ab0fd1c9ea",
+      "LabelId": "69bcfdd5f1e24a8e0dd1c9cf",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\r\n                                             \u0022y\u0022:  20,\r\n                                             \u0022width\u0022:  100,\r\n                                             \u0022height\u0022:  80,\r\n                                             \u0022x\u0022:  10\r\n                                         }",
+      "Version": 1,
+      "CreatedAt": "2026-03-20T14:57:09.925747",
+      "UpdatedAt": "2026-03-20T14:57:09.925747"
+    }
+  ]
+}
