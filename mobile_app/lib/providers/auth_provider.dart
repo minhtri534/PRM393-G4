@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../core/constants/app_constants.dart';
 import '../core/utils/logger.dart';
-import '../models/auth/auth_response.dart';
 import '../models/auth/login_request.dart';
 import '../models/auth/register_request.dart';
 import '../models/auth/user_profile.dart';
@@ -38,6 +37,7 @@ class AuthProvider extends ChangeNotifier {
       final isAuthenticated = await _authRepository.isAuthenticated();
 
       if (isAuthenticated) {
+        _userProfile = await _authRepository.getStoredUserProfile();
         _state = AuthState.authenticated;
         Logger.info('✅ User already authenticated on startup');
       } else {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/theme/app_theme.dart';
+import '../core/navigation/role_routes.dart';
 import '../providers/auth_provider.dart';
 import '../routes/app_routes.dart';
 
@@ -23,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     final authProvider = context.read<AuthProvider>();
     final route = authProvider.isAuthenticated
-        ? AppRoutes.tasks
+        ? homeRouteForRole(authProvider.userProfile?.roleName)
         : AppRoutes.login;
 
     Navigator.of(context).pushNamedAndRemoveUntil(route, (_) => false);

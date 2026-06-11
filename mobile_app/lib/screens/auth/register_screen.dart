@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/navigation/role_routes.dart';
 import '../../core/utils/email_validator.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/action_button.dart';
@@ -187,14 +188,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   .trim(),
                         );
 
-                        if (success) {
-                          if (mounted) {
-                            Navigator.of(context)
-                                .pushNamedAndRemoveUntil(
-                              '/tasks',
-                              (route) => false,
-                            );
-                          }
+                        if (success && mounted) {
+                          final route = homeRouteForRole(
+                            authProvider.userProfile?.roleName,
+                          );
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            route,
+                            (route) => false,
+                          );
                         }
                       }
                     },

@@ -50,6 +50,9 @@ dependencies:
   
   # Loading indicators
   shimmer: ^3.0.0
+
+  # File picking for dataset upload
+  file_picker: ^8.1.7
   
   # JSON serialization (optional, for cleaner DTO handling)
   json_annotation: ^4.8.1

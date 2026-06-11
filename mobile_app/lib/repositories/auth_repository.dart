@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../core/constants/app_constants.dart';
 import '../core/constants/environment.dart';
 import '../core/utils/logger.dart';
 import '../models/auth/auth_response.dart';
+import '../models/auth/user_profile.dart';
 import '../models/auth/login_request.dart';
 import '../models/auth/register_request.dart';
 import '../models/common/api_error.dart';
@@ -159,13 +162,17 @@ class AuthRepository {
   }
 
   /// Get stored user profile
-  Future<String?> getUserProfile() async {
-    return await _secureStorage.read(key: AppConstants.userProfileKey);
+  Future<UserProfile?> getStoredUserProfile() async {
+    final raw = await _secureStorage.read(key: AppConstants.userProfileKey);
+    if (raw == null || raw.isEmpty) return null;
+    try {
+      return UserProfile.fromJson(
+        jsonDecode(raw) as Map<String, dynamic>,
+      );
+    } catch (_) {
+      return null;
+    }
   }
 
-  /// Encode user profile for storage
-  String _encodeUserProfile(dynamic user) {
-    // Simple JSON string encoding for storage
-    return user.toString();
-  }
+  String _encodeUserProfile(UserProfile user) => jsonEncode(user.toJson());
 }
