@@ -215,7 +215,21 @@ class AppTheme {
       ),
       
       // Scaffold background
-      scaffoldBackgroundColor: backgroundColor,
+      scaffoldBackgroundColor: surfaceSoftColor,
+
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: backgroundColor.withValues(alpha: 0.92),
+        indicatorColor: primaryColor.withValues(alpha: 0.12),
+        labelTextStyle: WidgetStateProperty.all(
+          GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600),
+        ),
+      ),
+
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
+        elevation: 2,
+      ),
       
       // Progress indicators
       progressIndicatorTheme: const ProgressIndicatorThemeData(

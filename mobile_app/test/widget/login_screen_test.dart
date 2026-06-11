@@ -23,9 +23,10 @@ void main() {
       );
 
       // Assert - Check for key text elements
-      expect(find.text('Welcome Back'), findsOneWidget);
+      expect(find.text('Welcome back'), findsOneWidget);
+      expect(find.text('Sign in'), findsWidgets);
       expect(
-        find.text('Sign in to continue to your tasks'),
+        find.text('Access projects, tasks, and analytics in one place.'),
         findsOneWidget,
       );
 
@@ -60,8 +61,8 @@ void main() {
       expect(find.text('Password'), findsOneWidget);
 
       // Assert - Check for hintTexts
-      expect(find.text('your@email.com'), findsOneWidget);
-      expect(find.text('Enter your password'), findsOneWidget);
+      expect(find.text('example@email.com'), findsOneWidget);
+      expect(find.text('••••••••'), findsOneWidget);
     });
 
     testWidgets('Sign in button is present and enabled',
@@ -77,12 +78,12 @@ void main() {
         ),
       );
 
-      // Assert - Check for Sign In button
-      expect(find.text('Sign In'), findsOneWidget);
-
-      // Assert - Verify button is pressable
-      final signInButton = find.byType(ActionButton);
-      expect(signInButton, findsOneWidget);
+      // Assert - Check for Sign in button (header + button share label)
+      expect(find.byType(ActionButton), findsOneWidget);
+      expect(
+        find.widgetWithText(ActionButton, 'Sign in'),
+        findsOneWidget,
+      );
     });
 
     testWidgets(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../screens/annotator/annotator_shell_screen.dart';
 import '../screens/annotator/task_detail_screen.dart';
-import '../screens/annotator/task_list_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/register_screen.dart';
 import '../screens/manager/dataset_detail_screen.dart';
@@ -15,8 +16,10 @@ class AppRoutes {
   static const String splash = '/';
   static const String login = '/login';
   static const String register = '/register';
-  static const String tasks = '/tasks';
-  static const String taskDetail = '/task-detail';
+
+  // Annotator routes
+  static const String annotatorHome = '/annotator';
+  static const String annotatorTaskDetail = '/annotator/tasks/detail';
 
   // Manager routes
   static const String managerHome = '/manager';
@@ -26,25 +29,20 @@ class AppRoutes {
   static const String managerDatasetDetail = '/manager/datasets/detail';
   static const String managerTaskCreate = '/manager/tasks/create';
 
+  /// Legacy alias kept for older navigation calls.
+  static const String tasks = annotatorHome;
+
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splash:
-        return MaterialPageRoute(
-          builder: (_) => const SplashScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
       case login:
-        return MaterialPageRoute(
-          builder: (_) => const LoginScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
       case register:
-        return MaterialPageRoute(
-          builder: (_) => const RegisterScreen(),
-        );
-      case tasks:
-        return MaterialPageRoute(
-          builder: (_) => const TaskListScreen(),
-        );
-      case taskDetail:
+        return MaterialPageRoute(builder: (_) => const RegisterScreen());
+      case annotatorHome:
+        return MaterialPageRoute(builder: (_) => const AnnotatorShellScreen());
+      case annotatorTaskDetail:
         final taskId = settings.arguments as String?;
         if (taskId == null) {
           return _errorRoute('Task ID not provided');
@@ -53,13 +51,9 @@ class AppRoutes {
           builder: (_) => TaskDetailScreen(taskId: taskId),
         );
       case managerHome:
-        return MaterialPageRoute(
-          builder: (_) => const ManagerShellScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => const ManagerShellScreen());
       case managerProjectCreate:
-        return MaterialPageRoute(
-          builder: (_) => const ProjectCreateScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => const ProjectCreateScreen());
       case managerProjectDetail:
         final projectId = settings.arguments as String?;
         if (projectId == null) {
@@ -69,9 +63,7 @@ class AppRoutes {
           builder: (_) => ProjectDetailScreen(projectId: projectId),
         );
       case managerDatasetUpload:
-        return MaterialPageRoute(
-          builder: (_) => const DatasetUploadScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => const DatasetUploadScreen());
       case managerDatasetDetail:
         final datasetId = settings.arguments as String?;
         if (datasetId == null) {

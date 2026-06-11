@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile_app/app.dart';
 import 'package:mobile_app/providers/auth_provider.dart';
-import 'package:mobile_app/providers/task_provider.dart';
+import 'package:mobile_app/providers/annotator_provider.dart';
 
 void main() {
   testWidgets('MyApp smoke test', (WidgetTester tester) async {
@@ -11,7 +11,7 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
-          ChangeNotifierProvider(create: (_) => TaskProvider()),
+          ChangeNotifierProvider(create: (_) => AnnotatorProvider()),
         ],
         child: const MyApp(),
       ),

@@ -1,10 +1,9 @@
 import 'package:dio/dio.dart';
 
-import '../core/constants/environment.dart';
+import '../core/constants/annotator_endpoints.dart';
+import '../core/constants/app_constants.dart';
 import '../core/utils/logger.dart';
-import '../models/annotator/annotator_task.dart';
-import '../models/annotator/label.dart';
-import '../models/annotator/task_item.dart';
+import '../models/annotator/annotator_models.dart';
 import '../models/common/api_error.dart';
 import '../models/common/service_response.dart';
 import 'dio_client.dart';
@@ -15,172 +14,85 @@ class AnnotatorRepository {
   AnnotatorRepository({DioClient? dioClient})
       : _dioClient = dioClient ?? DioClient();
 
-  /// Get all tasks for the current annotator
-  Future<List<AnnotatorTask>> getTasks() async {
-    try {
-      final response = await _dioClient.get(Environment.getTasksEndpoint);
-
-      final serviceResponse = ServiceResponse<List<dynamic>>.fromJson(
-        response.data,
-        (data) => data as List<dynamic>,
+  Future<T> _unwrap<T>(
+    Future<Response<dynamic>> Function() request,
+    T Function(dynamic data) decoder,
+  ) async {
+    final response = await request();
+    final serviceResponse = ServiceResponse<T>.fromJson(
+      response.data as Map<String, dynamic>,
+      decoder,
+    );
+    if (!serviceResponse.isSuccess) {
+      throw ApiError(
+        message: serviceResponse.message.isNotEmpty
+            ? serviceResponse.message
+            : AppConstants.errorGeneric,
+        code: 'ANNOTATOR_API_FAILED',
       );
-
-      if (!serviceResponse.isSuccess) {
-        throw ApiError(
-          message: serviceResponse.message ?? 'Failed to fetch tasks',
-          code: 'GET_TASKS_FAILED',
-        );
-      }
-
-      final tasksData = serviceResponse.data ?? [];
-      final tasks = tasksData
-          .map((taskJson) => AnnotatorTask.fromJson(taskJson))
-          .toList();
-
-      Logger.info('✅ Fetched ${tasks.length} tasks');
-      return tasks;
-    } catch (e) {
-      Logger.error('❌ Failed to get tasks: $e');
-      rethrow;
     }
+    if (serviceResponse.data == null) {
+      throw ApiError(
+        message: 'Invalid response from server',
+        code: 'INVALID_RESPONSE',
+      );
+    }
+    return serviceResponse.data as T;
   }
 
-  /// Get task items for a specific task
-  Future<List<TaskItem>> getTaskItems(String taskId) async {
-    try {
-      final endpoint =
-          Environment.getTaskItemsEndpoint.replaceFirst('{taskId}', taskId);
-      final response = await _dioClient.get(endpoint);
-
-      final serviceResponse = ServiceResponse<List<dynamic>>.fromJson(
-        response.data,
-        (data) => data as List<dynamic>,
-      );
-
-      if (!serviceResponse.isSuccess) {
-        throw ApiError(
-          message: serviceResponse.message ??
-              'Failed to fetch task items',
-          code: 'GET_TASK_ITEMS_FAILED',
-        );
-      }
-
-      final itemsData = serviceResponse.data ?? [];
-      final items = itemsData
-          .map((itemJson) => TaskItem.fromJson(itemJson))
-          .toList();
-
-      Logger.info('✅ Fetched ${items.length} task items');
-      return items;
-    } catch (e) {
-      Logger.error('❌ Failed to get task items: $e');
-      rethrow;
-    }
+  Future<List<T>> _unwrapList<T>(
+    Future<Response<dynamic>> Function() request,
+    T Function(Map<String, dynamic> json) fromJson,
+  ) {
+    return _unwrap<List<T>>(
+      request,
+      (data) => (data as List<dynamic>)
+          .map((item) => fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
   }
 
-  /// Get labels for a specific task
-  Future<List<Label>> getTaskLabels(String taskId) async {
-    try {
-      final endpoint =
-          Environment.getTaskLabelsEndpoint.replaceFirst('{taskId}', taskId);
-      final response = await _dioClient.get(endpoint);
-
-      final serviceResponse = ServiceResponse<List<dynamic>>.fromJson(
-        response.data,
-        (data) => data as List<dynamic>,
+  Future<List<AnnotatorTaskModel>> getTasks() => _unwrapList(
+        () => _dioClient.get(AnnotatorEndpoints.tasks),
+        AnnotatorTaskModel.fromJson,
       );
 
-      if (!serviceResponse.isSuccess) {
-        throw ApiError(
-          message: serviceResponse.message ??
-              'Failed to fetch labels',
-          code: 'GET_LABELS_FAILED',
-        );
-      }
-
-      final labelsData = serviceResponse.data ?? [];
-      final labels = labelsData
-          .map((labelJson) => Label.fromJson(labelJson))
-          .toList();
-
-      Logger.info('✅ Fetched ${labels.length} labels');
-      return labels;
-    } catch (e) {
-      Logger.error('❌ Failed to get labels: $e');
-      rethrow;
-    }
-  }
-
-  /// Accept a task
-  Future<bool> acceptTask(String taskId) async {
-    try {
-      final endpoint = Environment.acceptTaskEndpoint
-          .replaceFirst('{taskId}', taskId);
-      final response = await _dioClient.post(endpoint);
-
-      final serviceResponse = ServiceResponse<bool>.fromJson(
-        response.data,
-        (data) => data as bool? ?? false,
+  Future<List<AnnotatorTaskItemModel>> getTaskItems(String taskId) =>
+      _unwrapList(
+        () => _dioClient.get(AnnotatorEndpoints.taskItems(taskId)),
+        AnnotatorTaskItemModel.fromJson,
       );
 
-      if (!serviceResponse.isSuccess) {
-        throw ApiError(
-          message: serviceResponse.message ??
-              'Failed to accept task',
-          code: 'ACCEPT_TASK_FAILED',
-        );
-      }
-
-      Logger.info('✅ Task $taskId accepted');
-      return true;
-    } catch (e) {
-      Logger.error('❌ Failed to accept task: $e');
-      rethrow;
-    }
-  }
-
-  /// Start a task
-  Future<bool> startTask(String taskId) async {
-    try {
-      final endpoint =
-          Environment.startTaskEndpoint.replaceFirst('{taskId}', taskId);
-      final response = await _dioClient.post(endpoint);
-
-      final serviceResponse = ServiceResponse<bool>.fromJson(
-        response.data,
-        (data) => data as bool? ?? false,
+  Future<List<AnnotatorLabelModel>> getTaskLabels(String taskId) => _unwrapList(
+        () => _dioClient.get(AnnotatorEndpoints.taskLabels(taskId)),
+        AnnotatorLabelModel.fromJson,
       );
 
-      if (!serviceResponse.isSuccess) {
-        throw ApiError(
-          message: serviceResponse.message ??
-              'Failed to start task',
-          code: 'START_TASK_FAILED',
-        );
-      }
+  Future<AnnotatorGuidelineModel> getTaskGuideline(String taskId) => _unwrap(
+        () => _dioClient.get(AnnotatorEndpoints.taskGuideline(taskId)),
+        (data) => AnnotatorGuidelineModel.fromJson(data as Map<String, dynamic>),
+      );
 
-      Logger.info('✅ Task $taskId started');
-      return true;
-    } catch (e) {
-      Logger.error('❌ Failed to start task: $e');
-      rethrow;
-    }
-  }
+  Future<bool> acceptTask(String taskId) => _unwrap(
+        () => _dioClient.post(AnnotatorEndpoints.taskAccept(taskId)),
+        (data) => data as bool? ?? true,
+      );
 
-  /// Get task data item content (download file)
+  Future<bool> startTask(String taskId) => _unwrap(
+        () => _dioClient.post(AnnotatorEndpoints.taskStart(taskId)),
+        (data) => data as bool? ?? true,
+      );
+
   Future<List<int>> getTaskDataItemContent(String taskId) async {
     try {
-      final endpoint = Environment.getTaskDataItemEndpoint
-          .replaceFirst('{taskId}', taskId);
       final response = await _dioClient.get(
-        endpoint,
+        AnnotatorEndpoints.taskDataItemContent(taskId),
         options: Options(responseType: ResponseType.bytes),
       );
-
-      Logger.info('✅ Downloaded task data item');
-      return response.data as List<int>;
+      Logger.info('✅ Downloaded task image bytes');
+      return (response.data as List<int>?) ?? [];
     } catch (e) {
-      Logger.error('❌ Failed to download task data: $e');
+      Logger.error('❌ Failed to download task image: $e');
       rethrow;
     }
   }

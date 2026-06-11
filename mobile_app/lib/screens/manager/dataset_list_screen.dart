@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/constants/app_constants.dart';
+import '../../core/theme/app_theme.dart';
 import '../../providers/manager_provider.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/dataset_card.dart';
+import '../../widgets/dlss_page_header.dart';
 import '../../widgets/error_widget.dart' as error_widget;
 import '../../widgets/loading_skeleton.dart';
 
@@ -29,66 +32,87 @@ class _DatasetListScreenState extends State<DatasetListScreen> {
   Widget build(BuildContext context) {
     return Consumer<ManagerProvider>(
       builder: (context, provider, _) {
-        if (provider.isLoading && provider.allDatasets.isEmpty) {
-          return const LoadingSkeleton(itemCount: 4);
-        }
-
-        if (provider.state == ManagerLoadState.error &&
-            provider.allDatasets.isEmpty) {
-          return error_widget.ErrorWidget(
-            message: provider.errorMessage ?? 'Failed to load datasets',
-            onRetry: provider.fetchAllDatasets,
-          );
-        }
-
         final datasets = provider.allDatasets
-            .where((d) =>
-                d.name.toLowerCase().contains(_search.toLowerCase()) ||
-                (d.projectName ?? '')
-                    .toLowerCase()
-                    .contains(_search.toLowerCase()))
+            .where(
+              (d) =>
+                  d.name.toLowerCase().contains(_search.toLowerCase()) ||
+                  (d.projectName ?? '')
+                      .toLowerCase()
+                      .contains(_search.toLowerCase()),
+            )
             .toList();
 
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextField(
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search),
+        return Padding(
+          padding: const EdgeInsets.all(AppConstants.paddingMedium),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const DlssPageHeader(
+                title: 'Datasets',
+                subtitle: 'Browse and manage uploaded datasets',
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search),
                   hintText: 'Search datasets...',
-                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white.withValues(alpha: 0.8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: AppTheme.borderColor),
+                  ),
                 ),
                 onChanged: (v) => setState(() => _search = v),
               ),
-            ),
-            Expanded(
-              child: datasets.isEmpty
-                  ? const Center(child: Text('No datasets found'))
-                  : RefreshIndicator(
-                      onRefresh: provider.fetchAllDatasets,
-                      child: ListView.separated(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: datasets.length,
-                        separatorBuilder: (_, __) =>
-                            const SizedBox(height: 8),
-                        itemBuilder: (context, index) {
-                          final dataset = datasets[index];
-                          return DatasetCard(
-                            dataset: dataset,
-                            onTap: () => Navigator.pushNamed(
-                              context,
-                              AppRoutes.managerDatasetDetail,
-                              arguments: dataset.id,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              Expanded(child: _buildBody(provider, datasets)),
+            ],
+          ),
         );
       },
+    );
+  }
+
+  Widget _buildBody(ManagerProvider provider, List datasets) {
+    if (provider.isLoading && provider.allDatasets.isEmpty) {
+      return const LoadingSkeleton(itemCount: 4);
+    }
+
+    if (provider.state == ManagerLoadState.error &&
+        provider.allDatasets.isEmpty) {
+      return error_widget.ErrorWidget(
+        message: provider.errorMessage ?? 'Failed to load datasets',
+        onRetry: provider.fetchAllDatasets,
+      );
+    }
+
+    if (datasets.isEmpty) {
+      return Center(
+        child: Text(
+          'No datasets found',
+          style: TextStyle(color: AppTheme.textSecondaryColor),
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: provider.fetchAllDatasets,
+      child: ListView.separated(
+        itemCount: datasets.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 8),
+        itemBuilder: (context, index) {
+          final dataset = datasets[index];
+          return DatasetCard(
+            dataset: dataset,
+            onTap: () => Navigator.pushNamed(
+              context,
+              AppRoutes.managerDatasetDetail,
+              arguments: dataset.id,
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -27,7 +27,10 @@ public sealed partial class AnnotatorService
                 x.DataItemId,
                 x.Status,
                 x.AssignedAt,
-                x.CompletedAt))
+                x.CompletedAt,
+                x.Project != null ? x.Project.Name : null,
+                x.DataItem != null ? x.DataItem.ObjectKey : null,
+                x.DataItem != null && x.DataItem.Dataset != null ? x.DataItem.Dataset.Name : null))
             .ToListAsync();
 
         return ServiceResponse<List<AnnotatorTaskSummaryResponse>>.Success(tasks, "OK");

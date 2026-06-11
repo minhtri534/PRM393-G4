@@ -8,8 +8,12 @@ import 'package:provider/provider.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../providers/manager_provider.dart';
+import '../../core/theme/app_theme.dart';
 import '../../widgets/action_button.dart';
 import '../../widgets/custom_text_field.dart';
+import '../../widgets/dlss_badge.dart';
+import '../../widgets/dlss_card.dart';
+import '../../widgets/dlss_page_header.dart';
 
 class DatasetDetailScreen extends StatefulWidget {
   final String datasetId;
@@ -88,13 +92,18 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
       builder: (context, provider, _) {
         final dataset = provider.selectedDataset;
         if (provider.isLoading && dataset == null) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+          return Scaffold(
+            backgroundColor: AppTheme.surfaceSoftColor,
+            body: const Center(child: CircularProgressIndicator()),
           );
         }
         if (dataset == null) {
           return Scaffold(
-            appBar: AppBar(),
+            backgroundColor: AppTheme.surfaceSoftColor,
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+            ),
             body: const Center(child: Text('Dataset not found')),
           );
         }
@@ -104,40 +113,112 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
         }
 
         return Scaffold(
-          appBar: AppBar(title: Text(dataset.name)),
+          backgroundColor: AppTheme.surfaceSoftColor,
+          appBar: AppBar(
+            title: Text(dataset.name),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+          ),
           body: ListView(
             padding: const EdgeInsets.all(AppConstants.paddingMedium),
             children: [
-              ListTile(
-                title: const Text('Project'),
-                subtitle: Text(dataset.projectName ?? dataset.projectId),
-              ),
-              ListTile(
-                title: const Text('Total Items'),
-                subtitle: Text('${dataset.totalItems ?? 0}'),
+              DlssPageHeader(
+                title: dataset.name,
+                subtitle: dataset.projectName ?? 'Dataset details',
               ),
               const SizedBox(height: 16),
-              CustomTextField(
+              DlssCard(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFDBEAFE),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.dataset_outlined,
+                        color: AppTheme.primaryColor,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            dataset.projectName ?? 'Project',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          Text(
+                            '${dataset.totalItems ?? 0} items',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ),
+                    DlssBadge(
+                      label: 'Active',
+                      variant: DlssBadgeVariant.success,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              DlssCard(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Dataset settings',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    const SizedBox(height: 16),
+                    CustomTextField(
                 controller: _nameController,
                 label: 'Dataset Name',
                 hintText: 'Rename dataset',
               ),
-              ActionButton(
-                label: 'Save Name',
-                isLoading: provider.isLoading,
-                onPressed: () => provider.updateDatasetName(
-                  widget.datasetId,
-                  _nameController.text.trim(),
+                    ActionButton(
+                      label: 'Save Name',
+                      variant: ActionButtonVariant.gradient,
+                      isLoading: provider.isLoading,
+                      onPressed: () => provider.updateDatasetName(
+                        widget.datasetId,
+                        _nameController.text.trim(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ActionButton(
+                      label: 'Add More Files',
+                      variant: ActionButtonVariant.outline,
+                      onPressed: () => _addFiles(provider),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 16),
-              ActionButton(
-                label: 'Add More Files',
-                isOutlined: true,
-                onPressed: () => _addFiles(provider),
-              ),
-              const SizedBox(height: 16),
-              TextField(
+              DlssCard(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Import data',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
                 controller: _itemsJsonController,
                 maxLines: 4,
                 decoration: const InputDecoration(
@@ -146,54 +227,68 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                   border: OutlineInputBorder(),
                 ),
               ),
-              ActionButton(
-                label: 'Upload Items JSON',
-                isOutlined: true,
-                isLoading: provider.isLoading,
-                onPressed: () async {
-                  final items = _parseItemsJson();
-                  if (items == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Invalid JSON array')),
-                    );
-                    return;
-                  }
-                  await provider.uploadDatasetItems(
-                    datasetId: widget.datasetId,
-                    items: items,
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-              CustomTextField(
+                    ActionButton(
+                      label: 'Upload Items JSON',
+                      variant: ActionButtonVariant.outline,
+                      isLoading: provider.isLoading,
+                      onPressed: () async {
+                        final items = _parseItemsJson();
+                        if (items == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Invalid JSON array')),
+                          );
+                          return;
+                        }
+                        await provider.uploadDatasetItems(
+                          datasetId: widget.datasetId,
+                          items: items,
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    CustomTextField(
                 controller: _sourceNameController,
                 label: 'External source name',
                 hintText: 'e.g. COCO import',
               ),
-              ActionButton(
-                label: 'Import External Items',
-                isOutlined: true,
-                isLoading: provider.isLoading,
-                onPressed: () async {
-                  final items = _parseItemsJson();
-                  final source = _sourceNameController.text.trim();
-                  if (items == null || source.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Enter source name and valid JSON'),
-                      ),
-                    );
-                    return;
-                  }
-                  await provider.importDatasetExternal(
-                    datasetId: widget.datasetId,
-                    sourceName: source,
-                    items: items,
-                  );
-                },
+                    ActionButton(
+                      label: 'Import External Items',
+                      variant: ActionButtonVariant.outline,
+                      isLoading: provider.isLoading,
+                      onPressed: () async {
+                        final items = _parseItemsJson();
+                        final source = _sourceNameController.text.trim();
+                        if (items == null || source.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Enter source name and valid JSON'),
+                            ),
+                          );
+                          return;
+                        }
+                        await provider.importDatasetExternal(
+                          datasetId: widget.datasetId,
+                          sourceName: source,
+                          items: items,
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-              const Divider(height: 32),
-              Text('Versions', style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 16),
+              DlssCard(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Versions',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
@@ -216,21 +311,25 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                   ),
                 ],
               ),
-              ...provider.datasetVersions.map(
-                (v) => ListTile(
-                  title: Text(v.versionName),
-                  subtitle: Text(v.createdAt?.toLocal().toString() ?? ''),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.restore),
-                    onPressed: () =>
-                        provider.restoreDatasetVersion(v.id),
-                  ),
+                    ...provider.datasetVersions.map(
+                      (v) => ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(v.versionName),
+                        subtitle: Text(v.createdAt?.toLocal().toString() ?? ''),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.restore),
+                          onPressed: () =>
+                              provider.restoreDatasetVersion(v.id),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 24),
               ActionButton(
                 label: 'Delete Dataset',
-                isOutlined: true,
+                variant: ActionButtonVariant.outline,
                 onPressed: () async {
                   final ok = await provider.deleteDataset(widget.datasetId);
                   if (ok && context.mounted) Navigator.pop(context);

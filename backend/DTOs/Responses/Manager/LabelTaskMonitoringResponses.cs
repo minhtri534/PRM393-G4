@@ -37,7 +37,10 @@ public sealed record TaskResponse(
     string? AssignedByUserId,
     string Status,
     DateTime? AssignedAt,
-    DateTime? CompletedAt
+    DateTime? CompletedAt,
+    string? DataItemObjectKey = null,
+    string? DatasetName = null,
+    string? AnnotatorEmail = null
 );
 
 public sealed record TaskProgressResponse(

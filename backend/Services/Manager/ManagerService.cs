@@ -1527,7 +1527,18 @@ public sealed class ManagerService(
             .AsNoTracking()
             .Where(x => x.ProjectId == id)
             .OrderByDescending(x => x.AssignedAt)
-            .Select(x => ToTaskResponse(x))
+            .Select(x => new TaskResponse(
+                x.Id,
+                x.ProjectId,
+                x.DataItemId,
+                x.AnnotatorId,
+                x.AssignedByUserId,
+                x.Status,
+                x.AssignedAt,
+                x.CompletedAt,
+                x.DataItem != null ? x.DataItem.ObjectKey : null,
+                x.DataItem != null && x.DataItem.Dataset != null ? x.DataItem.Dataset.Name : null,
+                x.Annotator != null ? x.Annotator.Email : null))
             .ToListAsync();
 
         return ServiceResponse<List<TaskResponse>>.Success(items, "OK");
@@ -1845,7 +1856,18 @@ public sealed class ManagerService(
     }
 
     private static TaskResponse ToTaskResponse(LabelingTask task)
-        => new(task.Id, task.ProjectId, task.DataItemId, task.AnnotatorId, task.AssignedByUserId, task.Status, task.AssignedAt, task.CompletedAt);
+        => new(
+            task.Id,
+            task.ProjectId,
+            task.DataItemId,
+            task.AnnotatorId,
+            task.AssignedByUserId,
+            task.Status,
+            task.AssignedAt,
+            task.CompletedAt,
+            task.DataItem?.ObjectKey,
+            task.DataItem?.Dataset?.Name,
+            task.Annotator?.Email);
 
     private static string? NormalizeOptionalId(string? value)
     {

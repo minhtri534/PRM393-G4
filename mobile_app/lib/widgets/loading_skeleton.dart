@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+
 import '../core/constants/app_constants.dart';
 import '../core/theme/app_theme.dart';
+import 'dlss_card.dart';
 
 class LoadingSkeleton extends StatelessWidget {
   final int itemCount;
 
   const LoadingSkeleton({
-    Key? key,
+    super.key,
     this.itemCount = 5,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +21,9 @@ class LoadingSkeleton extends StatelessWidget {
         return Shimmer.fromColors(
           baseColor: AppTheme.surfaceSoftColor,
           highlightColor: AppTheme.backgroundColor,
-          child: Card(
-            margin: const EdgeInsets.symmetric(
-              horizontal: AppConstants.paddingMedium,
-              vertical: AppConstants.paddingSmall,
-            ),
-            child: Padding(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: AppConstants.paddingSmall),
+            child: DlssCard(
               padding: const EdgeInsets.all(AppConstants.paddingMedium),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

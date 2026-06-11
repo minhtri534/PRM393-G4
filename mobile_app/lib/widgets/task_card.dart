@@ -1,165 +1,104 @@
 import 'package:flutter/material.dart';
+
 import '../core/constants/app_constants.dart';
 import '../core/theme/app_theme.dart';
-import '../models/annotator/annotator_task.dart';
+import '../models/annotator/annotator_models.dart';
+import 'dlss_badge.dart';
+import 'dlss_card.dart';
 
 class TaskCard extends StatelessWidget {
-  final AnnotatorTask task;
+  final AnnotatorTaskModel task;
   final VoidCallback onTap;
+  final VoidCallback? onStart;
 
   const TaskCard({
     super.key,
     required this.task,
     required this.onTap,
+    this.onStart,
   });
+
+  bool get _isDone =>
+      task.status == AppConstants.taskStatusSubmitted ||
+      task.status == 'Completed' ||
+      task.status == AppConstants.taskStatusApproved;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        margin: const EdgeInsets.symmetric(
-          horizontal: AppConstants.paddingMedium,
-          vertical: AppConstants.paddingSmall,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppConstants.paddingMedium),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Task: ${task.id.substring(0, 8)}...',
-                          style:
-                              Theme.of(context).textTheme.bodyLarge,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Project: ${task.projectId.substring(0, 8)}...',
-                          style: Theme.of(context).textTheme.bodySmall,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                  _buildStatusBadge(context),
-                ],
-              ),
-              const SizedBox(height: AppConstants.paddingSmall),
-              Divider(
-                color: AppTheme.borderColor,
-                height: 1,
-              ),
-              const SizedBox(height: AppConstants.paddingSmall),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  if (task.assignedAt != null)
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Assigned',
-                            style: Theme.of(context).textTheme.labelSmall,
-                          ),
-                          Text(
-                            _formatDate(task.assignedAt!),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                  if (task.completedAt != null)
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Completed',
-                            style: Theme.of(context).textTheme.labelSmall,
-                          ),
-                          Text(
-                            _formatDate(task.completedAt!),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+    final iconColor =
+        _isDone ? AppTheme.successColor : AppTheme.primaryColor;
+    final iconBg = _isDone
+        ? const Color(0xFFECFDF5)
+        : const Color(0xFFEFF6FF);
 
-  Widget _buildStatusBadge(BuildContext context) {
-    Color badgeColor;
-    IconData icon;
-
-    switch (task.status) {
-      case AppConstants.taskStatusAssigned:
-        badgeColor = AppTheme.warningColor;
-        icon = Icons.assignment;
-        break;
-      case AppConstants.taskStatusInProgress:
-        badgeColor = AppTheme.infoColor;
-        icon = Icons.pending_actions;
-        break;
-      case AppConstants.taskStatusSubmitted:
-        badgeColor = AppTheme.warningColor;
-        icon = Icons.check_circle_outline;
-        break;
-      case AppConstants.taskStatusApproved:
-        badgeColor = AppTheme.successColor;
-        icon = Icons.verified;
-        break;
-      case AppConstants.taskStatusRejected:
-        badgeColor = AppTheme.errorColor;
-        icon = Icons.cancel;
-        break;
-      default:
-        badgeColor = AppTheme.textHintColor;
-        icon = Icons.help_outline;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 6,
-      ),
-      decoration: BoxDecoration(
-        color: badgeColor.withValues(alpha: 0.1),
-        border: Border.all(color: badgeColor),
-        borderRadius: BorderRadius.circular(AppConstants.borderRadiusSmall),
-      ),
+    return DlssCard(
+      padding: const EdgeInsets.all(AppConstants.paddingMedium),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: badgeColor),
-          const SizedBox(width: 4),
-          Text(
-            task.status,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: badgeColor,
-                  fontWeight: FontWeight.w600,
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: iconBg,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(Icons.assignment_outlined, color: iconColor, size: 24),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: InkWell(
+              onTap: onTap,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    task.displayTitle,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    task.displaySubtitle,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      const Icon(Icons.schedule, size: 12, color: AppTheme.textHintColor),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          _isDone
+                              ? 'Finished: ${task.completedAt?.toLocal().toString().split('.').first ?? '-'}'
+                              : 'Assigned: ${task.assignedAt?.toLocal().toString().split('.').first ?? '-'}',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: AppTheme.textHintColor,
+                                fontSize: 11,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Column(
+            children: [
+              DlssBadge.forTaskStatus(task.status),
+              const SizedBox(height: 8),
+              if (_isDone)
+                const Icon(Icons.check_circle, color: AppTheme.successColor, size: 20)
+              else
+                TextButton(
+                  onPressed: onStart ?? onTap,
+                  child: const Text('Start'),
                 ),
+            ],
           ),
         ],
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
   }
 }

@@ -192,13 +192,18 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
       builder: (context, provider, _) {
         final project = provider.selectedProject;
         if (provider.isLoading && project == null) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+          return Scaffold(
+            backgroundColor: AppTheme.surfaceSoftColor,
+            body: const Center(child: CircularProgressIndicator()),
           );
         }
         if (project == null) {
           return Scaffold(
-            appBar: AppBar(),
+            backgroundColor: AppTheme.surfaceSoftColor,
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+            ),
             body: Center(child: Text(provider.errorMessage ?? 'Project not found')),
           );
         }
@@ -213,11 +218,17 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
         _projectStatus ??= project.status;
 
         return Scaffold(
+          backgroundColor: AppTheme.surfaceSoftColor,
           appBar: AppBar(
             title: Text(project.name),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
             bottom: TabBar(
               controller: _tabController,
               isScrollable: true,
+              indicatorColor: AppTheme.primaryColor,
+              labelColor: AppTheme.primaryColor,
+              unselectedLabelColor: AppTheme.textSecondaryColor,
               tabs: const [
                 Tab(text: 'Overview'),
                 Tab(text: 'Data'),
@@ -572,8 +583,14 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                   });
                 },
               ),
-              title: Text('Task ${task.id.substring(0, 8)}...'),
-              subtitle: Text('Status: ${task.status}'),
+              title: Text(task.displayTitle),
+              subtitle: Text(
+                [
+                  if (task.datasetName != null) task.datasetName!,
+                  if (task.annotatorEmail != null) task.annotatorEmail!,
+                  task.status,
+                ].join(' • '),
+              ),
               trailing: PopupMenuButton<String>(
                 onSelected: (action) async {
                   if (action == 'pause') {

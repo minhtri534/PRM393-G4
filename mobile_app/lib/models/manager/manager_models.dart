@@ -19,7 +19,7 @@ class ProjectModel {
         id: json['id']?.toString() ?? '',
         name: json['name']?.toString() ?? '',
         guideline: json['guideline']?.toString(),
-        status: json['status'] as int? ?? 0,
+        status: _parseInt(json['status']) ?? 0,
         createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? ''),
         updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? ''),
       );
@@ -175,6 +175,9 @@ class ManagerTaskModel {
   final String status;
   final DateTime? assignedAt;
   final DateTime? completedAt;
+  final String? dataItemObjectKey;
+  final String? datasetName;
+  final String? annotatorEmail;
 
   ManagerTaskModel({
     required this.id,
@@ -185,7 +188,20 @@ class ManagerTaskModel {
     required this.status,
     this.assignedAt,
     this.completedAt,
+    this.dataItemObjectKey,
+    this.datasetName,
+    this.annotatorEmail,
   });
+
+  String get displayTitle {
+    final key = dataItemObjectKey;
+    if (key != null && key.isNotEmpty) {
+      final parts = key.replaceAll('\\', '/').split('/');
+      if (parts.last.isNotEmpty) return parts.last;
+    }
+    if (datasetName != null && datasetName!.isNotEmpty) return datasetName!;
+    return 'Task ${id.length >= 8 ? id.substring(0, 8) : id}';
+  }
 
   factory ManagerTaskModel.fromJson(Map<String, dynamic> json) =>
       ManagerTaskModel(
@@ -197,6 +213,9 @@ class ManagerTaskModel {
         status: json['status']?.toString() ?? '',
         assignedAt: DateTime.tryParse(json['assignedAt']?.toString() ?? ''),
         completedAt: DateTime.tryParse(json['completedAt']?.toString() ?? ''),
+        dataItemObjectKey: json['dataItemObjectKey']?.toString(),
+        datasetName: json['datasetName']?.toString(),
+        annotatorEmail: json['annotatorEmail']?.toString(),
       );
 }
 
@@ -576,4 +595,12 @@ class YoloLabelFileModel {
         fileName: json['fileName']?.toString() ?? '',
         content: json['content']?.toString() ?? '',
       );
+}
+
+int? _parseInt(dynamic value) {
+  if (value == null) return null;
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  if (value is String) return int.tryParse(value);
+  return null;
 }

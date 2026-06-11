@@ -6,5 +6,8 @@ public sealed record AnnotatorTaskSummaryResponse(
     string DataItemId,
     string Status,
     DateTime? AssignedAt,
-    DateTime? CompletedAt
+    DateTime? CompletedAt,
+    string? ProjectName = null,
+    string? DataItemObjectKey = null,
+    string? DatasetName = null
 );
