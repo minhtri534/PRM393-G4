@@ -59,8 +59,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               DlssPageHeader(
-                title: 'My Tasks',
-                subtitle: 'Manage your data labeling assignments.',
+                title: 'Workspace',
+                subtitle: 'View assigned tasks and track annotation progress.',
                 trailing: _SegmentedTabs(
                   tab: _tab,
                   todoCount: todoCount,
