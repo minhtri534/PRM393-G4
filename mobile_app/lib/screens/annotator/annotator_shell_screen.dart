@@ -10,11 +10,11 @@ class AnnotatorShellScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const DlssDashboardScaffold(
-      roleTitle: 'Annotator',
+      roleTitle: 'Annotator Workspace',
       roleIcon: Icons.assignment_outlined,
       destinations: [
         DlssNavDestination(
-          label: 'My Tasks',
+          label: 'Workspace',
           icon: Icons.assignment_outlined,
           body: TaskListScreen(),
         ),
