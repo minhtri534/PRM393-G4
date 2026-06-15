@@ -101,7 +101,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                       ),
                       const SizedBox(height: 16),
                       DropdownButtonFormField<String>(
-                        value: _projectId,
+                        initialValue: _projectId,
                         decoration: InputDecoration(
                           labelText: 'Project',
                           prefixIcon: const Icon(Icons.folder_outlined),
@@ -122,7 +122,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                       if (!_singleTaskMode) ...[
                         const SizedBox(height: 16),
                         DropdownButtonFormField<String>(
-                          value: _datasetId,
+                          initialValue: _datasetId,
                           decoration: InputDecoration(
                             labelText: 'Dataset',
                             prefixIcon: const Icon(Icons.dataset_outlined),
@@ -153,7 +153,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                       ],
                       const SizedBox(height: 16),
                       DropdownButtonFormField<String>(
-                        value: _annotatorId,
+                        initialValue: _annotatorId,
                         decoration: InputDecoration(
                           labelText: 'Annotator',
                           prefixIcon: const Icon(Icons.person_outline),

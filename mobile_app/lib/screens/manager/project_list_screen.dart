@@ -73,7 +73,7 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
       onRefresh: provider.fetchProjects,
       child: ListView.separated(
         itemCount: provider.projects.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           final project = provider.projects[index];
           return ProjectCard(

@@ -121,7 +121,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
       onRefresh: provider.fetchTasks,
       child: ListView.separated(
         itemCount: filtered.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           final task = filtered[index];
           return TaskCard(

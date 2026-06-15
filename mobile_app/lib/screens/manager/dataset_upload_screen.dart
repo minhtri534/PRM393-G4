@@ -134,7 +134,7 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       DropdownButtonFormField<String>(
-                        value: _selectedProjectId,
+                        initialValue: _selectedProjectId,
                         decoration: InputDecoration(
                           labelText: 'Project',
                           prefixIcon: const Icon(Icons.folder_outlined),

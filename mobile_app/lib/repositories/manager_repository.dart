@@ -74,7 +74,7 @@ class ManagerRepository {
           ManagerEndpoints.projects,
           data: {
             'name': name,
-            if (guideline != null) 'guideline': guideline,
+            'guideline': ?guideline,
             'status': status,
           },
         ),
@@ -92,7 +92,7 @@ class ManagerRepository {
           ManagerEndpoints.project(projectId),
           data: {
             'name': name,
-            if (guideline != null) 'guideline': guideline,
+            'guideline': ?guideline,
             'status': status,
           },
         ),
@@ -120,7 +120,7 @@ class ManagerRepository {
           ManagerEndpoints.projectStatus(projectId),
           data: {
             'name': name,
-            if (guideline != null) 'guideline': guideline,
+            'guideline': ?guideline,
             'status': status,
           },
         ),
@@ -301,9 +301,8 @@ class ManagerRepository {
             'projectId': projectId,
             'name': name,
             'yoloClassId': yoloClassId,
-            if (categoryId != null) 'categoryId': categoryId,
-            if (annotationTypeId != null)
-              'annotationTypeId': annotationTypeId,
+            'categoryId': ?categoryId,
+            'annotationTypeId': ?annotationTypeId,
           },
         ),
         (data) => LabelModel.fromJson(data as Map<String, dynamic>),
@@ -322,9 +321,8 @@ class ManagerRepository {
           data: {
             'name': name,
             'yoloClassId': yoloClassId,
-            if (categoryId != null) 'categoryId': categoryId,
-            if (annotationTypeId != null)
-              'annotationTypeId': annotationTypeId,
+            'categoryId': ?categoryId,
+            'annotationTypeId': ?annotationTypeId,
           },
         ),
         (data) => LabelModel.fromJson(data as Map<String, dynamic>),
@@ -356,7 +354,7 @@ class ManagerRepository {
           data: {
             'projectId': projectId,
             'name': name,
-            if (description != null) 'description': description,
+            'description': ?description,
           },
         ),
         (data) => LabelCategoryModel.fromJson(data as Map<String, dynamic>),
@@ -372,7 +370,7 @@ class ManagerRepository {
           ManagerEndpoints.labelCategory(categoryId),
           data: {
             'name': name,
-            if (description != null) 'description': description,
+            'description': ?description,
           },
         ),
         (data) => LabelCategoryModel.fromJson(data as Map<String, dynamic>),
@@ -404,7 +402,7 @@ class ManagerRepository {
           data: {
             'projectId': projectId,
             'name': name,
-            if (description != null) 'description': description,
+            'description': ?description,
           },
         ),
         (data) => AnnotationTypeModel.fromJson(data as Map<String, dynamic>),
@@ -420,7 +418,7 @@ class ManagerRepository {
           ManagerEndpoints.annotationType(annotationTypeId),
           data: {
             'name': name,
-            if (description != null) 'description': description,
+            'description': ?description,
           },
         ),
         (data) => AnnotationTypeModel.fromJson(data as Map<String, dynamic>),
@@ -612,8 +610,8 @@ class ManagerRepository {
             'format': format,
             'exportPath': exportPath,
             'labelFormat': labelFormat,
-            if (includeFields != null) 'includeFields': includeFields,
-            if (filters != null) 'filters': filters,
+            'includeFields': ?includeFields,
+            'filters': ?filters,
           },
         ),
         (data) => ExportModel.fromJson(data as Map<String, dynamic>),
@@ -662,8 +660,8 @@ class ManagerRepository {
         () => _dioClient.get(
           ManagerEndpoints.activityLogs,
           queryParameters: {
-            if (projectId != null) 'projectId': projectId,
-            if (userId != null) 'userId': userId,
+            'projectId': ?projectId,
+            'userId': ?userId,
             'page': page,
             'pageSize': pageSize,
           },
@@ -682,7 +680,7 @@ class ManagerRepository {
           ManagerEndpoints.usersSearch,
           queryParameters: {
             'q': query,
-            if (role != null) 'role': role,
+            'role': ?role,
           },
         ),
         UserSummaryModel.fromJson,

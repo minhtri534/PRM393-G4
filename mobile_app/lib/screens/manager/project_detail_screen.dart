@@ -791,7 +791,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<int>(
-            value: _projectStatus ?? project?.status ?? 0,
+            initialValue: _projectStatus ?? project?.status ?? 0,
             decoration: const InputDecoration(
               labelText: 'Status',
               border: OutlineInputBorder(),
