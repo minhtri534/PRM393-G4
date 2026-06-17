@@ -61,7 +61,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
               DlssPageHeader(
                 title: 'Workspace',
                 subtitle: 'View assigned tasks and track annotation progress.',
-                trailing: _SegmentedTabs(
+              ),
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: _SegmentedTabs(
                   tab: _tab,
                   todoCount: todoCount,
                   doneCount: doneCount,
@@ -72,6 +76,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
               Expanded(
                 child: DlssCard(
                   variant: DlssCardVariant.glass,
+                  fillHeight: true,
                   padding: const EdgeInsets.all(AppConstants.paddingMedium),
                   child: _buildBody(provider, filtered),
                 ),
@@ -120,6 +125,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
     return RefreshIndicator(
       onRefresh: provider.fetchTasks,
       child: ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
         itemCount: filtered.length,
         separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
@@ -131,12 +137,16 @@ class _TaskListScreenState extends State<TaskListScreen> {
               arguments: task.id,
             ),
             onStart: () async {
+              final provider = context.read<AnnotatorProvider>();
               await provider.startTask(task.id);
               if (!context.mounted) return;
-              Navigator.of(context).pushNamed(
-                AppRoutes.annotatorTaskDetail,
-                arguments: task.id,
+              final result = await Navigator.of(context).pushNamed(
+                AppRoutes.annotatorLabeling,
+                arguments: {'taskId': task.id, 'readOnly': false},
               );
+              if (result == true && context.mounted) {
+                provider.fetchTasks();
+              }
             },
           );
         },

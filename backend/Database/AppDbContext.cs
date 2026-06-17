@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<Role> Roles { get; set; } = default!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = default!;
     public DbSet<PasswordResetToken> PasswordResetTokens { get; set; } = default!;
+    public DbSet<EmailVerificationOtp> EmailVerificationOtps { get; set; } = default!;
 
     public DbSet<Project> Projects { get; set; } = default!;
     public DbSet<Dataset> Datasets { get; set; } = default!;
@@ -78,6 +79,14 @@ public class AppDbContext : DbContext
         }
 
         foreach (var entry in ChangeTracker.Entries<PasswordResetToken>())
+        {
+            if (entry.State == EntityState.Added && entry.Entity.CreatedAt == default)
+            {
+                entry.Entity.CreatedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<EmailVerificationOtp>())
         {
             if (entry.State == EntityState.Added && entry.Entity.CreatedAt == default)
             {

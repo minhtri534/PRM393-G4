@@ -8,9 +8,14 @@ class AnnotatorEndpoints {
   static String taskDataItemContent(String taskId) =>
       '/annotator/tasks/$taskId/data-item/content';
   static String taskAccept(String taskId) => '/annotator/tasks/$taskId/accept';
+  static String taskReject(String taskId) => '/annotator/tasks/$taskId/reject';
   static String taskStart(String taskId) => '/annotator/tasks/$taskId/start';
   static String taskAnnotations(String taskId) =>
       '/annotator/tasks/$taskId/annotations';
+  static String taskAnnotationsDraft(String taskId) =>
+      '/annotator/tasks/$taskId/annotations/draft';
   static String taskAnnotationsSubmit(String taskId) =>
       '/annotator/tasks/$taskId/annotations/submit';
+  static String taskReviewFeedback(String taskId) =>
+      '/annotator/tasks/$taskId/review-feedback';
 }

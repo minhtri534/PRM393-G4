@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants/app_constants.dart';
-import '../../core/navigation/role_routes.dart';
+import '../../routes/app_routes.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/email_validator.dart';
 import '../../providers/auth_provider.dart';
@@ -22,6 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late TextEditingController _fullNameController;
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
+  late TextEditingController _confirmPasswordController;
   late TextEditingController _phoneController;
   final _formKey = GlobalKey<FormState>();
 
@@ -31,6 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _fullNameController = TextEditingController();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
     _phoneController = TextEditingController();
   }
 
@@ -39,6 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _fullNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     _phoneController.dispose();
     super.dispose();
   }
@@ -197,6 +200,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                   const SizedBox(height: 16),
                                   CustomTextField(
+                                    controller: _confirmPasswordController,
+                                    label: 'Confirm Password',
+                                    hintText: '••••••••',
+                                    obscureText: true,
+                                    prefixIcon: const Icon(Icons.lock_outline),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please confirm your password';
+                                      }
+                                      if (value != _passwordController.text) {
+                                        return 'Passwords do not match';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 16),
+                                  CustomTextField(
                                     controller: _phoneController,
                                     label: 'Phone Number (Optional)',
                                     hintText: '+1 (555) 000-0000',
@@ -213,7 +233,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               isLoading: authProvider.isLoading,
                               onPressed: () async {
                                 if (!_formKey.currentState!.validate()) return;
-                                final success = await authProvider.register(
+                                final response = await authProvider.register(
                                   fullName: _fullNameController.text.trim(),
                                   email: _emailController.text.trim(),
                                   password: _passwordController.text,
@@ -223,14 +243,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ? null
                                       : _phoneController.text.trim(),
                                 );
-                                if (success && mounted) {
-                                  final route = homeRouteForRole(
-                                    authProvider.userProfile?.roleName,
-                                  );
-                                  Navigator.of(context)
-                                      .pushNamedAndRemoveUntil(
-                                    route,
-                                    (route) => false,
+                                if (response != null && mounted) {
+                                  Navigator.of(context).pushNamed(
+                                    AppRoutes.verifyEmail,
+                                    arguments: {
+                                      'email': response.email,
+                                      'devOtp': response.devOtp,
+                                    },
                                   );
                                 }
                               },

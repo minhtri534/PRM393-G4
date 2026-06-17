@@ -12,7 +12,7 @@ class AppConstants {
   
   // Task statuses
   static const String taskStatusAssigned = 'Assigned';
-  static const String taskStatusInProgress = 'In-Progress';
+  static const String taskStatusInProgress = 'InProgress';
   static const String taskStatusSubmitted = 'Submitted';
   static const String taskStatusApproved = 'Approved';
   static const String taskStatusRejected = 'Rejected';

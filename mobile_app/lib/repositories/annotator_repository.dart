@@ -52,6 +52,9 @@ class AnnotatorRepository {
     );
   }
 
+  Future<bool> _unwrapBool(Future<Response<dynamic>> Function() request) =>
+      _unwrap(request, (data) => data as bool? ?? true);
+
   Future<List<AnnotatorTaskModel>> getTasks() => _unwrapList(
         () => _dioClient.get(AnnotatorEndpoints.tasks),
         AnnotatorTaskModel.fromJson,
@@ -73,15 +76,84 @@ class AnnotatorRepository {
         (data) => AnnotatorGuidelineModel.fromJson(data as Map<String, dynamic>),
       );
 
-  Future<bool> acceptTask(String taskId) => _unwrap(
-        () => _dioClient.post(AnnotatorEndpoints.taskAccept(taskId)),
-        (data) => data as bool? ?? true,
+  Future<List<AnnotatorAnnotationModel>> getTaskAnnotations(String taskId) =>
+      _unwrapList(
+        () => _dioClient.get(AnnotatorEndpoints.taskAnnotations(taskId)),
+        AnnotatorAnnotationModel.fromJson,
       );
 
-  Future<bool> startTask(String taskId) => _unwrap(
-        () => _dioClient.post(AnnotatorEndpoints.taskStart(taskId)),
-        (data) => data as bool? ?? true,
+  Future<AnnotatorReviewFeedbackModel?> getTaskReviewFeedback(
+    String taskId,
+  ) async {
+    final response = await _dioClient.get(
+      AnnotatorEndpoints.taskReviewFeedback(taskId),
+    );
+    final serviceResponse = ServiceResponse<AnnotatorReviewFeedbackModel?>.fromJson(
+      response.data as Map<String, dynamic>,
+      (data) {
+        if (data == null) return null;
+        if (data is List) {
+          if (data.isEmpty) return null;
+          return AnnotatorReviewFeedbackModel.fromJson(
+            data.first as Map<String, dynamic>,
+          );
+        }
+        return AnnotatorReviewFeedbackModel.fromJson(
+          data as Map<String, dynamic>,
+        );
+      },
+    );
+    if (!serviceResponse.isSuccess) {
+      throw ApiError(
+        message: serviceResponse.message.isNotEmpty
+            ? serviceResponse.message
+            : AppConstants.errorGeneric,
+        code: 'ANNOTATOR_API_FAILED',
       );
+    }
+    return serviceResponse.data;
+  }
+
+  Future<bool> acceptTask(String taskId) => _unwrapBool(
+        () => _dioClient.post(AnnotatorEndpoints.taskAccept(taskId)),
+      );
+
+  Future<bool> rejectTask(String taskId, {String? reason}) => _unwrapBool(
+        () => _dioClient.post(
+          AnnotatorEndpoints.taskReject(taskId),
+          data: {'reason': reason},
+        ),
+      );
+
+  Future<bool> startTask(String taskId) => _unwrapBool(
+        () => _dioClient.post(AnnotatorEndpoints.taskStart(taskId)),
+      );
+
+  Future<bool> saveAnnotationDraft(
+    String taskId,
+    List<LabelingBox> boxes,
+  ) =>
+      _unwrapBool(
+        () => _dioClient.put(
+          AnnotatorEndpoints.taskAnnotationsDraft(taskId),
+          data: _upsertPayload(boxes),
+        ),
+      );
+
+  Future<bool> submitAnnotations(
+    String taskId,
+    List<LabelingBox> boxes,
+  ) =>
+      _unwrapBool(
+        () => _dioClient.post(
+          AnnotatorEndpoints.taskAnnotationsSubmit(taskId),
+          data: _upsertPayload(boxes),
+        ),
+      );
+
+  Map<String, dynamic> _upsertPayload(List<LabelingBox> boxes) => {
+        'objects': boxes.map((b) => b.toUpsertJson()).toList(),
+      };
 
   Future<List<int>> getTaskDataItemContent(String taskId) async {
     try {

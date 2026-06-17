@@ -1,5 +1,19 @@
 import api from '../lib/axios';
 
+export interface RegisterResponse {
+  email: string;
+  devOtp?: string | null;
+}
+
+export interface VerifyEmailOtpRequest {
+  email: string;
+  otpCode: string;
+}
+
+export interface ResendEmailVerificationRequest {
+  email: string;
+}
+
 export interface RegisterRequest {
   fullName: string;
   email: string;
@@ -55,8 +69,23 @@ export interface ChangePasswordRequest {
 }
 
 export const authService = {
-  async register(data: RegisterRequest): Promise<ServiceResponse<AuthResponse>> {
-    const response = await api.post<ServiceResponse<AuthResponse>>('/auth/register', data);
+  async register(data: RegisterRequest): Promise<ServiceResponse<RegisterResponse>> {
+    const response = await api.post<ServiceResponse<RegisterResponse>>('/auth/register', data);
+    return response.data;
+  },
+
+  async verifyEmailOtp(data: VerifyEmailOtpRequest): Promise<ServiceResponse<AuthResponse>> {
+    const response = await api.post<ServiceResponse<AuthResponse>>('/auth/verify-email-otp', data);
+    return response.data;
+  },
+
+  async resendVerificationOtp(
+    data: ResendEmailVerificationRequest,
+  ): Promise<ServiceResponse<RegisterResponse>> {
+    const response = await api.post<ServiceResponse<RegisterResponse>>(
+      '/auth/resend-verification-otp',
+      data,
+    );
     return response.data;
   },
 

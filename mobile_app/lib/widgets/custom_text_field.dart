@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../core/constants/app_constants.dart';
-import '../core/theme/app_theme.dart';
+import 'package:flutter/services.dart';
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -12,6 +11,7 @@ class CustomTextField extends StatefulWidget {
   final void Function(String)? onChanged;
   final Widget? suffixIcon;
   final Widget? prefixIcon;
+  final List<TextInputFormatter>? inputFormatters;
 
   const CustomTextField({
     super.key,
@@ -24,6 +24,7 @@ class CustomTextField extends StatefulWidget {
     this.onChanged,
     this.suffixIcon,
     this.prefixIcon,
+    this.inputFormatters,
   });
 
   @override
@@ -55,6 +56,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           obscureText: _isObscured,
           validator: widget.validator,
           onChanged: widget.onChanged,
+          inputFormatters: widget.inputFormatters,
           decoration: InputDecoration(
             hintText: widget.hintText,
             prefixIcon: widget.prefixIcon,

@@ -24,6 +24,10 @@ const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [step, setStep] = useState<'register' | 'verify'>('register');
+  const [pendingEmail, setPendingEmail] = useState('');
+  const [otpCode, setOtpCode] = useState('');
+  const [devOtp, setDevOtp] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   const [formData, setFormData] = useState({
@@ -118,12 +122,11 @@ const RegisterPage: React.FC = () => {
       });
 
       if (response.isSuccess) {
-        setSuccessMessage(response.message || "Account created successfully!");
-        
-          // Wait 2 seconds so the user can see the message, then navigate
-          setTimeout(() => {
-            navigate("/login");
-          }, 2000);
+        setPendingEmail(response.data?.email || formData.email);
+        setDevOtp(response.data?.devOtp ?? null);
+        setOtpCode(response.data?.devOtp ?? '');
+        setStep('verify');
+        setSuccessMessage(response.message || 'Verification code sent to your email.');
       } else {
           setServerError(response.message || "Registration failed");
       }
@@ -150,6 +153,124 @@ const RegisterPage: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setServerError(null);
+    setSuccessMessage(null);
+
+    if (!/^\d{6}$/.test(otpCode.trim())) {
+      setServerError('Please enter the 6-digit verification code.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await authService.verifyEmailOtp({
+        email: pendingEmail,
+        otpCode: otpCode.trim(),
+      });
+
+      if (response.isSuccess) {
+        setSuccessMessage('Email verified successfully! Redirecting to sign in...');
+        setTimeout(() => navigate('/login'), 1500);
+      } else {
+        setServerError(response.message || 'Verification failed');
+      }
+    } catch (err: any) {
+      setServerError(err.response?.data?.message || 'Verification failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setServerError(null);
+    setLoading(true);
+    try {
+      const response = await authService.resendVerificationOtp({ email: pendingEmail });
+      if (response.isSuccess) {
+        setDevOtp(response.data?.devOtp ?? null);
+        if (response.data?.devOtp) {
+          setOtpCode(response.data.devOtp);
+        }
+        setSuccessMessage(response.message || 'Verification code resent.');
+      } else {
+        setServerError(response.message || 'Could not resend verification code');
+      }
+    } catch (err: any) {
+      setServerError(err.response?.data?.message || 'Could not resend verification code');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (step === 'verify') {
+    return (
+      <AuthLayout title="Verify Email" subtitle="Enter the code sent to your inbox.">
+        <Card className="w-full max-w-md p-8">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-blue-100 flex items-center justify-center">
+              <Mail className="h-5 w-5 text-blue-600" />
+            </div>
+            <div>
+              <div className="text-sm text-gray-500">Almost done</div>
+              <h2 className="text-xl font-semibold text-gray-900">Verify your email</h2>
+            </div>
+          </div>
+
+          <p className="mt-4 text-sm text-gray-600">
+            We sent a 6-digit code to <strong>{pendingEmail}</strong>.
+          </p>
+
+          {devOtp && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 text-blue-700 text-sm rounded-lg">
+              Dev mode OTP: <strong>{devOtp}</strong>
+            </div>
+          )}
+
+          {serverError && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg flex items-center gap-2">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              {serverError}
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="mt-4 p-3 bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 shrink-0" />
+              {successMessage}
+            </div>
+          )}
+
+          <form className="mt-6 space-y-4" onSubmit={handleVerifyOtp}>
+            <div>
+              <Label htmlFor="otpCode">Verification code</Label>
+              <Input
+                id="otpCode"
+                name="otpCode"
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                leadingIcon={<Lock className="h-5 w-5" />}
+                placeholder="123456"
+                value={otpCode}
+                onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              />
+            </div>
+
+            <Button type="submit" fullWidth variant="gradient" disabled={loading}>
+              {loading ? 'Verifying...' : 'Verify & Continue'}
+            </Button>
+
+            <Button type="button" fullWidth variant="outline" disabled={loading} onClick={handleResendOtp}>
+              Resend code
+            </Button>
+          </form>
+        </Card>
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout title="Create Account" subtitle="Start managing data and tasks with ease.">

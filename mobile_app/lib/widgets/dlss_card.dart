@@ -11,6 +11,7 @@ class DlssCard extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final VoidCallback? onTap;
   final BorderSide? topAccent;
+  final bool fillHeight;
 
   const DlssCard({
     super.key,
@@ -19,6 +20,7 @@ class DlssCard extends StatelessWidget {
     this.padding,
     this.onTap,
     this.topAccent,
+    this.fillHeight = false,
   });
 
   @override
@@ -29,7 +31,7 @@ class DlssCard extends StatelessWidget {
         : AppTheme.backgroundColor;
 
     final content = Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: fillHeight ? MainAxisSize.max : MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (topAccent != null && topAccent!.style != BorderStyle.none)
@@ -37,10 +39,18 @@ class DlssCard extends StatelessWidget {
             height: topAccent!.width,
             color: topAccent!.color,
           ),
-        Padding(
-          padding: padding ?? const EdgeInsets.all(AppConstants.paddingMedium),
-          child: child,
-        ),
+        if (fillHeight)
+          Expanded(
+            child: Padding(
+              padding: padding ?? const EdgeInsets.all(AppConstants.paddingMedium),
+              child: child,
+            ),
+          )
+        else
+          Padding(
+            padding: padding ?? const EdgeInsets.all(AppConstants.paddingMedium),
+            child: child,
+          ),
       ],
     );
 

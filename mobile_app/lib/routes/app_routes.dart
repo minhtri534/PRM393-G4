@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../screens/annotator/annotator_shell_screen.dart';
+import '../screens/annotator/labeling_screen.dart';
 import '../screens/annotator/task_detail_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/register_screen.dart';
+import '../screens/auth/verify_email_screen.dart';
 import '../screens/manager/dataset_detail_screen.dart';
 import '../screens/manager/dataset_upload_screen.dart';
 import '../screens/manager/manager_shell_screen.dart';
@@ -16,10 +18,12 @@ class AppRoutes {
   static const String splash = '/';
   static const String login = '/login';
   static const String register = '/register';
+  static const String verifyEmail = '/verify-email';
 
   // Annotator routes
   static const String annotatorHome = '/annotator';
   static const String annotatorTaskDetail = '/annotator/tasks/detail';
+  static const String annotatorLabeling = '/annotator/tasks/labeling';
 
   // Manager routes
   static const String managerHome = '/manager';
@@ -40,6 +44,17 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case register:
         return MaterialPageRoute(builder: (_) => const RegisterScreen());
+      case verifyEmail:
+        final args = settings.arguments;
+        if (args is! Map<String, dynamic> || args['email'] is! String) {
+          return _errorRoute('Email not provided for verification');
+        }
+        return MaterialPageRoute(
+          builder: (_) => VerifyEmailScreen(
+            email: args['email'] as String,
+            devOtp: args['devOtp'] as String?,
+          ),
+        );
       case annotatorHome:
         return MaterialPageRoute(builder: (_) => const AnnotatorShellScreen());
       case annotatorTaskDetail:
@@ -49,6 +64,17 @@ class AppRoutes {
         }
         return MaterialPageRoute(
           builder: (_) => TaskDetailScreen(taskId: taskId),
+        );
+      case annotatorLabeling:
+        final args = settings.arguments;
+        if (args is! Map<String, dynamic> || args['taskId'] is! String) {
+          return _errorRoute('Task ID not provided for labeling');
+        }
+        return MaterialPageRoute(
+          builder: (_) => LabelingScreen(
+            taskId: args['taskId'] as String,
+            readOnly: args['readOnly'] as bool? ?? false,
+          ),
         );
       case managerHome:
         return MaterialPageRoute(builder: (_) => const ManagerShellScreen());

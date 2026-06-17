@@ -16,9 +16,24 @@ namespace DataLabellingSupportSystem.Api.Controllers;
 public sealed class AuthController(IAuthService authService) : ControllerBase
 {
     [HttpPost("register")]
-    public async Task<ActionResult<ServiceResponse<AuthResponse>>> Register([FromBody] RegisterRequest request)
+    public async Task<ActionResult<ServiceResponse<RegisterResponse>>> Register([FromBody] RegisterRequest request)
     {
         var result = await authService.RegisterAsync(request);
+        return this.ToOkOrBadRequest(result);
+    }
+
+    [HttpPost("verify-email-otp")]
+    public async Task<ActionResult<ServiceResponse<AuthResponse>>> VerifyEmailOtp([FromBody] VerifyEmailOtpRequest request)
+    {
+        var result = await authService.VerifyEmailOtpAsync(request);
+        return this.ToOkOrUnauthorized(result);
+    }
+
+    [HttpPost("resend-verification-otp")]
+    public async Task<ActionResult<ServiceResponse<RegisterResponse>>> ResendVerificationOtp(
+        [FromBody] ResendEmailVerificationRequest request)
+    {
+        var result = await authService.ResendEmailVerificationAsync(request);
         return this.ToOkOrBadRequest(result);
     }
 

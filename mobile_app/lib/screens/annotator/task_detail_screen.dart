@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/task_display_utils.dart';
+import '../../models/annotator/annotator_models.dart';
 import '../../providers/annotator_provider.dart';
+import '../../routes/app_routes.dart';
 import '../../widgets/action_button.dart';
 import '../../widgets/dlss_badge.dart';
 import '../../widgets/dlss_card.dart';
@@ -36,6 +38,199 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
   void dispose() {
     _provider?.clearSelectedTask();
     super.dispose();
+  }
+
+  Future<void> _openLabeling(
+    BuildContext context, {
+    required bool readOnly,
+  }) async {
+    final result = await Navigator.of(context).pushNamed(
+      AppRoutes.annotatorLabeling,
+      arguments: {
+        'taskId': widget.taskId,
+        'readOnly': readOnly,
+      },
+    );
+    if (!mounted) return;
+    if (result == true) {
+      await context.read<AnnotatorProvider>().fetchTasks();
+    }
+    await context.read<AnnotatorProvider>().loadTaskDetail(widget.taskId);
+  }
+
+  Future<void> _startLabeling(AnnotatorProvider provider) async {
+    final started = await provider.startTask(widget.taskId);
+    if (!started || !mounted) return;
+    await _openLabeling(context, readOnly: false);
+  }
+
+  String _labelingButtonLabel(String status) {
+    if (status == 'Returned' ||
+        status == AppConstants.taskStatusRejected ||
+        status == 'Rework') {
+      return 'Revise Labeling';
+    }
+    return 'Continue Labeling';
+  }
+
+  Future<void> _rejectTask(AnnotatorProvider provider) async {
+    final reasonController = TextEditingController();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Reject task?'),
+        content: TextField(
+          controller: reasonController,
+          decoration: const InputDecoration(
+            labelText: 'Reason (optional)',
+            hintText: 'Why are you rejecting this task?',
+          ),
+          maxLines: 3,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Reject'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) {
+      reasonController.dispose();
+      return;
+    }
+
+    final ok = await provider.rejectTask(
+      widget.taskId,
+      reason: reasonController.text.trim().isEmpty
+          ? null
+          : reasonController.text.trim(),
+    );
+    reasonController.dispose();
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(ok ? 'Task rejected' : provider.errorMessage ?? 'Failed')),
+    );
+    if (ok) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Widget _reviewFeedbackCard(
+    BuildContext context,
+    AnnotatorReviewFeedbackModel feedback,
+  ) {
+    return DlssCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.feedback_outlined, color: AppTheme.warningColor),
+              const SizedBox(width: 8),
+              Text(
+                'Review Feedback',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text('Result: ${feedback.result}'),
+          Text('Score: ${feedback.score}'),
+          if (feedback.comment?.isNotEmpty == true) ...[
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.warningColor.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppTheme.warningColor.withValues(alpha: 0.25),
+                ),
+              ),
+              child: Text(feedback.comment!),
+            ),
+          ],
+          if (feedback.errorCategories.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: feedback.errorCategories
+                  .map((e) => Chip(label: Text(e.errorName)))
+                  .toList(),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _actionBar(BuildContext context, AnnotatorProvider provider, AnnotatorTaskModel task) {
+    final canLabel = annotatorTaskCanLabel(task.status);
+    final isAssigned = task.status == AppConstants.taskStatusAssigned;
+    final isSubmitted = task.status == AppConstants.taskStatusSubmitted ||
+        task.status == 'Completed' ||
+        task.status == AppConstants.taskStatusApproved;
+
+    return DlssCard(
+      child: Column(
+        children: [
+          if (isAssigned) ...[
+            ActionButton(
+              label: 'Accept Task',
+              icon: Icons.check_circle_outline,
+              onPressed: () async {
+                final ok = await provider.acceptTask(task.id);
+                if (ok && mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Task accepted')),
+                  );
+                }
+              },
+            ),
+            const SizedBox(height: 8),
+            ActionButton(
+              label: 'Start Labeling',
+              icon: Icons.play_circle_outline,
+              variant: ActionButtonVariant.gradient,
+              onPressed: () => _startLabeling(provider),
+            ),
+            const SizedBox(height: 8),
+            ActionButton(
+              label: 'Reject Task',
+              icon: Icons.cancel_outlined,
+              variant: ActionButtonVariant.outline,
+              onPressed: () => _rejectTask(provider),
+            ),
+          ] else if (canLabel) ...[
+            ActionButton(
+              label: _labelingButtonLabel(task.status),
+              icon: Icons.edit_outlined,
+              variant: ActionButtonVariant.gradient,
+              onPressed: () => _openLabeling(context, readOnly: false),
+            ),
+          ] else if (isSubmitted) ...[
+            ActionButton(
+              label: 'View Labeling',
+              icon: Icons.visibility_outlined,
+              variant: ActionButtonVariant.outline,
+              onPressed: () => _openLabeling(context, readOnly: true),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 
   @override
@@ -80,7 +275,11 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
           final imageName = provider.taskItems.isNotEmpty
               ? provider.taskItems.first.fileName
               : TaskDisplayUtils.fileNameFromObjectKey(task.dataItemObjectKey);
-          final progress = task.status == AppConstants.taskStatusInProgress ? 0.5 : 0.1;
+          final progress = provider.selectedTaskProgress;
+          final showActions = task.status == AppConstants.taskStatusAssigned ||
+              annotatorTaskCanLabel(task.status) ||
+              task.status == AppConstants.taskStatusSubmitted ||
+              task.status == 'Completed';
 
           return Stack(
             children: [
@@ -109,6 +308,10 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                           size: 48, color: AppTheme.textHintColor),
                     ),
                   const SizedBox(height: 16),
+                  if (provider.reviewFeedback != null) ...[
+                    _reviewFeedbackCard(context, provider.reviewFeedback!),
+                    const SizedBox(height: 16),
+                  ],
                   DlssCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,38 +450,22 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Progress: ${(progress * 100).round()}%',
+                          'Progress: ${(progress * 100).round()}%'
+                          '${provider.annotationCount > 0 ? ' • ${provider.annotationCount} annotation(s)' : ''}',
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 100),
+                  SizedBox(height: showActions ? 120 : 24),
                 ],
               ),
-              if (task.status == AppConstants.taskStatusAssigned)
+              if (showActions)
                 Positioned(
                   left: 16,
                   right: 16,
                   bottom: 16,
-                  child: DlssCard(
-                    child: Column(
-                      children: [
-                        ActionButton(
-                          label: 'Accept Task',
-                          icon: Icons.check_circle_outline,
-                          onPressed: () => provider.acceptTask(task.id),
-                        ),
-                        const SizedBox(height: 8),
-                        ActionButton(
-                          label: 'Start Labeling',
-                          icon: Icons.play_circle_outline,
-                          isOutlined: true,
-                          onPressed: () => provider.startTask(task.id),
-                        ),
-                      ],
-                    ),
-                  ),
+                  child: _actionBar(context, provider, task),
                 ),
             ],
           );

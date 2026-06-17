@@ -8,6 +8,9 @@ import '../models/auth/auth_response.dart';
 import '../models/auth/user_profile.dart';
 import '../models/auth/login_request.dart';
 import '../models/auth/register_request.dart';
+import '../models/auth/register_response.dart';
+import '../models/auth/resend_email_verification_request.dart';
+import '../models/auth/verify_email_otp_request.dart';
 import '../models/common/api_error.dart';
 import '../models/common/service_response.dart';
 import 'dio_client.dart';
@@ -70,11 +73,51 @@ class AuthRepository {
     }
   }
 
-  /// Register new user
-  Future<AuthResponse> register(RegisterRequest request) async {
+  /// Register new user (sends email verification OTP)
+  Future<RegisterResponse> register(RegisterRequest request) async {
     try {
       final response = await _dioClient.post(
         Environment.registerEndpoint,
+        data: request.toJson(),
+      );
+
+      final serviceResponse = ServiceResponse.fromJson(
+        response.data,
+        (data) => RegisterResponse.fromJson(data as Map<String, dynamic>),
+      );
+
+      if (!serviceResponse.isSuccess) {
+        throw ApiError(
+          message: serviceResponse.message.isNotEmpty
+              ? serviceResponse.message
+              : AppConstants.errorGeneric,
+          code: 'REGISTER_FAILED',
+        );
+      }
+
+      final registerResponse = serviceResponse.data;
+      if (registerResponse == null) {
+        throw ApiError(
+          message: 'Invalid response from server',
+          code: 'INVALID_RESPONSE',
+        );
+      }
+
+      Logger.info(
+        '✅ Registration initiated for user: ${registerResponse.email}',
+      );
+      return registerResponse;
+    } catch (e) {
+      Logger.error('❌ Registration failed: $e');
+      rethrow;
+    }
+  }
+
+  /// Verify email OTP and complete registration login
+  Future<AuthResponse> verifyEmailOtp(VerifyEmailOtpRequest request) async {
+    try {
+      final response = await _dioClient.post(
+        Environment.verifyEmailOtpEndpoint,
         data: request.toJson(),
       );
 
@@ -85,9 +128,10 @@ class AuthRepository {
 
       if (!serviceResponse.isSuccess) {
         throw ApiError(
-          message: serviceResponse.message ??
-              AppConstants.errorGeneric,
-          code: 'REGISTER_FAILED',
+          message: serviceResponse.message.isNotEmpty
+              ? serviceResponse.message
+              : AppConstants.errorGeneric,
+          code: 'VERIFY_EMAIL_FAILED',
         );
       }
 
@@ -99,7 +143,6 @@ class AuthRepository {
         );
       }
 
-      // Store tokens securely
       await _dioClient.setAuthToken(authResponse.accessToken);
       await _secureStorage.write(
         key: AppConstants.refreshTokenKey,
@@ -110,12 +153,50 @@ class AuthRepository {
         value: _encodeUserProfile(authResponse.user),
       );
 
-      Logger.info(
-        '✅ Registration successful for user: ${authResponse.user.email}',
-      );
+      Logger.info('✅ Email verified for user: ${authResponse.user.email}');
       return authResponse;
     } catch (e) {
-      Logger.error('❌ Registration failed: $e');
+      Logger.error('❌ Email verification failed: $e');
+      rethrow;
+    }
+  }
+
+  /// Resend email verification OTP
+  Future<RegisterResponse> resendVerificationOtp(
+    ResendEmailVerificationRequest request,
+  ) async {
+    try {
+      final response = await _dioClient.post(
+        Environment.resendVerificationOtpEndpoint,
+        data: request.toJson(),
+      );
+
+      final serviceResponse = ServiceResponse.fromJson(
+        response.data,
+        (data) => RegisterResponse.fromJson(data as Map<String, dynamic>),
+      );
+
+      if (!serviceResponse.isSuccess) {
+        throw ApiError(
+          message: serviceResponse.message.isNotEmpty
+              ? serviceResponse.message
+              : AppConstants.errorGeneric,
+          code: 'RESEND_OTP_FAILED',
+        );
+      }
+
+      final registerResponse = serviceResponse.data;
+      if (registerResponse == null) {
+        throw ApiError(
+          message: 'Invalid response from server',
+          code: 'INVALID_RESPONSE',
+        );
+      }
+
+      Logger.info('✅ Verification OTP resent to: ${registerResponse.email}');
+      return registerResponse;
+    } catch (e) {
+      Logger.error('❌ Resend verification OTP failed: $e');
       rethrow;
     }
   }

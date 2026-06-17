@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import '../../core/constants/app_constants.dart';
 import '../../core/utils/task_display_utils.dart';
 
 class AnnotatorTaskModel {
@@ -170,6 +173,8 @@ class AnnotatorAnnotationModel {
     this.isDraft = false,
   });
 
+  BboxGeometry? get bbox => BboxGeometry.tryParse(geometryData);
+
   factory AnnotatorAnnotationModel.fromJson(Map<String, dynamic> json) {
     return AnnotatorAnnotationModel(
       id: json['id']?.toString() ?? '',
@@ -178,4 +183,213 @@ class AnnotatorAnnotationModel {
       isDraft: json['isDraft'] as bool? ?? false,
     );
   }
+}
+
+class BboxGeometry {
+  final double x;
+  final double y;
+  final double width;
+  final double height;
+
+  const BboxGeometry({
+    required this.x,
+    required this.y,
+    required this.width,
+    required this.height,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'type': 'bbox',
+        'x': x.round(),
+        'y': y.round(),
+        'width': width.round(),
+        'height': height.round(),
+      };
+
+  static BboxGeometry? tryParse(dynamic data) {
+    try {
+      dynamic decoded = data;
+      if (decoded is String) {
+        decoded = jsonDecode(decoded);
+        if (decoded is String) {
+          decoded = jsonDecode(decoded);
+        }
+      }
+      if (decoded is! Map) return null;
+      final map = Map<String, dynamic>.from(decoded);
+      final x = _toDouble(map['x']);
+      final y = _toDouble(map['y']);
+      final width = _toDouble(map['width']);
+      final height = _toDouble(map['height']);
+      if (x == null || y == null || width == null || height == null) {
+        return null;
+      }
+      return BboxGeometry(x: x, y: y, width: width, height: height);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static double? _toDouble(dynamic value) {
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value);
+    return null;
+  }
+}
+
+class LabelingBox {
+  final String? id;
+  final String labelId;
+  final double x;
+  final double y;
+  final double width;
+  final double height;
+
+  const LabelingBox({
+    this.id,
+    required this.labelId,
+    required this.x,
+    required this.y,
+    required this.width,
+    required this.height,
+  });
+
+  factory LabelingBox.fromAnnotation(AnnotatorAnnotationModel annotation) {
+    final bbox = annotation.bbox;
+    return LabelingBox(
+      id: annotation.id,
+      labelId: annotation.labelId,
+      x: bbox?.x ?? 0,
+      y: bbox?.y ?? 0,
+      width: bbox?.width ?? 0,
+      height: bbox?.height ?? 0,
+    );
+  }
+
+  LabelingBox copyWith({
+    String? id,
+    String? labelId,
+    double? x,
+    double? y,
+    double? width,
+    double? height,
+  }) {
+    return LabelingBox(
+      id: id ?? this.id,
+      labelId: labelId ?? this.labelId,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      width: width ?? this.width,
+      height: height ?? this.height,
+    );
+  }
+
+  Map<String, dynamic> toUpsertJson() => {
+        'labelId': labelId,
+        'geometryData': BboxGeometry(
+          x: x,
+          y: y,
+          width: width,
+          height: height,
+        ).toJson(),
+      };
+}
+
+class AnnotatorReviewFeedbackModel {
+  final String reviewId;
+  final String annotationSetId;
+  final String result;
+  final int score;
+  final String? comment;
+  final DateTime? reviewedAt;
+  final List<AnnotatorReviewErrorModel> errorCategories;
+
+  AnnotatorReviewFeedbackModel({
+    required this.reviewId,
+    required this.annotationSetId,
+    required this.result,
+    required this.score,
+    this.comment,
+    this.reviewedAt,
+    this.errorCategories = const [],
+  });
+
+  factory AnnotatorReviewFeedbackModel.fromJson(Map<String, dynamic> json) {
+    return AnnotatorReviewFeedbackModel(
+      reviewId: json['reviewId']?.toString() ?? '',
+      annotationSetId: json['annotationSetId']?.toString() ?? '',
+      result: json['result']?.toString() ?? '',
+      score: json['score'] as int? ?? 0,
+      comment: json['comment']?.toString(),
+      reviewedAt: DateTime.tryParse(json['reviewedAt']?.toString() ?? ''),
+      errorCategories: (json['errorCategories'] as List<dynamic>? ?? [])
+          .map(
+            (e) => AnnotatorReviewErrorModel.fromJson(
+              e as Map<String, dynamic>,
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+class AnnotatorReviewErrorModel {
+  final String errorTypeId;
+  final String errorName;
+  final String? description;
+
+  AnnotatorReviewErrorModel({
+    required this.errorTypeId,
+    required this.errorName,
+    this.description,
+  });
+
+  factory AnnotatorReviewErrorModel.fromJson(Map<String, dynamic> json) {
+    return AnnotatorReviewErrorModel(
+      errorTypeId: json['errorTypeId']?.toString() ?? '',
+      errorName: json['errorName']?.toString() ?? '',
+      description: json['description']?.toString(),
+    );
+  }
+}
+
+double annotatorTaskProgress(String status, int annotationCount) {
+  switch (status) {
+    case AppConstants.taskStatusSubmitted:
+    case AppConstants.taskStatusApproved:
+    case 'Completed':
+      return 1.0;
+    case AppConstants.taskStatusInProgress:
+      if (annotationCount > 0) {
+        return (0.4 + annotationCount * 0.15).clamp(0.0, 0.95);
+      }
+      return 0.3;
+    case 'Returned':
+    case AppConstants.taskStatusRejected:
+    case 'Rework':
+      return annotationCount > 0 ? 0.5 : 0.2;
+    case AppConstants.taskStatusAssigned:
+    default:
+      return 0.1;
+  }
+}
+
+bool annotatorTaskNeedsReviewFeedback(String status) {
+  return const {
+    'Returned',
+    AppConstants.taskStatusRejected,
+    'Rework',
+    'Completed',
+    AppConstants.taskStatusSubmitted,
+  }.contains(status);
+}
+
+bool annotatorTaskCanLabel(String status) {
+  return const {
+    AppConstants.taskStatusAssigned,
+    AppConstants.taskStatusInProgress,
+    'Returned',
+    AppConstants.taskStatusRejected,
+    'Rework',
+  }.contains(status);
 }

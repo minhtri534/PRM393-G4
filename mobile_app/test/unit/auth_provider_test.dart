@@ -4,6 +4,7 @@ import 'package:mobile_app/core/constants/app_constants.dart';
 import 'package:mobile_app/models/auth/auth_response.dart';
 import 'package:mobile_app/models/auth/login_request.dart';
 import 'package:mobile_app/models/auth/register_request.dart';
+import 'package:mobile_app/models/auth/register_response.dart';
 import 'package:mobile_app/models/auth/user_profile.dart';
 import 'package:mobile_app/providers/auth_provider.dart';
 import 'package:mobile_app/repositories/auth_repository.dart';
@@ -113,23 +114,14 @@ void main() {
       verify(() => mockAuthRepository.logout()).called(1);
     });
 
-    test('Register successfully updates state to authenticated', () async {
-      final userProfile = UserProfile(
-        id: '456',
-        fullName: 'New User',
+    test('Register sends verification OTP and stays unauthenticated', () async {
+      final registerResponse = RegisterResponse(
         email: 'newuser@example.com',
-        roleId: 'role-1',
-        roleName: 'Annotator',
-        status: 1,
-      );
-      final authResponse = AuthResponse(
-        accessToken: 'token-456',
-        refreshToken: 'refresh-token-456',
-        user: userProfile,
+        devOtp: '123456',
       );
 
       when(() => mockAuthRepository.register(any()))
-          .thenAnswer((_) async => authResponse);
+          .thenAnswer((_) async => registerResponse);
 
       final result = await authProvider.register(
         fullName: 'New User',
@@ -138,10 +130,10 @@ void main() {
         phoneNumber: '555-0000',
       );
 
-      expect(result, true);
-      expect(authProvider.state, AuthState.authenticated);
-      expect(authProvider.isAuthenticated, true);
-      expect(authProvider.userProfile, userProfile);
+      expect(result, registerResponse);
+      expect(authProvider.state, AuthState.unauthenticated);
+      expect(authProvider.isAuthenticated, false);
+      expect(authProvider.userProfile, null);
       verify(() => mockAuthRepository.register(any())).called(1);
     });
 

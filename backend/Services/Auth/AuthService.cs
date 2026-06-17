@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using DataLabellingSupportSystem.Api.Common.Constants;
 using DataLabellingSupportSystem.Api.Common.Results;
 using DataLabellingSupportSystem.Api.Configurations;
@@ -5,6 +6,7 @@ using DataLabellingSupportSystem.Api.Database;
 using DataLabellingSupportSystem.Api.DTOs.Requests.Auth;
 using DataLabellingSupportSystem.Api.DTOs.Responses.Auth;
 using DataLabellingSupportSystem.Api.Models;
+using DataLabellingSupportSystem.Api.Services.Email;
 using DataLabellingSupportSystem.Api.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -17,32 +19,105 @@ public sealed class AuthService(
     IJwtTokenService jwtTokenService,
     IGoogleIdTokenValidator googleIdTokenValidator,
     ISecureTokenGenerator secureTokenGenerator,
-    IPasswordHasher passwordHasher) : IAuthService
+    IPasswordHasher passwordHasher,
+    IEmailSender emailSender,
+    IHostEnvironment hostEnvironment) : IAuthService
 {
     private readonly JwtOptions _jwt = jwtOptions.Value;
+    private const int EmailVerificationOtpMinutes = 15;
 
     private const string DefaultAnnotatorRoleId = "000000000000000000000003";
 
-    public async Task<ServiceResponse<AuthResponse>> RegisterAsync(RegisterRequest request)
+    public async Task<ServiceResponse<RegisterResponse>> RegisterAsync(RegisterRequest request)
     {
         var normalizedEmail = NormalizeEmail(request.Email);
 
         if (await EmailExistsAsync(normalizedEmail))
         {
-            return ServiceResponse<AuthResponse>.Failure("Email already exists", ["Email is already registered"]);
+            return ServiceResponse<RegisterResponse>.Failure("Email already exists", ["Email is already registered"]);
         }
 
         var ensureRole = await EnsureDefaultRoleExistsAsync();
         if (!ensureRole.IsSuccess)
         {
-            return ServiceResponse<AuthResponse>.Failure(ensureRole.Message, ensureRole.Errors);
+            return ServiceResponse<RegisterResponse>.Failure(ensureRole.Message, ensureRole.Errors);
         }
 
         var user = CreateUserFromRegisterRequest(request, normalizedEmail);
         dbContext.Users.Add(user);
         await dbContext.SaveChangesAsync();
 
+        var otpCode = await CreateAndSendEmailVerificationOtpAsync(user);
+
+        var response = new RegisterResponse(
+            user.Email,
+            hostEnvironment.IsDevelopment() ? otpCode : null);
+
+        return ServiceResponse<RegisterResponse>.Success(
+            response,
+            "Verification code sent to your email");
+    }
+
+    public async Task<ServiceResponse<AuthResponse>> VerifyEmailOtpAsync(VerifyEmailOtpRequest request)
+    {
+        var now = DlssTime.VietnamNow;
+        var normalizedEmail = NormalizeEmail(request.Email);
+        var user = await FindUserByEmailAsync(normalizedEmail, asNoTracking: false);
+        if (user is null)
+        {
+            return ServiceResponse<AuthResponse>.Failure(ErrorMessages.Unauthorized, ["Invalid verification code"]);
+        }
+
+        if (user.Status != UserStatus.PendingEmailVerification)
+        {
+            return ServiceResponse<AuthResponse>.Failure("Email already verified", ["Account is already active"]);
+        }
+
+        var otpCode = request.OtpCode.Trim();
+        var otp = await dbContext.EmailVerificationOtps
+            .Where(x => x.UserId == user.Id && x.Code == otpCode && x.UsedAt == null && x.ExpiresAt > now)
+            .OrderByDescending(x => x.CreatedAt)
+            .FirstOrDefaultAsync();
+
+        if (otp is null)
+        {
+            return ServiceResponse<AuthResponse>.Failure("Invalid verification code", ["Invalid or expired verification code"]);
+        }
+
+        otp.UsedAt = now;
+        user.Status = UserStatus.Active;
+        await dbContext.SaveChangesAsync();
+
         return await IssueTokensForUserAsync(user.Id);
+    }
+
+    public async Task<ServiceResponse<RegisterResponse>> ResendEmailVerificationAsync(
+        ResendEmailVerificationRequest request)
+    {
+        var normalizedEmail = NormalizeEmail(request.Email);
+        var user = await FindUserByEmailAsync(normalizedEmail, asNoTracking: false);
+        if (user is null)
+        {
+            return ServiceResponse<RegisterResponse>.Success(
+                new RegisterResponse(normalizedEmail),
+                "If the email exists, a verification code has been sent");
+        }
+
+        if (user.Status != UserStatus.PendingEmailVerification)
+        {
+            return ServiceResponse<RegisterResponse>.Failure(
+                "Email already verified",
+                ["This account is already active"]);
+        }
+
+        var otpCode = await CreateAndSendEmailVerificationOtpAsync(user);
+        var response = new RegisterResponse(
+            user.Email,
+            hostEnvironment.IsDevelopment() ? otpCode : null);
+
+        return ServiceResponse<RegisterResponse>.Success(
+            response,
+            "Verification code sent to your email");
     }
 
     public async Task<ServiceResponse<AuthResponse>> LoginAsync(LoginRequest request)
@@ -233,9 +308,19 @@ public sealed class AuthService(
 
     private static ServiceResponse<bool> EnsureUserIsActive(User user)
     {
-        return user.Status == 0
-            ? ServiceResponse<bool>.Success(true)
-            : ServiceResponse<bool>.Failure(ErrorMessages.Forbidden, ["User is not active"]);
+        if (user.Status == UserStatus.Active)
+        {
+            return ServiceResponse<bool>.Success(true);
+        }
+
+        if (user.Status == UserStatus.PendingEmailVerification)
+        {
+            return ServiceResponse<bool>.Failure(
+                "Please verify your email before signing in",
+                ["Email not verified"]);
+        }
+
+        return ServiceResponse<bool>.Failure(ErrorMessages.Forbidden, ["User is not active"]);
     }
 
     private User CreateUserFromRegisterRequest(RegisterRequest request, string normalizedEmail)
@@ -251,7 +336,7 @@ public sealed class AuthService(
             DateOfBirth = request.DateOfBirth,
             PasswordHash = passwordHasher.Hash(request.Password),
             RoleId = DefaultAnnotatorRoleId,
-            Status = 0
+            Status = UserStatus.PendingEmailVerification
         };
     }
 
@@ -263,9 +348,34 @@ public sealed class AuthService(
             Email = normalizedEmail,
             PasswordHash = passwordHasher.Hash(secureTokenGenerator.Generate()),
             RoleId = DefaultAnnotatorRoleId,
-            Status = 0
+            Status = UserStatus.Active
         };
     }
+
+    private async Task<string> CreateAndSendEmailVerificationOtpAsync(User user)
+    {
+        var now = DlssTime.VietnamNow;
+        var otpCode = GenerateOtpCode();
+
+        dbContext.EmailVerificationOtps.Add(new EmailVerificationOtp
+        {
+            Code = otpCode,
+            UserId = user.Id,
+            ExpiresAt = now.AddMinutes(EmailVerificationOtpMinutes),
+        });
+
+        await dbContext.SaveChangesAsync();
+
+        await emailSender.SendAsync(
+            user.Email,
+            "Verify your DLSS account",
+            $"Your DLSS verification code is: {otpCode}\n\nThis code expires in {EmailVerificationOtpMinutes} minutes.");
+
+        return otpCode;
+    }
+
+    private static string GenerateOtpCode()
+        => RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
 
     private async Task RevokeRefreshTokenIfExistsAsync(string refreshToken)
     {

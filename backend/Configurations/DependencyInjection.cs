@@ -4,6 +4,7 @@ using DataLabellingSupportSystem.Api.Services.Annotator;
 using DataLabellingSupportSystem.Api.Services.Auth;
 using DataLabellingSupportSystem.Api.Services.AiAssist;
 using DataLabellingSupportSystem.Api.Services.DevSeed;
+using DataLabellingSupportSystem.Api.Services.Email;
 using DataLabellingSupportSystem.Api.Services.Exports;
 using DataLabellingSupportSystem.Api.Services.Roles;
 using DataLabellingSupportSystem.Api.Services.Storage;
@@ -133,11 +134,22 @@ public static class DependencyInjection
         services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
         services.Configure<GoogleAuthOptions>(configuration.GetSection("GoogleAuth"));
         services.Configure<DevSeedOptions>(configuration.GetSection("DevSeed"));
+        services.Configure<EmailOptions>(configuration.GetSection("Email"));
 
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<ISecureTokenGenerator, SecureTokenGenerator>();
         services.AddSingleton<IJwtTokenService, JwtTokenService>();
         services.AddSingleton<IGoogleIdTokenValidator, GoogleIdTokenValidator>();
+
+        var emailProvider = configuration.GetSection("Email").GetValue<string>("Provider") ?? "Console";
+        if (string.Equals(emailProvider, "Smtp", StringComparison.OrdinalIgnoreCase))
+        {
+            services.AddSingleton<IEmailSender, SmtpEmailSender>();
+        }
+        else
+        {
+            services.AddSingleton<IEmailSender, ConsoleEmailSender>();
+        }
 
         services.AddScoped<IAuthService, AuthService>();
 
