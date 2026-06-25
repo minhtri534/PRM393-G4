@@ -68,6 +68,8 @@ const ManagerDatasetDetailPage: React.FC = () => {
       alert("Files uploaded successfully!");
       setSelectedFiles([]);
       fetchData();
+    } else {
+      alert(res.message || res.errors?.[0] || "Failed to upload files");
     }
     setIsActionLoading(false);
   };

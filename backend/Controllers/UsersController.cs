@@ -15,18 +15,30 @@ namespace DataLabellingSupportSystem.Api.Controllers;
 public sealed class UsersController(IUsersService usersService) : ControllerBase
 {
     [HttpGet]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Manager")]
     public async Task<ActionResult<ServiceResponse<List<UserResponse>>>> GetAll()
     {
-        var result = await usersService.GetAllAsync();
+        var actorUserId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(actorUserId))
+        {
+            return Unauthorized(ServiceResponse<List<UserResponse>>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await usersService.GetAllAsync(actorUserId);
         return this.ToOkOrBadRequest(result);
     }
 
     [HttpGet("{userId}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Manager")]
     public async Task<ActionResult<ServiceResponse<UserResponse>>> GetById([FromRoute] string userId)
     {
-        var result = await usersService.GetByIdAsync(userId);
+        var actorUserId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(actorUserId))
+        {
+            return Unauthorized(ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await usersService.GetByIdAsync(actorUserId, userId);
 
         if (result.IsSuccess)
         {
@@ -39,18 +51,30 @@ public sealed class UsersController(IUsersService usersService) : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Manager")]
     public async Task<ActionResult<ServiceResponse<UserResponse>>> Create([FromBody] CreateUserRequest request)
     {
-        var result = await usersService.CreateAsync(request);
+        var actorUserId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(actorUserId))
+        {
+            return Unauthorized(ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await usersService.CreateAsync(actorUserId, request);
         return this.ToOkOrBadRequest(result);
     }
 
     [HttpPut("{userId}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Manager")]
     public async Task<ActionResult<ServiceResponse<UserResponse>>> Update([FromRoute] string userId, [FromBody] UpdateUserRequest request)
     {
-        var result = await usersService.UpdateAsync(userId, request);
+        var actorUserId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(actorUserId))
+        {
+            return Unauthorized(ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await usersService.UpdateAsync(actorUserId, userId, request);
 
         if (result.IsSuccess)
         {
@@ -63,10 +87,16 @@ public sealed class UsersController(IUsersService usersService) : ControllerBase
     }
 
     [HttpDelete("{userId}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Manager")]
     public async Task<ActionResult<ServiceResponse<bool>>> Delete([FromRoute] string userId)
     {
-        var result = await usersService.DeleteAsync(userId);
+        var actorUserId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(actorUserId))
+        {
+            return Unauthorized(ServiceResponse<bool>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await usersService.DeleteAsync(actorUserId, userId);
 
         if (result.IsSuccess)
         {

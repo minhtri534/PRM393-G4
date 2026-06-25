@@ -56,12 +56,17 @@ const ManagerUploadDatasetPage: React.FC = () => {
       const datasetId = dsRes.data.id;
 
       // Step 2: Upload files
-      await managerService.uploadDatasetFiles(datasetId, files);
+      const uploadRes = await managerService.uploadDatasetFiles(datasetId, files);
+
+      if (!uploadRes.isSuccess) {
+        alert(uploadRes.message || uploadRes.errors?.[0] || "Failed to upload files");
+        return;
+      }
 
       alert("Upload successful!");
       window.location.href = "/manager/datasets";
-    } catch {
-      alert("Something went wrong.");
+    } catch (err: any) {
+      alert(err.response?.data?.message || err.response?.data?.errors?.[0] || "Something went wrong.");
     }
   };
 

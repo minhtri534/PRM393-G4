@@ -248,7 +248,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     AppRoutes.verifyEmail,
                                     arguments: {
                                       'email': response.email,
-                                      'devOtp': response.devOtp,
                                     },
                                   );
                                 }

@@ -21,3 +21,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Local environment secrets (Gmail App Password, etc.)
+.env

@@ -13,12 +13,10 @@ import '../../widgets/dlss_card.dart';
 
 class VerifyEmailScreen extends StatefulWidget {
   final String email;
-  final String? devOtp;
 
   const VerifyEmailScreen({
     super.key,
     required this.email,
-    this.devOtp,
   });
 
   @override
@@ -28,19 +26,31 @@ class VerifyEmailScreen extends StatefulWidget {
 class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   late final TextEditingController _otpController;
   final _formKey = GlobalKey<FormState>();
-  String? _devOtp;
 
   @override
   void initState() {
     super.initState();
-    _devOtp = widget.devOtp;
-    _otpController = TextEditingController(text: widget.devOtp ?? '');
+    _otpController = TextEditingController();
   }
 
   @override
   void dispose() {
     _otpController.dispose();
     super.dispose();
+  }
+
+  Future<void> _resendCode() async {
+    final response = await context.read<AuthProvider>().resendVerificationOtp(
+          widget.email,
+        );
+    if (!mounted || response == null) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'A new verification code was sent to ${widget.email}.',
+        ),
+      ),
+    );
   }
 
   @override
@@ -88,7 +98,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Verify email',
+                                      'Check your email',
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall
@@ -97,7 +107,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                                           ),
                                     ),
                                     Text(
-                                      'Enter verification code',
+                                      'Verify your account',
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleLarge
@@ -110,30 +120,38 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'We sent a 6-digit code to ${widget.email}.',
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                          if (_devOtp != null) ...[
-                            const SizedBox(height: 12),
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFEFF6FF),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: const Color(0xFFBFDBFE)),
-                              ),
-                              child: Text(
-                                'Dev mode OTP: $_devOtp',
-                                style: const TextStyle(
-                                  color: Color(0xFF1E40AF),
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                          const SizedBox(height: 16),
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8FAFC),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
                             ),
-                          ],
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'We sent a 6-digit verification code to:',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  widget.email,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      ?.copyWith(fontWeight: FontWeight.w600),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Open your inbox and enter the code below. '
+                                  'If you do not see it, check your spam folder.',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              ],
+                            ),
+                          ),
                           if (authProvider.errorMessage != null) ...[
                             const SizedBox(height: 16),
                             Container(
@@ -172,7 +190,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                             child: CustomTextField(
                               controller: _otpController,
                               label: 'Verification code',
-                              hintText: '123456',
+                              hintText: 'Enter 6-digit code',
                               keyboardType: TextInputType.number,
                               prefixIcon: const Icon(Icons.pin_outlined),
                               inputFormatters: [
@@ -213,21 +231,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                           ),
                           const SizedBox(height: 12),
                           TextButton(
-                            onPressed: authProvider.isLoading
-                                ? null
-                                : () async {
-                                    final response =
-                                        await authProvider.resendVerificationOtp(
-                                      widget.email,
-                                    );
-                                    if (!mounted || response == null) return;
-                                    setState(() => _devOtp = response.devOtp);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Verification code resent.'),
-                                      ),
-                                    );
-                                  },
+                            onPressed: authProvider.isLoading ? null : _resendCode,
                             child: const Text('Resend code'),
                           ),
                         ],

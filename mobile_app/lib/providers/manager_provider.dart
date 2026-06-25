@@ -37,6 +37,9 @@ class ManagerProvider extends ChangeNotifier {
   ExportValidationModel? _exportValidation;
   List<ActivityLogModel> _activityLogs = [];
   List<UserSummaryModel> _userSearchResults = [];
+  List<UserModel> _users = [];
+  List<RoleModel> _roles = [];
+  UserModel? _selectedUser;
 
   ManagerLoadState get state => _state;
   String? get errorMessage => _errorMessage;
@@ -62,6 +65,12 @@ class ManagerProvider extends ChangeNotifier {
   ExportValidationModel? get exportValidation => _exportValidation;
   List<ActivityLogModel> get activityLogs => _activityLogs;
   List<UserSummaryModel> get userSearchResults => _userSearchResults;
+  List<UserModel> get users => _users;
+  List<RoleModel> get roles => _roles;
+  UserModel? get selectedUser => _selectedUser;
+
+  List<RoleModel> get assignableRoles =>
+      _roles.where((role) => role.isAssignableByManager).toList();
 
   List<UserProjectRoleModel> get annotators => _projectRoles
       .where((r) => r.roleName.toLowerCase() == 'annotator')
@@ -215,6 +224,96 @@ class ManagerProvider extends ChangeNotifier {
         role: role,
       );
     });
+  }
+
+  Future<void> fetchUsers() async {
+    _state = ManagerLoadState.loading;
+    notifyListeners();
+    await _runAction(() async {
+      _users = await _repository.getUsers();
+    });
+  }
+
+  Future<void> fetchRoles() async {
+    await _runAction(() async {
+      _roles = await _repository.getRoles();
+    });
+  }
+
+  Future<void> loadUserDetail(String userId) async {
+    _state = ManagerLoadState.loading;
+    notifyListeners();
+    await _runAction(() async {
+      _selectedUser = await _repository.getUserById(userId);
+    });
+  }
+
+  Future<bool> createUser({
+    required String fullName,
+    required String email,
+    required String password,
+    required String roleId,
+    int status = UserAccountStatus.active,
+    String? phoneNumber,
+  }) async {
+    return _runAction(() async {
+      final user = await _repository.createUser(
+        fullName: fullName,
+        email: email,
+        password: password,
+        roleId: roleId,
+        status: status,
+        phoneNumber: phoneNumber,
+      );
+      _users = [user, ..._users];
+    });
+  }
+
+  Future<bool> updateUser({
+    required String userId,
+    required String fullName,
+    required String email,
+    required String roleId,
+    required int status,
+    String? password,
+    String? phoneNumber,
+  }) async {
+    return _runAction(() async {
+      final user = await _repository.updateUser(
+        userId: userId,
+        fullName: fullName,
+        email: email,
+        roleId: roleId,
+        status: status,
+        password: password,
+        phoneNumber: phoneNumber,
+      );
+      _selectedUser = user;
+      _users = _users.map((u) => u.id == userId ? user : u).toList();
+    });
+  }
+
+  Future<bool> deleteUser(String userId) async {
+    return _runAction(() async {
+      await _repository.deleteUser(userId);
+      _users = _users.where((u) => u.id != userId).toList();
+      if (_selectedUser?.id == userId) {
+        _selectedUser = null;
+      }
+    });
+  }
+
+  List<UserModel> filterUsers(String query) {
+    final normalized = query.trim().toLowerCase();
+    if (normalized.isEmpty) return _users;
+    return _users
+        .where(
+          (user) =>
+              user.fullName.toLowerCase().contains(normalized) ||
+              user.email.toLowerCase().contains(normalized) ||
+              (user.roleName ?? '').toLowerCase().contains(normalized),
+        )
+        .toList();
   }
 
   Future<bool> createDataset({

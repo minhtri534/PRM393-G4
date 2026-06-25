@@ -79,10 +79,15 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
     }
 
     if (multipartFiles.isNotEmpty) {
-      await provider.uploadDatasetFiles(
+      final ok = await provider.uploadDatasetFiles(
         datasetId: widget.datasetId,
         files: multipartFiles,
       );
+      if (mounted && !ok && provider.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(provider.errorMessage!)),
+        );
+      }
     }
   }
 

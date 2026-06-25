@@ -66,7 +66,14 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
       projectId: projectId,
       name: name,
     );
-    if (!datasetOk || provider.datasets.isEmpty) return;
+    if (!datasetOk || provider.datasets.isEmpty) {
+      if (mounted && provider.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(provider.errorMessage!)),
+        );
+      }
+      return;
+    }
 
     final dataset = provider.datasets.first;
     final multipartFiles = <MultipartFile>[];
@@ -91,7 +98,14 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
       }
     }
 
-    if (multipartFiles.isEmpty) return;
+    if (multipartFiles.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not read selected files')),
+        );
+      }
+      return;
+    }
 
     final uploadOk = await provider.uploadDatasetFiles(
       datasetId: dataset.id,
@@ -103,6 +117,10 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
         const SnackBar(content: Text('Dataset uploaded successfully')),
       );
       Navigator.pop(context);
+    } else if (mounted && provider.errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(provider.errorMessage!)),
+      );
     }
   }
 

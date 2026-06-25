@@ -2,12 +2,15 @@ using DataLabellingSupportSystem.Api.Common.Constants;
 using DataLabellingSupportSystem.Api.Common.Extensions;
 using DataLabellingSupportSystem.Api.Common.Results;
 using DataLabellingSupportSystem.Api.DTOs.Requests.Manager;
+using DataLabellingSupportSystem.Api.DTOs.Requests.Users;
 using DataLabellingSupportSystem.Api.DTOs.Responses.Manager;
+using DataLabellingSupportSystem.Api.DTOs.Responses.Users;
 using DataLabellingSupportSystem.Api.Services.Manager;
 using DataLabellingSupportSystem.Api.Services.Storage;
+using DataLabellingSupportSystem.Api.Services.Users;
+using DataLabellingSupportSystem.Api.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Buffers.Binary;
 using System.Security.Cryptography;
 
 namespace DataLabellingSupportSystem.Api.Controllers;
@@ -15,7 +18,10 @@ namespace DataLabellingSupportSystem.Api.Controllers;
 [ApiController]
 [Route("api/manager")]
 [Authorize(Roles = "Admin,Manager")]
-public sealed class ManagerController(IManagerService managerService, IStorageService storageService) : ControllerBase
+public sealed class ManagerController(
+    IManagerService managerService,
+    IStorageService storageService,
+    IUsersService usersService) : ControllerBase
 {
     [HttpGet("projects")]
     public async Task<ActionResult<ServiceResponse<List<ProjectResponse>>>> GetProjects()
@@ -305,7 +311,7 @@ public sealed class ManagerController(IManagerService managerService, IStorageSe
             await source.CopyToAsync(ms, cancellationToken);
 
             var bytes = ms.ToArray();
-            if (!TryGetImageSize(bytes, out var width, out var height))
+            if (!ImageSizeHelper.TryGetImageSize(bytes, out var width, out var height))
             {
                 return BadRequest(ServiceResponse<UploadDatasetItemsResponse>.Failure("Invalid image", [$"Cannot read image size from file '{file.FileName}'"]));
             }
@@ -354,70 +360,6 @@ public sealed class ManagerController(IManagerService managerService, IStorageSe
 
         var result = await managerService.ImportDatasetFromExternalAsync(userId, request);
         return this.ToOkOrBadRequest(result);
-    }
-
-    private static bool TryGetImageSize(byte[] bytes, out int width, out int height)
-    {
-        width = 0;
-        height = 0;
-
-        if (bytes.Length < 24)
-        {
-            return false;
-        }
-
-        // PNG signature
-        if (bytes[0] == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47)
-        {
-            width = BinaryPrimitives.ReadInt32BigEndian(bytes.AsSpan(16, 4));
-            height = BinaryPrimitives.ReadInt32BigEndian(bytes.AsSpan(20, 4));
-            return width > 0 && height > 0;
-        }
-
-        // JPEG markers
-        if (bytes[0] == 0xFF && bytes[1] == 0xD8)
-        {
-            var index = 2;
-            while (index + 9 < bytes.Length)
-            {
-                if (bytes[index] != 0xFF)
-                {
-                    index++;
-                    continue;
-                }
-
-                var marker = bytes[index + 1];
-                index += 2;
-
-                if (marker == 0xD9 || marker == 0xDA)
-                {
-                    break;
-                }
-
-                if (index + 2 > bytes.Length)
-                {
-                    break;
-                }
-
-                var segmentLength = BinaryPrimitives.ReadUInt16BigEndian(bytes.AsSpan(index, 2));
-                if (segmentLength < 2 || index + segmentLength > bytes.Length)
-                {
-                    break;
-                }
-
-                var isSof = marker is 0xC0 or 0xC1 or 0xC2 or 0xC3 or 0xC5 or 0xC6 or 0xC7 or 0xC9 or 0xCA or 0xCB or 0xCD or 0xCE or 0xCF;
-                if (isSof && segmentLength >= 7)
-                {
-                    height = BinaryPrimitives.ReadUInt16BigEndian(bytes.AsSpan(index + 3, 2));
-                    width = BinaryPrimitives.ReadUInt16BigEndian(bytes.AsSpan(index + 5, 2));
-                    return width > 0 && height > 0;
-                }
-
-                index += segmentLength;
-            }
-        }
-
-        return false;
     }
 
     [HttpPost("dataset-versions/{versionId}/restore")]
@@ -938,5 +880,93 @@ public sealed class ManagerController(IManagerService managerService, IStorageSe
 
         var result = await managerService.GetActivityLogsAsync(actorUserId, projectId, userId, page, pageSize);
         return this.ToOkOrBadRequest(result);
+    }
+
+    [HttpGet("users")]
+    public async Task<ActionResult<ServiceResponse<List<UserResponse>>>> GetUsers()
+    {
+        var actorUserId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(actorUserId))
+        {
+            return Unauthorized(ServiceResponse<List<UserResponse>>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await usersService.GetAllAsync(actorUserId);
+        return this.ToOkOrBadRequest(result);
+    }
+
+    [HttpGet("users/{userId}")]
+    public async Task<ActionResult<ServiceResponse<UserResponse>>> GetUserById([FromRoute] string userId)
+    {
+        var actorUserId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(actorUserId))
+        {
+            return Unauthorized(ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await usersService.GetByIdAsync(actorUserId, userId);
+        if (result.IsSuccess)
+        {
+            return Ok(result);
+        }
+
+        return result.Message == ErrorMessages.NotFound
+            ? NotFound(result)
+            : BadRequest(result);
+    }
+
+    [HttpPost("users")]
+    public async Task<ActionResult<ServiceResponse<UserResponse>>> CreateUser([FromBody] CreateUserRequest request)
+    {
+        var actorUserId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(actorUserId))
+        {
+            return Unauthorized(ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await usersService.CreateAsync(actorUserId, request);
+        return this.ToOkOrBadRequest(result);
+    }
+
+    [HttpPut("users/{userId}")]
+    public async Task<ActionResult<ServiceResponse<UserResponse>>> UpdateUser(
+        [FromRoute] string userId,
+        [FromBody] UpdateUserRequest request)
+    {
+        var actorUserId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(actorUserId))
+        {
+            return Unauthorized(ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await usersService.UpdateAsync(actorUserId, userId, request);
+        if (result.IsSuccess)
+        {
+            return Ok(result);
+        }
+
+        return result.Message == ErrorMessages.NotFound
+            ? NotFound(result)
+            : BadRequest(result);
+    }
+
+    [HttpDelete("users/{userId}")]
+    public async Task<ActionResult<ServiceResponse<bool>>> DeleteUser([FromRoute] string userId)
+    {
+        var actorUserId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(actorUserId))
+        {
+            return Unauthorized(ServiceResponse<bool>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await usersService.DeleteAsync(actorUserId, userId);
+        if (result.IsSuccess)
+        {
+            return Ok(result);
+        }
+
+        return result.Message == ErrorMessages.NotFound
+            ? NotFound(result)
+            : BadRequest(result);
     }
 }

@@ -227,7 +227,6 @@ class ManagerRepository {
       () => _dioClient.post(
         ManagerEndpoints.datasetsUploadFiles,
         data: formData,
-        options: Options(contentType: 'multipart/form-data'),
       ),
       (data) =>
           UploadDatasetItemsResult.fromJson(data as Map<String, dynamic>),
@@ -670,6 +669,73 @@ class ManagerRepository {
       );
 
   // ================= USERS =================
+
+  Future<List<UserModel>> getUsers() => _unwrapList(
+        () => _dioClient.get(ManagerEndpoints.users),
+        UserModel.fromJson,
+      );
+
+  Future<UserModel> getUserById(String userId) => _unwrap(
+        () => _dioClient.get(ManagerEndpoints.user(userId)),
+        (data) => UserModel.fromJson(data as Map<String, dynamic>),
+      );
+
+  Future<UserModel> createUser({
+    required String fullName,
+    required String email,
+    required String password,
+    required String roleId,
+    int status = UserAccountStatus.active,
+    String? phoneNumber,
+  }) =>
+      _unwrap(
+        () => _dioClient.post(
+          ManagerEndpoints.users,
+          data: {
+            'fullName': fullName,
+            'email': email,
+            'password': password,
+            'roleId': roleId,
+            'status': status,
+            'phoneNumber': ?phoneNumber,
+          },
+        ),
+        (data) => UserModel.fromJson(data as Map<String, dynamic>),
+      );
+
+  Future<UserModel> updateUser({
+    required String userId,
+    required String fullName,
+    required String email,
+    required String roleId,
+    required int status,
+    String? password,
+    String? phoneNumber,
+  }) =>
+      _unwrap(
+        () => _dioClient.put(
+          ManagerEndpoints.user(userId),
+          data: {
+            'fullName': fullName,
+            'email': email,
+            'roleId': roleId,
+            'status': status,
+            'password': password,
+            'phoneNumber': phoneNumber,
+          },
+        ),
+        (data) => UserModel.fromJson(data as Map<String, dynamic>),
+      );
+
+  Future<bool> deleteUser(String userId) => _unwrap(
+        () => _dioClient.delete(ManagerEndpoints.user(userId)),
+        (data) => data as bool,
+      );
+
+  Future<List<RoleModel>> getRoles() => _unwrapList(
+        () => _dioClient.get(ManagerEndpoints.roles),
+        RoleModel.fromJson,
+      );
 
   Future<List<UserSummaryModel>> searchUsers({
     required String query,

@@ -1,29 +1,31 @@
-services:
-  db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=AdminPassword123!
-    ports:
-      - "1433:1433"
-
-  backend:
-    build:
-      context: ./backend
-    ports:
-      - "5000:5000"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=db;Database=DLSS_Db;User Id=sa;Password=AdminPassword123!;TrustServerCertificate=True;MultipleActiveResultSets=true
-    volumes:
-      - ./backend/storage/demo/images:/app/storage
-    depends_on:
-      - db
-
-  frontend:
-    build:
-      context: ./frontend
-    ports:
-      - "3000:80"
-    depends_on:
-      - backend
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=AdminPassword123!
+    ports:
+      - "1433:1433"
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Database=DLSS_Db;User Id=sa;Password=AdminPassword123!;TrustServerCertificate=True;MultipleActiveResultSets=true
+    volumes:
+      - ./backend/storage/demo/images:/app/storage
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend

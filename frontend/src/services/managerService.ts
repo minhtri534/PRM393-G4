@@ -140,9 +140,7 @@ export const managerService = {
     formData.append('datasetId', datasetId);
     files.forEach(file => formData.append('files', file));
 
-    const response = await api.post('/manager/datasets/upload-files', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
+    const response = await api.post('/manager/datasets/upload-files', formData);
     return response.data;
   },
 

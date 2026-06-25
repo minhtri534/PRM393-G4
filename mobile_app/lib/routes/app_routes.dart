@@ -12,6 +12,7 @@ import '../screens/manager/manager_shell_screen.dart';
 import '../screens/manager/project_create_screen.dart';
 import '../screens/manager/project_detail_screen.dart';
 import '../screens/manager/task_create_screen.dart';
+import '../screens/manager/user_form_screen.dart';
 import '../screens/splash_screen.dart';
 
 class AppRoutes {
@@ -32,6 +33,7 @@ class AppRoutes {
   static const String managerDatasetUpload = '/manager/datasets/upload';
   static const String managerDatasetDetail = '/manager/datasets/detail';
   static const String managerTaskCreate = '/manager/tasks/create';
+  static const String managerUserForm = '/manager/users/form';
 
   /// Legacy alias kept for older navigation calls.
   static const String tasks = annotatorHome;
@@ -52,7 +54,6 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => VerifyEmailScreen(
             email: args['email'] as String,
-            devOtp: args['devOtp'] as String?,
           ),
         );
       case annotatorHome:
@@ -102,6 +103,11 @@ class AppRoutes {
         final projectId = settings.arguments as String?;
         return MaterialPageRoute(
           builder: (_) => TaskCreateScreen(initialProjectId: projectId),
+        );
+      case managerUserForm:
+        final userId = settings.arguments as String?;
+        return MaterialPageRoute(
+          builder: (_) => UserFormScreen(userId: userId),
         );
       default:
         return _errorRoute('Route not found');

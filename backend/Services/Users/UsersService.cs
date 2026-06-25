@@ -11,32 +11,38 @@ namespace DataLabellingSupportSystem.Api.Services.Users;
 
 public sealed class UsersService(AppDbContext dbContext, IPasswordHasher passwordHasher) : IUsersService
 {
-    public async Task<ServiceResponse<List<UserResponse>>> GetAllAsync()
+    public async Task<ServiceResponse<List<UserResponse>>> GetAllAsync(string actorUserId)
     {
-        var users = await dbContext.Users
-            .AsNoTracking()
+        var actor = await GetActorAsync(actorUserId);
+        if (actor is null)
+        {
+            return ServiceResponse<List<UserResponse>>.Failure(ErrorMessages.Unauthorized, ["User not found"]);
+        }
+
+        var usersQuery = dbContext.Users.AsNoTracking().Include(x => x.Role).AsQueryable();
+        if (!actor.IsAdmin)
+        {
+            usersQuery = usersQuery.Where(u => u.Role != null &&
+                u.Role.Name != "Admin" &&
+                u.Role.Name != "Manager");
+        }
+
+        var users = await usersQuery
             .OrderByDescending(x => x.CreatedAt)
-            .Select(x => new UserResponse(
-                x.Id,
-                x.FullName,
-                x.Email,
-                x.PhoneNumber,
-                x.IdentifyNumber,
-                x.Gender,
-                x.Address,
-                x.DateOfBirth,
-                x.RoleId,
-                x.Role != null ? x.Role.Name : null,
-                x.Status,
-                x.CreatedAt,
-                x.UpdatedAt))
+            .Select(x => MapUserResponse(x))
             .ToListAsync();
 
         return ServiceResponse<List<UserResponse>>.Success(users, "OK");
     }
 
-    public async Task<ServiceResponse<UserResponse>> GetByIdAsync(string userId)
+    public async Task<ServiceResponse<UserResponse>> GetByIdAsync(string actorUserId, string userId)
     {
+        var actor = await GetActorAsync(actorUserId);
+        if (actor is null)
+        {
+            return ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["User not found"]);
+        }
+
         var id = (userId ?? string.Empty).Trim();
         if (string.IsNullOrWhiteSpace(id))
         {
@@ -45,33 +51,31 @@ public sealed class UsersService(AppDbContext dbContext, IPasswordHasher passwor
 
         var user = await dbContext.Users
             .AsNoTracking()
-            .Where(x => x.Id == id)
-            .Select(x => new UserResponse(
-                x.Id,
-                x.FullName,
-                x.Email,
-                x.PhoneNumber,
-                x.IdentifyNumber,
-                x.Gender,
-                x.Address,
-                x.DateOfBirth,
-                x.RoleId,
-                x.Role != null ? x.Role.Name : null,
-                x.Status,
-                x.CreatedAt,
-                x.UpdatedAt))
-            .FirstOrDefaultAsync();
+            .Include(x => x.Role)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         if (user is null)
         {
             return ServiceResponse<UserResponse>.Failure(ErrorMessages.NotFound, ["User not found"]);
         }
 
-        return ServiceResponse<UserResponse>.Success(user, "OK");
+        var access = EnsureActorCanManageUser(actor, user);
+        if (access is not null)
+        {
+            return access;
+        }
+
+        return ServiceResponse<UserResponse>.Success(MapUserResponse(user), "OK");
     }
 
-    public async Task<ServiceResponse<UserResponse>> CreateAsync(CreateUserRequest request)
+    public async Task<ServiceResponse<UserResponse>> CreateAsync(string actorUserId, CreateUserRequest request)
     {
+        var actor = await GetActorAsync(actorUserId);
+        if (actor is null)
+        {
+            return ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["User not found"]);
+        }
+
         var normalizedEmail = NormalizeEmail(request.Email);
 
         var emailExists = await dbContext.Users.AsNoTracking().AnyAsync(x => x.Email == normalizedEmail);
@@ -84,6 +88,11 @@ public sealed class UsersService(AppDbContext dbContext, IPasswordHasher passwor
         if (role is null)
         {
             return ServiceResponse<UserResponse>.Failure("Invalid role", ["Role not found"]);
+        }
+
+        if (!actor.IsAdmin && IsPrivilegedRole(role.Name))
+        {
+            return ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["Managers can only create Annotator or Reviewer accounts"]);
         }
 
         var user = new User
@@ -121,18 +130,30 @@ public sealed class UsersService(AppDbContext dbContext, IPasswordHasher passwor
             "Created");
     }
 
-    public async Task<ServiceResponse<UserResponse>> UpdateAsync(string userId, UpdateUserRequest request)
+    public async Task<ServiceResponse<UserResponse>> UpdateAsync(string actorUserId, string userId, UpdateUserRequest request)
     {
+        var actor = await GetActorAsync(actorUserId);
+        if (actor is null)
+        {
+            return ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["User not found"]);
+        }
+
         var id = (userId ?? string.Empty).Trim();
         if (string.IsNullOrWhiteSpace(id))
         {
             return ServiceResponse<UserResponse>.Failure("Invalid user", ["User id is required"]);
         }
 
-        var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+        var user = await dbContext.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.Id == id);
         if (user is null)
         {
             return ServiceResponse<UserResponse>.Failure(ErrorMessages.NotFound, ["User not found"]);
+        }
+
+        var access = EnsureActorCanManageUser(actor, user);
+        if (access is not null)
+        {
+            return access;
         }
 
         var normalizedEmail = NormalizeEmail(request.Email);
@@ -151,6 +172,11 @@ public sealed class UsersService(AppDbContext dbContext, IPasswordHasher passwor
         if (role is null)
         {
             return ServiceResponse<UserResponse>.Failure("Invalid role", ["Role not found"]);
+        }
+
+        if (!actor.IsAdmin && IsPrivilegedRole(role.Name))
+        {
+            return ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["Managers can only assign Annotator or Reviewer roles"]);
         }
 
         user.FullName = request.FullName.Trim();
@@ -187,18 +213,35 @@ public sealed class UsersService(AppDbContext dbContext, IPasswordHasher passwor
             "Updated");
     }
 
-    public async Task<ServiceResponse<bool>> DeleteAsync(string userId)
+    public async Task<ServiceResponse<bool>> DeleteAsync(string actorUserId, string userId)
     {
+        var actor = await GetActorAsync(actorUserId);
+        if (actor is null)
+        {
+            return ServiceResponse<bool>.Failure(ErrorMessages.Unauthorized, ["User not found"]);
+        }
+
         var id = (userId ?? string.Empty).Trim();
         if (string.IsNullOrWhiteSpace(id))
         {
             return ServiceResponse<bool>.Failure("Invalid user", ["User id is required"]);
         }
 
-        var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+        if (string.Equals(actor.UserId, id, StringComparison.Ordinal))
+        {
+            return ServiceResponse<bool>.Failure("Invalid operation", ["You cannot delete your own account"]);
+        }
+
+        var user = await dbContext.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.Id == id);
         if (user is null)
         {
             return ServiceResponse<bool>.Failure(ErrorMessages.NotFound, ["User not found"]);
+        }
+
+        var access = EnsureActorCanManageUser(actor, user);
+        if (access is not null)
+        {
+            return ServiceResponse<bool>.Failure(access.Message, access.Errors);
         }
 
         dbContext.Users.Remove(user);
@@ -209,13 +252,11 @@ public sealed class UsersService(AppDbContext dbContext, IPasswordHasher passwor
 
     public async Task<ServiceResponse<List<UserSummaryResponse>>> SearchAsync(string actorUserId, string query, string? roleName = null)
     {
-        var actor = await dbContext.Users.AsNoTracking().Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == actorUserId);
+        var actor = await GetActorAsync(actorUserId);
         if (actor is null)
         {
             return ServiceResponse<List<UserSummaryResponse>>.Failure(ErrorMessages.Unauthorized, ["User not found"]);
         }
-
-        var isActorAdmin = string.Equals(actor.Role?.Name, "Admin", StringComparison.OrdinalIgnoreCase);
 
         var normalizedQuery = (query ?? string.Empty).Trim().ToLowerInvariant();
         if (string.IsNullOrWhiteSpace(normalizedQuery))
@@ -228,11 +269,11 @@ public sealed class UsersService(AppDbContext dbContext, IPasswordHasher passwor
             .Include(u => u.Role)
             .Where(u => u.Email.ToLower().Contains(normalizedQuery) || u.FullName.ToLower().Contains(normalizedQuery));
 
-        // Security filter: If not Admin, exclude other Admin/Manager roles
-        if (!isActorAdmin)
+        if (!actor.IsAdmin)
         {
-            usersQuery = usersQuery.Where(u => u.Role != null && 
-                u.Role.Name != "Admin" && u.Role.Name != "Manager");
+            usersQuery = usersQuery.Where(u => u.Role != null &&
+                u.Role.Name != "Admin" &&
+                u.Role.Name != "Manager");
         }
 
         if (!string.IsNullOrWhiteSpace(roleName))
@@ -253,5 +294,61 @@ public sealed class UsersService(AppDbContext dbContext, IPasswordHasher passwor
         return ServiceResponse<List<UserSummaryResponse>>.Success(users, "OK");
     }
 
+    private async Task<ActorContext?> GetActorAsync(string actorUserId)
+    {
+        var actor = await dbContext.Users
+            .AsNoTracking()
+            .Include(u => u.Role)
+            .FirstOrDefaultAsync(u => u.Id == actorUserId);
+
+        if (actor is null)
+        {
+            return null;
+        }
+
+        return new ActorContext(
+            actor.Id,
+            string.Equals(actor.Role?.Name, "Admin", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static ServiceResponse<UserResponse>? EnsureActorCanManageUser(ActorContext actor, User target)
+    {
+        if (actor.IsAdmin || target.Role is null)
+        {
+            return null;
+        }
+
+        if (IsPrivilegedRole(target.Role.Name))
+        {
+            return ServiceResponse<UserResponse>.Failure(
+                ErrorMessages.Unauthorized,
+                ["Managers cannot manage Admin or Manager accounts"]);
+        }
+
+        return null;
+    }
+
+    private static bool IsPrivilegedRole(string? roleName)
+        => string.Equals(roleName, "Admin", StringComparison.OrdinalIgnoreCase)
+           || string.Equals(roleName, "Manager", StringComparison.OrdinalIgnoreCase);
+
+    private static UserResponse MapUserResponse(User user)
+        => new(
+            user.Id,
+            user.FullName,
+            user.Email,
+            user.PhoneNumber,
+            user.IdentifyNumber,
+            user.Gender,
+            user.Address,
+            user.DateOfBirth,
+            user.RoleId,
+            user.Role?.Name,
+            user.Status,
+            user.CreatedAt,
+            user.UpdatedAt);
+
     private static string NormalizeEmail(string email) => (email ?? string.Empty).Trim().ToLowerInvariant();
+
+    private sealed record ActorContext(string UserId, bool IsAdmin);
 }

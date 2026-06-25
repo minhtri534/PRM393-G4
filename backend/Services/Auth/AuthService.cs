@@ -21,7 +21,7 @@ public sealed class AuthService(
     ISecureTokenGenerator secureTokenGenerator,
     IPasswordHasher passwordHasher,
     IEmailSender emailSender,
-    IHostEnvironment hostEnvironment) : IAuthService
+    ILogger<AuthService> logger) : IAuthService
 {
     private readonly JwtOptions _jwt = jwtOptions.Value;
     private const int EmailVerificationOtpMinutes = 15;
@@ -49,9 +49,7 @@ public sealed class AuthService(
 
         var otpCode = await CreateAndSendEmailVerificationOtpAsync(user);
 
-        var response = new RegisterResponse(
-            user.Email,
-            hostEnvironment.IsDevelopment() ? otpCode : null);
+        var response = new RegisterResponse(user.Email);
 
         return ServiceResponse<RegisterResponse>.Success(
             response,
@@ -111,9 +109,7 @@ public sealed class AuthService(
         }
 
         var otpCode = await CreateAndSendEmailVerificationOtpAsync(user);
-        var response = new RegisterResponse(
-            user.Email,
-            hostEnvironment.IsDevelopment() ? otpCode : null);
+        var response = new RegisterResponse(user.Email);
 
         return ServiceResponse<RegisterResponse>.Success(
             response,
@@ -366,10 +362,18 @@ public sealed class AuthService(
 
         await dbContext.SaveChangesAsync();
 
-        await emailSender.SendAsync(
-            user.Email,
-            "Verify your DLSS account",
-            $"Your DLSS verification code is: {otpCode}\n\nThis code expires in {EmailVerificationOtpMinutes} minutes.");
+        try
+        {
+            await emailSender.SendAsync(
+                user.Email,
+                "Verify your DLSS account",
+                $"Your DLSS verification code is: {otpCode}\n\nThis code expires in {EmailVerificationOtpMinutes} minutes.");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to send verification email to {Email}", user.Email);
+            throw;
+        }
 
         return otpCode;
     }

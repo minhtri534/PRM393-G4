@@ -89,8 +89,13 @@ class ManagerEndpoints {
   // Activity logs
   static const String activityLogs = '/manager/activity-logs';
 
-  // Users
+  // Users (manager-scoped CRUD; /users/* is admin-only on older backends)
   static const String usersSearch = '/users/search';
+  static const String users = '/manager/users';
+  static String user(String id) => '/manager/users/$id';
+
+  // Roles
+  static const String roles = '/roles';
 
   // YOLO export (exports controller)
   static String yoloExportTask(String taskId) => '/exports/yolo/tasks/$taskId';
