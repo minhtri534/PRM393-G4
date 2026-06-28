@@ -14,6 +14,10 @@ import '../screens/manager/project_detail_screen.dart';
 import '../screens/manager/task_create_screen.dart';
 import '../screens/manager/user_form_screen.dart';
 import '../screens/splash_screen.dart';
+import '../screens/manager/payment_list_screen.dart';
+import '../screens/manager/payment_detail_screen.dart';
+import '../screens/manager/payment_history_screen.dart';
+import '../screens/manager/payment_success_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -34,6 +38,10 @@ class AppRoutes {
   static const String managerDatasetDetail = '/manager/datasets/detail';
   static const String managerTaskCreate = '/manager/tasks/create';
   static const String managerUserForm = '/manager/users/form';
+  static const String managerPaymentList = '/manager/payments';
+  static const String managerPaymentDetail = '/manager/payments/detail';
+  static const String managerPaymentHistory = '/manager/payments/history';
+  static const String managerPaymentSuccess = '/manager/payments/success';
 
   /// Legacy alias kept for older navigation calls.
   static const String tasks = annotatorHome;
@@ -109,6 +117,36 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => UserFormScreen(userId: userId),
         );
+      
+      case managerPaymentList:
+      return MaterialPageRoute(
+        builder: (_) => const PaymentListScreen(),
+      );
+
+    case managerPaymentDetail:
+      return MaterialPageRoute(
+        builder: (_) => const PaymentDetailScreen(),
+      );
+
+    case managerPaymentHistory:
+      return MaterialPageRoute(
+        builder: (_) => const PaymentHistoryScreen(),
+      );
+
+    case managerPaymentSuccess:
+      final args = settings.arguments as Map<String, dynamic>?;
+
+      if (args == null) {
+        return _errorRoute('Missing payment success data');
+      }
+
+      return MaterialPageRoute(
+        builder: (_) => PaymentSuccessScreen(
+          transactionId: args['transactionId'] ?? '',
+          amount: args['amount'] ?? 0,
+          name: args['name'] ?? '',
+        ),
+      );
       default:
         return _errorRoute('Route not found');
     }

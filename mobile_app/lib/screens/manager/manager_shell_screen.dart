@@ -7,6 +7,7 @@ import '../../widgets/dlss_dashboard_scaffold.dart';
 import 'dataset_list_screen.dart';
 import 'project_list_screen.dart';
 import 'user_list_screen.dart';
+import 'payment_list_screen.dart';
 
 class ManagerShellScreen extends StatelessWidget {
   const ManagerShellScreen({super.key});
@@ -31,6 +32,11 @@ class ManagerShellScreen extends StatelessWidget {
           label: 'Users',
           icon: Icons.people_outline,
           body: UserListScreen(),
+        ),
+        DlssNavDestination(
+          label: 'Payments',
+          icon: Icons.payments,
+          body: const PaymentListScreen(),
         ),
       ],
       fabBuilder: (index) {
