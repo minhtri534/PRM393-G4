@@ -5,7 +5,7 @@ import '../core/constants/manager_endpoints.dart';
 import '../core/utils/logger.dart';
 import '../models/common/api_error.dart';
 import '../models/common/service_response.dart';
-import '../models/manager/manager_models.dart';
+import '../models/manager/yolo_label_file_model.dart';
 import 'dio_client.dart';
 
 class ManagerRepository {

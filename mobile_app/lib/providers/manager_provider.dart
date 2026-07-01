@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import '../core/constants/app_constants.dart';
 import '../core/utils/logger.dart';
 import '../models/common/api_error.dart';
-import '../models/manager/manager_models.dart';
+import '../models/manager/yolo_label_file_model.dart';
 import '../repositories/manager_repository.dart';
 
 enum ManagerLoadState { initial, loading, loaded, error }
