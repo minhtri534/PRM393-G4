@@ -3,6 +3,7 @@ using DataLabellingSupportSystem.Api.Common.Extensions;
 using DataLabellingSupportSystem.Api.Common.Results;
 using DataLabellingSupportSystem.Api.DTOs.Requests.Annotator;
 using DataLabellingSupportSystem.Api.DTOs.Responses.Annotator;
+using DataLabellingSupportSystem.Api.DTOs.Responses.Projects;
 using DataLabellingSupportSystem.Api.Services.AiAssist;
 using DataLabellingSupportSystem.Api.Services.Annotator;
 using DataLabellingSupportSystem.Api.Services.Storage;
@@ -16,8 +17,21 @@ namespace DataLabellingSupportSystem.Api.Controllers;
 [Authorize(Roles = "Annotator")]
 public sealed class AnnotatorController(IAnnotatorService annotatorService, IStorageService storageService, IAiAssistService aiAssistService) : ControllerBase
 {
+    [HttpGet("projects")]
+    public async Task<ActionResult<ServiceResponse<List<MyProjectSummaryResponse>>>> GetMyProjects()
+    {
+        var userId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized(ServiceResponse<List<MyProjectSummaryResponse>>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await annotatorService.GetMyProjectsAsync(userId);
+        return this.ToOkOrBadRequest(result);
+    }
+
     [HttpGet("tasks")]
-    public async Task<ActionResult<ServiceResponse<List<AnnotatorTaskSummaryResponse>>>> GetMyTasks()
+    public async Task<ActionResult<ServiceResponse<List<AnnotatorTaskSummaryResponse>>>> GetMyTasks([FromQuery] string? projectId = null)
     {
         var userId = User.GetUserId();
         if (string.IsNullOrWhiteSpace(userId))
@@ -25,7 +39,7 @@ public sealed class AnnotatorController(IAnnotatorService annotatorService, ISto
             return Unauthorized(ServiceResponse<List<AnnotatorTaskSummaryResponse>>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
         }
 
-        var result = await annotatorService.GetMyTasksAsync(userId);
+        var result = await annotatorService.GetMyTasksAsync(userId, projectId);
         return this.ToOkOrBadRequest(result);
     }
 

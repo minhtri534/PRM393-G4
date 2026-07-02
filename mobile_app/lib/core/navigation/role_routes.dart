@@ -8,7 +8,7 @@ String homeRouteForRole(String? roleName) {
     case 'admin':
       return AppRoutes.managerHome;
     case 'reviewer':
-      return AppRoutes.annotatorHome; // reviewer module not built yet
+      return AppRoutes.reviewerHome;
     default:
       return AppRoutes.annotatorHome;
   }

@@ -1,7 +1,9 @@
 using DataLabellingSupportSystem.Api.Common.Constants;
 using DataLabellingSupportSystem.Api.Common.Results;
 using DataLabellingSupportSystem.Api.DTOs.Responses.Annotator;
+using DataLabellingSupportSystem.Api.DTOs.Responses.Projects;
 using DataLabellingSupportSystem.Api.Models;
+using DataLabellingSupportSystem.Api.Services.Projects;
 using DataLabellingSupportSystem.Api.Utils;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +11,10 @@ namespace DataLabellingSupportSystem.Api.Services.Annotator;
 
 public sealed partial class AnnotatorService
 {
-    public async Task<ServiceResponse<List<AnnotatorTaskSummaryResponse>>> GetMyTasksAsync(string userId)
+    public Task<ServiceResponse<List<MyProjectSummaryResponse>>> GetMyProjectsAsync(string userId) =>
+        projectMembershipService.GetMyProjectsAsync(userId);
+
+    public async Task<ServiceResponse<List<AnnotatorTaskSummaryResponse>>> GetMyTasksAsync(string userId, string? projectId = null)
     {
         var uid = (userId ?? string.Empty).Trim();
         if (string.IsNullOrWhiteSpace(uid))
@@ -17,9 +22,26 @@ public sealed partial class AnnotatorService
             return ServiceResponse<List<AnnotatorTaskSummaryResponse>>.Failure(ErrorMessages.Unauthorized, ["Missing user id"]);
         }
 
-        var tasks = await _dbContext.LabelingTasks
+        var normalizedProjectId = string.IsNullOrWhiteSpace(projectId) ? null : projectId.Trim();
+        if (normalizedProjectId is not null)
+        {
+            var access = await projectMembershipService.EnsureProjectAccessAsync(uid, normalizedProjectId);
+            if (access is not null)
+            {
+                return ServiceResponse<List<AnnotatorTaskSummaryResponse>>.Failure(access.Message, access.Errors);
+            }
+        }
+
+        var query = _dbContext.LabelingTasks
             .AsNoTracking()
-            .Where(x => x.AnnotatorId == uid)
+            .Where(x => x.AnnotatorId == uid);
+
+        if (normalizedProjectId is not null)
+        {
+            query = query.Where(x => x.ProjectId == normalizedProjectId);
+        }
+
+        var tasks = await query
             .OrderByDescending(x => x.AssignedAt)
             .Select(x => new AnnotatorTaskSummaryResponse(
                 x.Id,

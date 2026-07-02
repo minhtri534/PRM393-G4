@@ -5,12 +5,13 @@ using DataLabellingSupportSystem.Api.Database;
 using DataLabellingSupportSystem.Api.DTOs.Requests.Annotator;
 using DataLabellingSupportSystem.Api.DTOs.Responses.Annotator;
 using DataLabellingSupportSystem.Api.Models;
+using DataLabellingSupportSystem.Api.Services.Projects;
 using DataLabellingSupportSystem.Api.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataLabellingSupportSystem.Api.Services.Annotator;
 
-public sealed partial class AnnotatorService(AppDbContext dbContext) : IAnnotatorService
+public sealed partial class AnnotatorService(AppDbContext dbContext, IProjectMembershipService projectMembershipService) : IAnnotatorService
 {
     private readonly AppDbContext _dbContext = dbContext;
 

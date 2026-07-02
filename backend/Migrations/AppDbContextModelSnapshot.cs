@@ -812,6 +812,71 @@ namespace DataLabellingSupportSystem.Api.Migrations
                     b.ToTable("Projects", (string)null);
                 });
 
+            modelBuilder.Entity("DataLabellingSupportSystem.Api.Models.ProjectChatMessage", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(24)
+                        .HasColumnType("varchar(24)")
+                        .HasColumnName("message_id");
+
+                    b.Property<string>("AttachmentContentType")
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)")
+                        .HasColumnName("attachment_content_type");
+
+                    b.Property<string>("AttachmentFileName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("attachment_file_name");
+
+                    b.Property<string>("AttachmentObjectKey")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("attachment_object_key");
+
+                    b.Property<long?>("AttachmentSizeBytes")
+                        .HasColumnType("bigint")
+                        .HasColumnName("attachment_size_bytes");
+
+                    b.Property<string>("Content")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)")
+                        .HasColumnName("content");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("DATEADD(HOUR, 7, SYSUTCDATETIME())");
+
+                    b.Property<string>("MessageType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("message_type");
+
+                    b.Property<string>("ProjectId")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("varchar(24)")
+                        .HasColumnName("project_id");
+
+                    b.Property<string>("SenderUserId")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("varchar(24)")
+                        .HasColumnName("sender_user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SenderUserId");
+
+                    b.HasIndex("ProjectId", "CreatedAt");
+
+                    b.ToTable("project_chat_messages", (string)null);
+                });
+
             modelBuilder.Entity("DataLabellingSupportSystem.Api.Models.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
@@ -1314,6 +1379,25 @@ namespace DataLabellingSupportSystem.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DataLabellingSupportSystem.Api.Models.ProjectChatMessage", b =>
+                {
+                    b.HasOne("DataLabellingSupportSystem.Api.Models.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataLabellingSupportSystem.Api.Models.User", "SenderUser")
+                        .WithMany()
+                        .HasForeignKey("SenderUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("SenderUser");
                 });
 
             modelBuilder.Entity("DataLabellingSupportSystem.Api.Models.RefreshToken", b =>

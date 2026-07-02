@@ -5,6 +5,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/task_display_utils.dart';
 import '../../models/annotator/annotator_models.dart';
+import '../../models/chat/chat_models.dart';
 import '../../providers/annotator_provider.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/action_button.dart';
@@ -53,7 +54,8 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
     );
     if (!mounted) return;
     if (result == true) {
-      await context.read<AnnotatorProvider>().fetchTasks();
+      final provider = context.read<AnnotatorProvider>();
+      await provider.fetchTasks(projectId: provider.selectedProjectId);
     }
     await context.read<AnnotatorProvider>().loadTaskDetail(widget.taskId);
   }
@@ -228,6 +230,23 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
               onPressed: () => _openLabeling(context, readOnly: true),
             ),
           ],
+          const SizedBox(height: 8),
+          ActionButton(
+            label: 'Chat with project team',
+            icon: Icons.chat_bubble_outline,
+            variant: ActionButtonVariant.outline,
+            onPressed: () {
+              Navigator.of(context).pushNamed(
+                AppRoutes.annotatorChatRoom,
+                arguments: MyProjectSummaryModel(
+                  id: task.projectId,
+                  name: task.projectName ?? 'Project',
+                  todoTaskCount: 0,
+                  doneTaskCount: 0,
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

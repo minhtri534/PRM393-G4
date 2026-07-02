@@ -6,6 +6,7 @@ import '../../core/constants/manager_endpoints.dart';
 import '../../core/theme/app_theme.dart';
 import '../../models/manager/yolo_label_file_model.dart';
 import '../../providers/manager_provider.dart';
+import '../../models/chat/chat_models.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/action_button.dart';
 import '../../widgets/custom_text_field.dart';
@@ -223,6 +224,22 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             title: Text(project.name),
             elevation: 0,
             backgroundColor: Colors.transparent,
+            actions: [
+              IconButton(
+                tooltip: 'Project chat',
+                onPressed: () => Navigator.of(context).pushNamed(
+                  AppRoutes.annotatorChatRoom,
+                  arguments: MyProjectSummaryModel(
+                    id: project.id,
+                    name: project.name,
+                    guideline: project.guideline,
+                    todoTaskCount: 0,
+                    doneTaskCount: 0,
+                  ),
+                ),
+                icon: const Icon(Icons.chat_bubble_outline),
+              ),
+            ],
             bottom: TabBar(
               controller: _tabController,
               isScrollable: true,

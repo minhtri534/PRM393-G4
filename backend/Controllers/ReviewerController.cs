@@ -2,6 +2,7 @@ using DataLabellingSupportSystem.Api.Common.Constants;
 using DataLabellingSupportSystem.Api.Common.Extensions;
 using DataLabellingSupportSystem.Api.Common.Results;
 using DataLabellingSupportSystem.Api.DTOs.Requests.Reviews;
+using DataLabellingSupportSystem.Api.DTOs.Responses.Projects;
 using DataLabellingSupportSystem.Api.DTOs.Responses.Reviews;
 using DataLabellingSupportSystem.Api.Services.Reviews;
 using DataLabellingSupportSystem.Api.Services.Storage;
@@ -15,8 +16,21 @@ namespace DataLabellingSupportSystem.Api.Controllers;
 [Authorize(Roles = "Reviewer")]
 public sealed class ReviewerController(IReviewerWorkflowService reviewerWorkflowService) : ControllerBase
 {
+    [HttpGet("projects")]
+    public async Task<ActionResult<ServiceResponse<List<MyProjectSummaryResponse>>>> GetMyProjects()
+    {
+        var userId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized(ServiceResponse<List<MyProjectSummaryResponse>>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await reviewerWorkflowService.GetMyProjectsAsync(userId);
+        return this.ToOkOrBadRequest(result);
+    }
+
     [HttpGet("tasks/submitted")]
-    public async Task<ActionResult<ServiceResponse<List<ReviewerSubmittedTaskResponse>>>> ViewSubmittedTasks()
+    public async Task<ActionResult<ServiceResponse<List<ReviewerSubmittedTaskResponse>>>> ViewSubmittedTasks([FromQuery] string? projectId)
     {
         var userId = User.GetUserId();
         if (string.IsNullOrWhiteSpace(userId))
@@ -24,7 +38,7 @@ public sealed class ReviewerController(IReviewerWorkflowService reviewerWorkflow
             return Unauthorized(ServiceResponse<List<ReviewerSubmittedTaskResponse>>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
         }
 
-        var result = await reviewerWorkflowService.GetSubmittedTasksAsync(userId);
+        var result = await reviewerWorkflowService.GetSubmittedTasksAsync(userId, projectId);
         return this.ToOkOrBadRequest(result);
     }
 

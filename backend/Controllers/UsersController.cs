@@ -28,6 +28,20 @@ public sealed class UsersController(IUsersService usersService) : ControllerBase
         return this.ToOkOrBadRequest(result);
     }
 
+    [HttpGet("search")]
+    [Authorize(Roles = "Admin,Manager")]
+    public async Task<ActionResult<ServiceResponse<List<UserSummaryResponse>>>> Search([FromQuery] string q, [FromQuery] string? role = null)
+    {
+        var userId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized(ServiceResponse<List<UserSummaryResponse>>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await usersService.SearchAsync(userId, q, role);
+        return this.ToOkOrBadRequest(result);
+    }
+
     [HttpGet("{userId}")]
     [Authorize(Roles = "Admin,Manager")]
     public async Task<ActionResult<ServiceResponse<UserResponse>>> GetById([FromRoute] string userId)
@@ -106,19 +120,5 @@ public sealed class UsersController(IUsersService usersService) : ControllerBase
         return result.Message == ErrorMessages.NotFound
             ? NotFound(result)
             : BadRequest(result);
-    }
-
-    [HttpGet("search")]
-    [Authorize(Roles = "Admin,Manager")]
-    public async Task<ActionResult<ServiceResponse<List<UserSummaryResponse>>>> Search([FromQuery] string q, [FromQuery] string? role = null)
-    {
-        var userId = User.GetUserId();
-        if (string.IsNullOrWhiteSpace(userId))
-        {
-            return Unauthorized(ServiceResponse<List<UserSummaryResponse>>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
-        }
-
-        var result = await usersService.SearchAsync(userId, q, role);
-        return this.ToOkOrBadRequest(result);
     }
 }

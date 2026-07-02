@@ -4,6 +4,7 @@ import '../core/constants/annotator_endpoints.dart';
 import '../core/constants/app_constants.dart';
 import '../core/utils/logger.dart';
 import '../models/annotator/annotator_models.dart';
+import '../models/chat/chat_models.dart';
 import '../models/common/api_error.dart';
 import '../models/common/service_response.dart';
 import 'dio_client.dart';
@@ -55,8 +56,18 @@ class AnnotatorRepository {
   Future<bool> _unwrapBool(Future<Response<dynamic>> Function() request) =>
       _unwrap(request, (data) => data as bool? ?? true);
 
-  Future<List<AnnotatorTaskModel>> getTasks() => _unwrapList(
-        () => _dioClient.get(AnnotatorEndpoints.tasks),
+  Future<List<MyProjectSummaryModel>> getProjects() => _unwrapList(
+        () => _dioClient.get(AnnotatorEndpoints.projects),
+        MyProjectSummaryModel.fromJson,
+      );
+
+  Future<List<AnnotatorTaskModel>> getTasks({String? projectId}) => _unwrapList(
+        () => _dioClient.get(
+          AnnotatorEndpoints.tasks,
+          queryParameters: {
+            if (projectId != null && projectId.isNotEmpty) 'projectId': projectId,
+          },
+        ),
         AnnotatorTaskModel.fromJson,
       );
 

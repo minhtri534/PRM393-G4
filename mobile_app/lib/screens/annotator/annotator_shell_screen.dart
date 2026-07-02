@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../widgets/dlss_dashboard_scaffold.dart';
-import 'task_list_screen.dart';
+import 'chat_list_screen.dart';
+import 'project_list_screen.dart';
 
 class AnnotatorShellScreen extends StatelessWidget {
   const AnnotatorShellScreen({super.key});
@@ -13,9 +14,14 @@ class AnnotatorShellScreen extends StatelessWidget {
       roleIcon: Icons.assignment_outlined,
       destinations: [
         DlssNavDestination(
-          label: 'Workspace',
-          icon: Icons.assignment_outlined,
-          body: TaskListScreen(),
+          label: 'Projects',
+          icon: Icons.folder_outlined,
+          body: AnnotatorProjectListScreen(),
+        ),
+        DlssNavDestination(
+          label: 'Chat',
+          icon: Icons.chat_bubble_outline,
+          body: ChatListScreen(),
         ),
       ],
     );

@@ -4,6 +4,7 @@ using DataLabellingSupportSystem.Api.Common.Results;
 using DataLabellingSupportSystem.Api.Database;
 using DataLabellingSupportSystem.Api.DTOs.Requests.Reviews;
 using DataLabellingSupportSystem.Api.DTOs.Responses.Annotator;
+using DataLabellingSupportSystem.Api.DTOs.Responses.Projects;
 using DataLabellingSupportSystem.Api.DTOs.Responses.Reviews;
 using DataLabellingSupportSystem.Api.Models;
 using DataLabellingSupportSystem.Api.Utils;
@@ -13,7 +14,84 @@ namespace DataLabellingSupportSystem.Api.Services.Reviews;
 
 public sealed class ReviewerWorkflowService(AppDbContext dbContext) : IReviewerWorkflowService
 {
-    public async Task<ServiceResponse<List<ReviewerSubmittedTaskResponse>>> GetSubmittedTasksAsync(string reviewerUserId)
+    public async Task<ServiceResponse<List<MyProjectSummaryResponse>>> GetMyProjectsAsync(string reviewerUserId)
+    {
+        var reviewerId = (reviewerUserId ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(reviewerId))
+        {
+            return ServiceResponse<List<MyProjectSummaryResponse>>.Failure(ErrorMessages.Unauthorized, ["Missing reviewer user id"]);
+        }
+
+        var isAdmin = await IsSystemAdminAsync(reviewerId);
+        List<string> accessibleProjectIds;
+        if (isAdmin)
+        {
+            accessibleProjectIds = await dbContext.Projects
+                .AsNoTracking()
+                .Select(x => x.Id)
+                .ToListAsync();
+        }
+        else
+        {
+            accessibleProjectIds = await GetReviewerProjectIdsAsync(reviewerId);
+        }
+
+        if (accessibleProjectIds.Count == 0)
+        {
+            return ServiceResponse<List<MyProjectSummaryResponse>>.Success([], "OK");
+        }
+
+        var projects = await dbContext.Projects
+            .AsNoTracking()
+            .Where(x => accessibleProjectIds.Contains(x.Id))
+            .OrderByDescending(x => x.UpdatedAt)
+            .Select(x => new { x.Id, x.Name, x.Guideline })
+            .ToListAsync();
+
+        var submittedTasksResult = await GetSubmittedTasksAsync(reviewerId);
+        var pendingByProject = (submittedTasksResult.Data ?? [])
+            .GroupBy(x => x.ProjectId)
+            .ToDictionary(g => g.Key, g => g.Count(), StringComparer.Ordinal);
+
+        var recentMessages = await dbContext.ProjectChatMessages
+            .AsNoTracking()
+            .Where(x => accessibleProjectIds.Contains(x.ProjectId))
+            .OrderByDescending(x => x.CreatedAt)
+            .Select(x => new
+            {
+                x.ProjectId,
+                x.CreatedAt,
+                x.Content,
+                x.MessageType,
+                x.AttachmentFileName
+            })
+            .ToListAsync();
+
+        var lastMessages = recentMessages
+            .GroupBy(x => x.ProjectId)
+            .Select(g => g.First())
+            .ToList();
+
+        var items = projects.Select(project =>
+        {
+            var pending = pendingByProject.TryGetValue(project.Id, out var count) ? count : 0;
+            var last = lastMessages.FirstOrDefault(x => x.ProjectId == project.Id);
+            var preview = BuildChatPreview(last?.MessageType, last?.Content, last?.AttachmentFileName);
+
+            return new MyProjectSummaryResponse(
+                project.Id,
+                project.Name,
+                project.Guideline,
+                pending,
+                0,
+                last?.CreatedAt,
+                preview);
+        }).ToList();
+
+        return ServiceResponse<List<MyProjectSummaryResponse>>.Success(items, "OK");
+    }
+
+    public async Task<ServiceResponse<List<ReviewerSubmittedTaskResponse>>> GetSubmittedTasksAsync(string reviewerUserId, string? projectId = null)
     {
         var reviewerId = (reviewerUserId ?? string.Empty).Trim();
         if (string.IsNullOrWhiteSpace(reviewerId))
@@ -24,19 +102,18 @@ public sealed class ReviewerWorkflowService(AppDbContext dbContext) : IReviewerW
         var isAdmin = await IsSystemAdminAsync(reviewerId);
         var accessibleReviewerProjectIds = isAdmin
             ? []
-            : await dbContext.UserProjectRoles
-                .AsNoTracking()
-                .Where(x =>
-                    x.UserId == reviewerId
-                    && x.Role != null
-                    && x.Role.Name == "Reviewer")
-                .Select(x => x.ProjectId)
-                .Distinct()
-                .ToListAsync();
+            : await GetReviewerProjectIdsAsync(reviewerId);
 
         if (!isAdmin && accessibleReviewerProjectIds.Count == 0)
         {
             return ServiceResponse<List<ReviewerSubmittedTaskResponse>>.Success([], "OK");
+        }
+
+        var normalizedProjectId = (projectId ?? string.Empty).Trim();
+        if (!isAdmin && !string.IsNullOrWhiteSpace(normalizedProjectId)
+            && !accessibleReviewerProjectIds.Contains(normalizedProjectId))
+        {
+            return ServiceResponse<List<ReviewerSubmittedTaskResponse>>.Failure(ErrorMessages.Forbidden, ["You do not have access to this project"]);
         }
 
         var eligibleTasks = await dbContext.LabelingTasks
@@ -52,6 +129,13 @@ public sealed class ReviewerWorkflowService(AppDbContext dbContext) : IReviewerW
                 AnnotatorName = x.Annotator != null ? x.Annotator.FullName : string.Empty
             })
             .ToListAsync();
+
+        if (!string.IsNullOrWhiteSpace(normalizedProjectId))
+        {
+            eligibleTasks = eligibleTasks
+                .Where(x => x.ProjectId == normalizedProjectId)
+                .ToList();
+        }
 
         if (eligibleTasks.Count == 0)
         {
@@ -764,6 +848,30 @@ public sealed class ReviewerWorkflowService(AppDbContext dbContext) : IReviewerW
         }
 
         return ServiceResponse<bool>.Failure(ErrorMessages.Forbidden, ["You do not have access to this task project"]);
+    }
+
+    private async Task<List<string>> GetReviewerProjectIdsAsync(string reviewerUserId)
+    {
+        return await dbContext.UserProjectRoles
+            .AsNoTracking()
+            .Where(x =>
+                x.UserId == reviewerUserId
+                && x.Role != null
+                && x.Role.Name == "Reviewer")
+            .Select(x => x.ProjectId)
+            .Distinct()
+            .ToListAsync();
+    }
+
+    private static string? BuildChatPreview(string? messageType, string? content, string? fileName)
+    {
+        var type = (messageType ?? "text").Trim().ToLowerInvariant();
+        return type switch
+        {
+            "image" => "📷 Image",
+            "file" => string.IsNullOrWhiteSpace(fileName) ? "📎 File" : $"📎 {fileName.Trim()}",
+            _ => string.IsNullOrWhiteSpace(content) ? null : content.Trim()
+        };
     }
 
     private async Task<bool> IsSystemAdminAsync(string userId)
