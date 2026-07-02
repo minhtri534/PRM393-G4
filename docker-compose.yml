@@ -1,31 +1,45 @@
-services:
-  db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=AdminPassword123!
-    ports:
-      - "1433:1433"
-
-  backend:
-    build:
-      context: ./backend
-    ports:
-      - "5000:5000"
-    env_file:
-      - .env
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=db;Database=DLSS_Db;User Id=sa;Password=AdminPassword123!;TrustServerCertificate=True;MultipleActiveResultSets=true
-    volumes:
-      - ./backend/storage/demo/images:/app/storage
-    depends_on:
-      - db
-
-  frontend:
-    build:
-      context: ./frontend
-    ports:
-      - "3000:80"
-    depends_on:
-      - backend
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=AdminPassword123!
+    ports:
+      - "1433:1433"
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Database=DLSS_Db;User Id=sa;Password=AdminPassword123!;TrustServerCertificate=True;MultipleActiveResultSets=true
+    volumes:
+      - ./backend/storage/demo/images:/app/storage
+    depends_on:
+      - db
+
+  realtime:
+    build:
+      context: ./realtime-server
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - API_URL=http://backend:5000/api
+      - JWT_SIGNING_KEY=DLSS_DEV_SIGNING_KEY_64CHARS_MIN__CHANGE_IN_PROD__2026_02_18
+      - JWT_ISSUER=DLSS
+      - JWT_AUDIENCE=DLSS
+    depends_on:
+      - backend
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend

@@ -22,6 +22,8 @@ using DataLabellingSupportSystem.Api.Services.ReviewErrors;
 using DataLabellingSupportSystem.Api.Services.LabelingTasks;
 using DataLabellingSupportSystem.Api.Services.Manager;
 using DataLabellingSupportSystem.Api.Services.Admin;
+using DataLabellingSupportSystem.Api.Services.Projects;
+using DataLabellingSupportSystem.Api.Services.Chat;
 
 namespace DataLabellingSupportSystem.Api.Configurations;
 
@@ -103,6 +105,8 @@ public static class DependencyInjection
         services.AddScoped<ILabelingTasksService, LabelingTasksService>();
         services.AddScoped<IManagerService, ManagerService>();
         services.AddScoped<IAdminService, AdminService>();
+        services.AddScoped<IProjectMembershipService, ProjectMembershipService>();
+        services.AddScoped<IChatService, ChatService>();
         services.AddHostedService<DevSeedHostedService>();
         return services;
     }
@@ -170,7 +174,9 @@ public static class DependencyInjection
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes),
                     ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromSeconds(30)
+                    ClockSkew = TimeSpan.FromSeconds(30),
+                    // MapInboundClaims=false keeps JWT claim names as-is; roleName is always emitted.
+                    RoleClaimType = "roleName"
                 };
             });
 

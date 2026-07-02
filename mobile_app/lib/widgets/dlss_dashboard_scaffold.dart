@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../core/theme/app_theme.dart';
 import '../providers/auth_provider.dart';
 import '../routes/app_routes.dart';
+import '../providers/chat_provider.dart';
 import 'dlss_background.dart';
 
 class DlssNavDestination {
@@ -86,6 +87,7 @@ class _DlssDashboardScaffoldState extends State<DlssDashboardScaffold> {
             IconButton(
               icon: const Icon(Icons.logout),
               onPressed: () async {
+                await context.read<ChatProvider>().resetSession();
                 await context.read<AuthProvider>().logout();
                 if (!context.mounted) return;
                 Navigator.of(context).pushNamedAndRemoveUntil(
@@ -131,6 +133,7 @@ class _DlssDashboardScaffoldState extends State<DlssDashboardScaffold> {
                     ),
                     const Spacer(),
                     CircleAvatar(
+                      radius: 18,
                       backgroundColor: Colors.white,
                       child: Text(
                         initial,
@@ -140,9 +143,11 @@ class _DlssDashboardScaffoldState extends State<DlssDashboardScaffold> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 4),
                     Text(
                       fullName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
@@ -150,6 +155,8 @@ class _DlssDashboardScaffoldState extends State<DlssDashboardScaffold> {
                     ),
                     Text(
                       '$email • ${widget.roleTitle}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.8),
                         fontSize: 12,

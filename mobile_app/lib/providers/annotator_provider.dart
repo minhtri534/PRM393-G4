@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../core/constants/app_constants.dart';
 import '../core/utils/logger.dart';
 import '../models/annotator/annotator_models.dart';
+import '../models/chat/chat_models.dart';
 import '../models/common/api_error.dart';
 import '../repositories/annotator_repository.dart';
 
@@ -14,6 +15,7 @@ class AnnotatorProvider extends ChangeNotifier {
   AnnotatorProvider({AnnotatorRepository? repository})
       : _repository = repository ?? AnnotatorRepository();
 
+  AnnotatorLoadState _projectsState = AnnotatorLoadState.initial;
   AnnotatorLoadState _listState = AnnotatorLoadState.initial;
   AnnotatorLoadState _detailState = AnnotatorLoadState.initial;
   AnnotatorLoadState _labelingState = AnnotatorLoadState.initial;
@@ -21,6 +23,8 @@ class AnnotatorProvider extends ChangeNotifier {
   bool _isSaving = false;
 
   List<AnnotatorTaskModel> _tasks = [];
+  List<MyProjectSummaryModel> _projects = [];
+  String? _selectedProjectId;
   AnnotatorTaskModel? _selectedTask;
   List<AnnotatorTaskItemModel> _taskItems = [];
   List<AnnotatorLabelModel> _taskLabels = [];
@@ -33,16 +37,20 @@ class AnnotatorProvider extends ChangeNotifier {
   String? _selectedLabelId;
   int? _selectedBoxIndex;
 
+  AnnotatorLoadState get projectsState => _projectsState;
   AnnotatorLoadState get listState => _listState;
   AnnotatorLoadState get detailState => _detailState;
   AnnotatorLoadState get labelingState => _labelingState;
   String? get errorMessage => _errorMessage;
+  bool get isProjectsLoading => _projectsState == AnnotatorLoadState.loading;
   bool get isListLoading => _listState == AnnotatorLoadState.loading;
   bool get isDetailLoading => _detailState == AnnotatorLoadState.loading;
   bool get isLabelingLoading => _labelingState == AnnotatorLoadState.loading;
   bool get isSaving => _isSaving;
 
   List<AnnotatorTaskModel> get tasks => _tasks;
+  List<MyProjectSummaryModel> get projects => _projects;
+  String? get selectedProjectId => _selectedProjectId;
   AnnotatorTaskModel? get selectedTask => _selectedTask;
   List<AnnotatorTaskItemModel> get taskItems => _taskItems;
   List<AnnotatorLabelModel> get taskLabels => _taskLabels;
@@ -68,13 +76,36 @@ class AnnotatorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchTasks() async {
+  Future<void> fetchProjects() async {
     try {
+      _projectsState = AnnotatorLoadState.loading;
+      _errorMessage = null;
+      notifyListeners();
+
+      _projects = await _repository.getProjects();
+      _projectsState = AnnotatorLoadState.loaded;
+
+      Logger.info('✅ Fetched ${_projects.length} annotator projects');
+      notifyListeners();
+    } on ApiError catch (e) {
+      _projectsState = AnnotatorLoadState.error;
+      _errorMessage = e.message;
+      notifyListeners();
+    } catch (e) {
+      _projectsState = AnnotatorLoadState.error;
+      _errorMessage = AppConstants.errorGeneric;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchTasks({String? projectId}) async {
+    try {
+      _selectedProjectId = projectId;
       _listState = AnnotatorLoadState.loading;
       _errorMessage = null;
       notifyListeners();
 
-      _tasks = await _repository.getTasks();
+      _tasks = await _repository.getTasks(projectId: projectId);
       _listState = AnnotatorLoadState.loaded;
 
       Logger.info('✅ Fetched ${_tasks.length} annotator tasks');
@@ -221,7 +252,7 @@ class AnnotatorProvider extends ChangeNotifier {
 
   Future<void> _ensureTaskLoaded(String taskId) async {
     if (_tasks.isEmpty) {
-      _tasks = await _repository.getTasks();
+      _tasks = await _repository.getTasks(projectId: _selectedProjectId);
     }
 
     final matches = _tasks.where((t) => t.id == taskId);

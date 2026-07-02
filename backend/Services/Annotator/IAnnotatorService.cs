@@ -1,12 +1,14 @@
 using DataLabellingSupportSystem.Api.Common.Results;
 using DataLabellingSupportSystem.Api.DTOs.Requests.Annotator;
 using DataLabellingSupportSystem.Api.DTOs.Responses.Annotator;
+using DataLabellingSupportSystem.Api.DTOs.Responses.Projects;
 
 namespace DataLabellingSupportSystem.Api.Services.Annotator;
 
 public interface IAnnotatorService
 {
-    Task<ServiceResponse<List<AnnotatorTaskSummaryResponse>>> GetMyTasksAsync(string userId);
+    Task<ServiceResponse<List<MyProjectSummaryResponse>>> GetMyProjectsAsync(string userId);
+    Task<ServiceResponse<List<AnnotatorTaskSummaryResponse>>> GetMyTasksAsync(string userId, string? projectId = null);
     Task<ServiceResponse<bool>> AcceptTaskAsync(string userId, string taskId);
     Task<ServiceResponse<bool>> RejectTaskAsync(string userId, string taskId, RejectTaskRequest request);
     Task<ServiceResponse<bool>> StartTaskAsync(string userId, string taskId);

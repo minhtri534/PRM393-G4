@@ -35,6 +35,7 @@ public class AppDbContext : DbContext
     public DbSet<Export> Exports { get; set; } = default!;
     public DbSet<ExportConfig> ExportConfigs { get; set; } = default!;
     public DbSet<ActivityLog> ActivityLogs { get; set; } = default!;
+    public DbSet<ProjectChatMessage> ProjectChatMessages { get; set; } = default!;
 
     public override int SaveChanges()
     {
@@ -319,6 +320,22 @@ public class AppDbContext : DbContext
         }
 
         foreach (var entry in ChangeTracker.Entries<ActivityLog>())
+        {
+            if (entry.State == EntityState.Added)
+            {
+                if (string.IsNullOrWhiteSpace(entry.Entity.Id))
+                {
+                    entry.Entity.Id = Utils.ObjectId.NewObjectId();
+                }
+
+                if (entry.Entity.CreatedAt == default)
+                {
+                    entry.Entity.CreatedAt = now;
+                }
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<ProjectChatMessage>())
         {
             if (entry.State == EntityState.Added)
             {

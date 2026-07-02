@@ -6,6 +6,7 @@ import '../../core/navigation/role_routes.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/email_validator.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/chat_provider.dart';
 import '../../widgets/action_button.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../widgets/dlss_background.dart';
@@ -181,6 +182,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                       _passwordController.text,
                                     );
                                     if (success && mounted) {
+                                      await context
+                                          .read<ChatProvider>()
+                                          .resetSession();
+                                      if (!mounted) return;
                                       final route = homeRouteForRole(
                                         authProvider.userProfile?.roleName,
                                       );

@@ -1,5 +1,6 @@
 /// Annotator API endpoint paths (base URL already includes /api).
 class AnnotatorEndpoints {
+  static const String projects = '/annotator/projects';
   static const String tasks = '/annotator/tasks';
   static String taskItems(String taskId) => '/annotator/tasks/$taskId/items';
   static String taskLabels(String taskId) => '/annotator/tasks/$taskId/labels';

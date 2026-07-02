@@ -89,7 +89,7 @@ class ManagerEndpoints {
   // Activity logs
   static const String activityLogs = '/manager/activity-logs';
 
-  // Users (manager-scoped CRUD; /users/* is admin-only on older backends)
+  // Users (Manager CRUD — use ManagerController; same auth as /manager/projects)
   static const String usersSearch = '/users/search';
   static const String users = '/manager/users';
   static String user(String id) => '/manager/users/$id';

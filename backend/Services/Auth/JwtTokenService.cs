@@ -31,6 +31,7 @@ public sealed class JwtTokenService(IOptions<JwtOptions> jwtOptions) : IJwtToken
 
         if (!string.IsNullOrWhiteSpace(roleName))
         {
+            claims.Add(new Claim("role", roleName));
             claims.Add(new Claim(ClaimTypes.Role, roleName));
             claims.Add(new Claim("roleName", roleName));
         }
