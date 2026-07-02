@@ -24,17 +24,11 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
     final payment = provider.selectedPayment;
 
     if (payment == null) {
-      return const Scaffold(
-        body: Center(
-          child: Text("No payment selected"),
-        ),
-      );
+      return const Scaffold(body: Center(child: Text("No payment selected")));
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Payment Detail"),
-      ),
+      appBar: AppBar(title: const Text("Payment Detail")),
       body: Padding(
         padding: const EdgeInsets.all(AppConstants.paddingMedium),
         child: Column(
@@ -43,10 +37,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
             DlssCard(
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 28,
-                    child: Text(payment.userName[0]),
-                  ),
+                  CircleAvatar(radius: 28, child: Text(payment.userName[0])),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -73,18 +64,15 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
             DlssCard(
               child: Column(
                 children: [
-                  _row("Completed Tasks",
-                      payment.completedTasks.toString()),
+                  _row("Completed Tasks", payment.completedTasks.toString()),
                   const Divider(),
-                  _row("Completed Labels",
-                      payment.completedLabels.toString()),
+                  _row("Completed Labels", payment.completedLabels.toString()),
                   const Divider(),
                   _row("Amount", "\$${payment.amount}"),
                   const Divider(),
                   _row("Payment Method", payment.paymentMethod),
                   const Divider(),
-                  _row("Reference",
-                      payment.reference ?? "Monthly Salary"),
+                  _row("Reference", payment.reference ?? "Monthly Salary"),
                 ],
               ),
             ),
@@ -100,11 +88,9 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                   : () async {
                       setState(() => _isPaying = true);
 
-                      await Future.delayed(
-                          const Duration(seconds: 2));
+                      await Future.delayed(const Duration(seconds: 2));
 
-                      final result =
-                          await provider.paySalary(
+                      final result = await provider.paySalary(
                         paymentRequestFrom(payment),
                       );
 
@@ -115,10 +101,8 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) =>
-                              PaymentSuccessScreen(
-                            transactionId:
-                                result.transactionId,
+                          builder: (_) => PaymentSuccessScreen(
+                            transactionId: result.transactionId,
                             amount: payment.amount,
                             name: payment.userName,
                           ),
@@ -139,10 +123,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title),
-          Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
         ],
       ),
     );

@@ -75,9 +75,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
       return Center(
         child: Text(
           'No project chat rooms available.',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppTheme.textSecondaryColor,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondaryColor),
         ),
       );
     }
@@ -93,10 +93,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
           return AnnotatorProjectCard(
             project: project,
             showChatPreview: true,
-            onTap: () => Navigator.of(context).pushNamed(
-              AppRoutes.annotatorChatRoom,
-              arguments: project,
-            ),
+            onTap: () => Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.annotatorChatRoom, arguments: project),
           );
         },
       ),

@@ -36,9 +36,9 @@ class _DatasetListScreenState extends State<DatasetListScreen> {
             .where(
               (d) =>
                   d.name.toLowerCase().contains(_search.toLowerCase()) ||
-                  (d.projectName ?? '')
-                      .toLowerCase()
-                      .contains(_search.toLowerCase()),
+                  (d.projectName ?? '').toLowerCase().contains(
+                    _search.toLowerCase(),
+                  ),
             )
             .toList();
 

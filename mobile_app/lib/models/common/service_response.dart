@@ -24,9 +24,9 @@ class ServiceResponse<T> {
   }
 
   Map<String, dynamic> toJson() => {
-        'isSuccess': isSuccess,
-        'data': data,
-        'message': message,
-        'errors': errors,
-      };
+    'isSuccess': isSuccess,
+    'data': data,
+    'message': message,
+    'errors': errors,
+  };
 }

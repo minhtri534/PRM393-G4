@@ -30,18 +30,18 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
   bool _isTodo(String status) => [
-        AppConstants.taskStatusAssigned,
-        AppConstants.taskStatusInProgress,
-        'Returned',
-        'Rejected',
-        'Rework',
-      ].contains(status);
+    AppConstants.taskStatusAssigned,
+    AppConstants.taskStatusInProgress,
+    'Returned',
+    'Rejected',
+    'Rework',
+  ].contains(status);
 
   bool _isDone(String status) => [
-        AppConstants.taskStatusSubmitted,
-        'Completed',
-        AppConstants.taskStatusApproved,
-      ].contains(status);
+    AppConstants.taskStatusSubmitted,
+    'Completed',
+    AppConstants.taskStatusApproved,
+  ].contains(status);
 
   @override
   Widget build(BuildContext context) {
@@ -114,8 +114,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   ? 'You have no tasks to do.'
                   : "You haven't completed any tasks yet.",
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.textSecondaryColor,
-                  ),
+                color: AppTheme.textSecondaryColor,
+              ),
             ),
           ],
         ),
@@ -132,10 +132,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
           final task = filtered[index];
           return TaskCard(
             task: task,
-            onTap: () => Navigator.of(context).pushNamed(
-              AppRoutes.annotatorTaskDetail,
-              arguments: task.id,
-            ),
+            onTap: () => Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.annotatorTaskDetail, arguments: task.id),
             onStart: () async {
               final provider = context.read<AnnotatorProvider>();
               await provider.startTask(task.id);

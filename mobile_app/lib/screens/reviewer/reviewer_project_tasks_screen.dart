@@ -22,14 +22,15 @@ class ReviewerProjectTasksScreen extends StatefulWidget {
       _ReviewerProjectTasksScreenState();
 }
 
-class _ReviewerProjectTasksScreenState extends State<ReviewerProjectTasksScreen> {
+class _ReviewerProjectTasksScreenState
+    extends State<ReviewerProjectTasksScreen> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context
-          .read<ReviewerProvider>()
-          .fetchSubmittedTasks(projectId: widget.project.id);
+      context.read<ReviewerProvider>().fetchSubmittedTasks(
+        projectId: widget.project.id,
+      );
     });
   }
 
@@ -41,10 +42,9 @@ class _ReviewerProjectTasksScreenState extends State<ReviewerProjectTasksScreen>
         actions: [
           IconButton(
             tooltip: 'Project chat',
-            onPressed: () => Navigator.of(context).pushNamed(
-              AppRoutes.reviewerChatRoom,
-              arguments: widget.project,
-            ),
+            onPressed: () => Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.reviewerChatRoom, arguments: widget.project),
             icon: const Icon(Icons.chat_bubble_outline),
           ),
         ],
@@ -84,11 +84,13 @@ class _ReviewerProjectTasksScreenState extends State<ReviewerProjectTasksScreen>
       return const LoadingSkeleton(itemCount: 4);
     }
 
-    if (provider.listState == ReviewerLoadState.error && provider.tasks.isEmpty) {
+    if (provider.listState == ReviewerLoadState.error &&
+        provider.tasks.isEmpty) {
       return error_widget.ErrorWidget(
         message: provider.errorMessage ?? AppConstants.errorGeneric,
         icon: Icons.error_outline,
-        onRetry: () => provider.fetchSubmittedTasks(projectId: widget.project.id),
+        onRetry: () =>
+            provider.fetchSubmittedTasks(projectId: widget.project.id),
       );
     }
 
@@ -102,8 +104,8 @@ class _ReviewerProjectTasksScreenState extends State<ReviewerProjectTasksScreen>
             Text(
               'No tasks pending review.',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.textSecondaryColor,
-                  ),
+                color: AppTheme.textSecondaryColor,
+              ),
             ),
           ],
         ),
@@ -122,10 +124,9 @@ class _ReviewerProjectTasksScreenState extends State<ReviewerProjectTasksScreen>
           return DlssCard(
             padding: const EdgeInsets.all(AppConstants.paddingMedium),
             onTap: () async {
-              final result = await Navigator.of(context).pushNamed(
-                AppRoutes.reviewerTaskDetail,
-                arguments: task.id,
-              );
+              final result = await Navigator.of(
+                context,
+              ).pushNamed(AppRoutes.reviewerTaskDetail, arguments: task.id);
               if (result == true && context.mounted) {
                 provider.fetchSubmittedTasks(projectId: widget.project.id);
               }
@@ -151,9 +152,8 @@ class _ReviewerProjectTasksScreenState extends State<ReviewerProjectTasksScreen>
                     children: [
                       Text(
                         task.displayTitle,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 6),
                       Text(
@@ -164,9 +164,9 @@ class _ReviewerProjectTasksScreenState extends State<ReviewerProjectTasksScreen>
                       Text(
                         'Submitted: ${task.submittedAt.toLocal().toString().split('.').first}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: AppTheme.textHintColor,
-                              fontSize: 11,
-                            ),
+                          color: AppTheme.textHintColor,
+                          fontSize: 11,
+                        ),
                       ),
                     ],
                   ),

@@ -6,11 +6,7 @@ class StatusBadge extends StatelessWidget {
   final String status;
   final bool outlined;
 
-  const StatusBadge({
-    super.key,
-    required this.status,
-    this.outlined = false,
-  });
+  const StatusBadge({super.key, required this.status, this.outlined = false});
 
   @override
   Widget build(BuildContext context) {

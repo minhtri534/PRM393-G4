@@ -10,9 +10,6 @@ void main() async {
   await authProvider.initialize();
 
   runApp(
-    ChangeNotifierProvider.value(
-      value: authProvider,
-      child: const MyApp(),
-    ),
+    ChangeNotifierProvider.value(value: authProvider, child: const MyApp()),
   );
 }

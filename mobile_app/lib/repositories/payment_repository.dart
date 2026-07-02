@@ -65,15 +65,13 @@ class PaymentRepository {
     );
   }
 
-  Future<PaymentResponse> paySalary(
-      PaymentRequest request) async {
+  Future<PaymentResponse> paySalary(PaymentRequest request) async {
     await Future.delayed(const Duration(seconds: 2));
 
     return PaymentResponse(
       success: true,
       message: "Payment Successful",
-      transactionId:
-          "TX${DateTime.now().millisecondsSinceEpoch}",
+      transactionId: "TX${DateTime.now().millisecondsSinceEpoch}",
     );
   }
 

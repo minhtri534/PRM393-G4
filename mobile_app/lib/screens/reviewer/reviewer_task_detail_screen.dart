@@ -64,7 +64,9 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
     final feedback = _commentController.text.trim();
     if (feedback.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please provide feedback before returning')),
+        const SnackBar(
+          content: Text('Please provide feedback before returning'),
+        ),
       );
       return;
     }
@@ -95,7 +97,9 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
     return Scaffold(
       backgroundColor: AppTheme.surfaceSoftColor,
       appBar: AppBar(
-        title: Text('Review #${widget.taskId.length > 6 ? widget.taskId.substring(widget.taskId.length - 6) : widget.taskId}'),
+        title: Text(
+          'Review #${widget.taskId.length > 6 ? widget.taskId.substring(widget.taskId.length - 6) : widget.taskId}',
+        ),
       ),
       body: Consumer<ReviewerProvider>(
         builder: (context, provider, _) {
@@ -159,9 +163,8 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                             children: [
                               Text(
                                 'Project Guideline',
-                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                style: Theme.of(context).textTheme.titleSmall
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Text(data.guideline!),
@@ -177,9 +180,8 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                           children: [
                             Text(
                               'Annotations (${data.annotations.length})',
-                              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              style: Theme.of(context).textTheme.titleSmall
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 8),
                             ...data.annotations.map(
@@ -203,17 +205,16 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                             children: [
                               Text(
                                 'Error types (optional)',
-                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                style: Theme.of(context).textTheme.titleSmall
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Wrap(
                                 spacing: 8,
                                 runSpacing: 8,
                                 children: provider.errorTypes.map((type) {
-                                  final selected =
-                                      _selectedErrorTypeIds.contains(type.id);
+                                  final selected = _selectedErrorTypeIds
+                                      .contains(type.id);
                                   return FilterChip(
                                     label: Text(type.name),
                                     selected: selected,
@@ -288,7 +289,11 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
       ),
       child: Text(
         label,
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: color),
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: color,
+        ),
       ),
     );
   }
@@ -316,9 +321,15 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.info_outline, size: 14, color: AppTheme.primaryColor),
+                  const Icon(
+                    Icons.info_outline,
+                    size: 14,
+                    color: AppTheme.primaryColor,
+                  ),
                   const SizedBox(width: 6),
-                  Expanded(child: Text(note, style: const TextStyle(fontSize: 12))),
+                  Expanded(
+                    child: Text(note, style: const TextStyle(fontSize: 12)),
+                  ),
                 ],
               ),
             ),
@@ -351,7 +362,9 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                 variant: ActionButtonVariant.outline,
                 icon: Icons.undo,
                 isLoading: provider.isSubmitting,
-                onPressed: provider.isSubmitting ? null : () => _returnTask(provider),
+                onPressed: provider.isSubmitting
+                    ? null
+                    : () => _returnTask(provider),
               ),
             ),
             const SizedBox(width: 12),
@@ -360,7 +373,9 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                 label: 'Approve',
                 icon: Icons.check_circle_outline,
                 isLoading: provider.isSubmitting,
-                onPressed: provider.isSubmitting ? null : () => _approve(provider),
+                onPressed: provider.isSubmitting
+                    ? null
+                    : () => _approve(provider),
               ),
             ),
           ],

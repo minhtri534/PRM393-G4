@@ -91,9 +91,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 children: [
                                   Text(
                                     'Get started',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
+                                    style: Theme.of(context).textTheme.bodySmall
                                         ?.copyWith(
                                           color: AppTheme.textSecondaryColor,
                                         ),
@@ -125,11 +123,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: AppTheme.errorColor
-                                      .withValues(alpha: 0.08),
+                                  color: AppTheme.errorColor.withValues(
+                                    alpha: 0.08,
+                                  ),
                                   border: Border.all(
-                                    color: AppTheme.errorColor
-                                        .withValues(alpha: 0.3),
+                                    color: AppTheme.errorColor.withValues(
+                                      alpha: 0.3,
+                                    ),
                                   ),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -163,8 +163,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     controller: _fullNameController,
                                     label: 'Full Name',
                                     hintText: 'Your full name',
-                                    prefixIcon:
-                                        const Icon(Icons.person_outline),
+                                    prefixIcon: const Icon(
+                                      Icons.person_outline,
+                                    ),
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return 'Name is required';
@@ -221,7 +222,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     label: 'Phone Number (Optional)',
                                     hintText: '+1 (555) 000-0000',
                                     keyboardType: TextInputType.phone,
-                                    prefixIcon: const Icon(Icons.phone_outlined),
+                                    prefixIcon: const Icon(
+                                      Icons.phone_outlined,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -237,18 +240,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   fullName: _fullNameController.text.trim(),
                                   email: _emailController.text.trim(),
                                   password: _passwordController.text,
-                                  phoneNumber: _phoneController.text
-                                          .trim()
-                                          .isEmpty
+                                  phoneNumber:
+                                      _phoneController.text.trim().isEmpty
                                       ? null
                                       : _phoneController.text.trim(),
                                 );
                                 if (response != null && mounted) {
                                   Navigator.of(context).pushNamed(
                                     AppRoutes.verifyEmail,
-                                    arguments: {
-                                      'email': response.email,
-                                    },
+                                    arguments: {'email': response.email},
                                   );
                                 }
                               },
@@ -259,8 +259,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               children: [
                                 Text(
                                   'Already have an account? ',
-                                  style:
-                                      Theme.of(context).textTheme.bodyMedium,
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                                 GestureDetector(
                                   onTap: () => Navigator.of(context).pop(),

@@ -76,9 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 children: [
                                   Text(
                                     'Welcome back',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
+                                    style: Theme.of(context).textTheme.bodySmall
                                         ?.copyWith(
                                           color: AppTheme.textSecondaryColor,
                                         ),
@@ -104,9 +102,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: AppTheme.errorColor.withValues(alpha: 0.08),
+                                color: AppTheme.errorColor.withValues(
+                                  alpha: 0.08,
+                                ),
                                 border: Border.all(
-                                  color: AppTheme.errorColor.withValues(alpha: 0.3),
+                                  color: AppTheme.errorColor.withValues(
+                                    alpha: 0.3,
+                                  ),
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -189,8 +191,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       final route = homeRouteForRole(
                                         authProvider.userProfile?.roleName,
                                       );
-                                      Navigator.of(context)
-                                          .pushNamedAndRemoveUntil(
+                                      Navigator.of(
+                                        context,
+                                      ).pushNamedAndRemoveUntil(
                                         route,
                                         (route) => false,
                                       );
@@ -206,13 +209,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               GestureDetector(
-                                onTap: () =>
-                                    Navigator.of(context).pushNamed('/register'),
+                                onTap: () => Navigator.of(
+                                  context,
+                                ).pushNamed('/register'),
                                 child: Text(
                                   'Sign up',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
+                                  style: Theme.of(context).textTheme.bodyMedium
                                       ?.copyWith(
                                         color: AppTheme.primaryColor,
                                         fontWeight: FontWeight.w600,

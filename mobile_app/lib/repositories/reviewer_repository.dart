@@ -14,7 +14,7 @@ class ReviewerRepository {
   final DioClient _dioClient;
 
   ReviewerRepository({DioClient? dioClient})
-      : _dioClient = dioClient ?? DioClient();
+    : _dioClient = dioClient ?? DioClient();
 
   Future<T> _unwrap<T>(
     Future<Response<dynamic>> Function() request,
@@ -65,7 +65,9 @@ class ReviewerRepository {
       );
     } on ApiError catch (e) {
       if (e.code != 'HTTP_404') rethrow;
-      Logger.info('Reviewer /projects not found — using chat + submitted fallback');
+      Logger.info(
+        'Reviewer /projects not found — using chat + submitted fallback',
+      );
       return _getProjectsFallback();
     }
   }
@@ -119,27 +121,26 @@ class ReviewerRepository {
 
   Future<List<ReviewerSubmittedTaskModel>> getSubmittedTasks({
     String? projectId,
-  }) =>
-      _unwrapList(
-        () => _dioClient.get(
-          ReviewerEndpoints.submittedTasks,
-          queryParameters: {
-            if (projectId != null && projectId.isNotEmpty) 'projectId': projectId,
-          },
-        ),
-        ReviewerSubmittedTaskModel.fromJson,
-      );
+  }) => _unwrapList(
+    () => _dioClient.get(
+      ReviewerEndpoints.submittedTasks,
+      queryParameters: {
+        if (projectId != null && projectId.isNotEmpty) 'projectId': projectId,
+      },
+    ),
+    ReviewerSubmittedTaskModel.fromJson,
+  );
 
   Future<ReviewerLabeledDataModel> getLabeledData(String taskId) => _unwrap(
-        () => _dioClient.get(ReviewerEndpoints.labeledData(taskId)),
-        (data) =>
-            ReviewerLabeledDataModel.fromJson(data as Map<String, dynamic>),
-      );
+    () => _dioClient.get(ReviewerEndpoints.labeledData(taskId)),
+    (data) => ReviewerLabeledDataModel.fromJson(data as Map<String, dynamic>),
+  );
 
   Future<GuidelineComparisonModel> getGuidelineComparison(String taskId) =>
       _unwrap(
         () => _dioClient.get(ReviewerEndpoints.guidelineComparison(taskId)),
-        (data) => GuidelineComparisonModel.fromJson(data as Map<String, dynamic>),
+        (data) =>
+            GuidelineComparisonModel.fromJson(data as Map<String, dynamic>),
       );
 
   Future<LabelConsistencyModel> getConsistencyValidation(String taskId) =>
@@ -149,42 +150,41 @@ class ReviewerRepository {
       );
 
   Future<List<ReviewerErrorTypeModel>> getErrorTypes() => _unwrapList(
-        () => _dioClient.get(ReviewerEndpoints.errorTypes),
-        ReviewerErrorTypeModel.fromJson,
-      );
+    () => _dioClient.get(ReviewerEndpoints.errorTypes),
+    ReviewerErrorTypeModel.fromJson,
+  );
 
   Future<bool> approveTask(
     String taskId, {
     required int score,
     String? comment,
-  }) =>
-      _unwrapBool(
-        () => _dioClient.post(
-          ReviewerEndpoints.approveTask(taskId),
-          data: {
-            'score': score,
-            if (comment != null && comment.trim().isNotEmpty) 'comment': comment.trim(),
-          },
-        ),
-      );
+  }) => _unwrapBool(
+    () => _dioClient.post(
+      ReviewerEndpoints.approveTask(taskId),
+      data: {
+        'score': score,
+        if (comment != null && comment.trim().isNotEmpty)
+          'comment': comment.trim(),
+      },
+    ),
+  );
 
   Future<bool> returnTask(
     String taskId, {
     required String feedback,
     required int score,
     List<String>? errorTypeIds,
-  }) =>
-      _unwrapBool(
-        () => _dioClient.post(
-          ReviewerEndpoints.returnTask(taskId),
-          data: {
-            'feedback': feedback.trim(),
-            'score': score,
-            if (errorTypeIds != null && errorTypeIds.isNotEmpty)
-              'errorTypeIds': errorTypeIds,
-          },
-        ),
-      );
+  }) => _unwrapBool(
+    () => _dioClient.post(
+      ReviewerEndpoints.returnTask(taskId),
+      data: {
+        'feedback': feedback.trim(),
+        'score': score,
+        if (errorTypeIds != null && errorTypeIds.isNotEmpty)
+          'errorTypeIds': errorTypeIds,
+      },
+    ),
+  );
 
   Future<List<int>> getTaskContent(String taskId) async {
     try {

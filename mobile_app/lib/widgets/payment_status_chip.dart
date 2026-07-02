@@ -5,10 +5,7 @@ import '../core/theme/app_theme.dart';
 class PaymentStatusChip extends StatelessWidget {
   final String status;
 
-  const PaymentStatusChip({
-    super.key,
-    required this.status,
-  });
+  const PaymentStatusChip({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +39,7 @@ class PaymentStatusChip extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 6,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(20),
@@ -53,18 +47,11 @@ class PaymentStatusChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 16,
-            color: foreground,
-          ),
+          Icon(icon, size: 16, color: foreground),
           const SizedBox(width: 4),
           Text(
             status,
-            style: TextStyle(
-              color: foreground,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(color: foreground, fontWeight: FontWeight.w600),
           ),
         ],
       ),

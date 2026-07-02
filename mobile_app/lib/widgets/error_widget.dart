@@ -34,27 +34,23 @@ class ErrorWidget extends StatelessWidget {
                   color: AppTheme.errorColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Icon(
-                  icon,
-                  size: 28,
-                  color: AppTheme.errorColor,
-                ),
+                child: Icon(icon, size: 28, color: AppTheme.errorColor),
               ),
               const SizedBox(height: AppConstants.paddingLarge),
               Text(
                 'Oops! Something went wrong',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppTheme.textPrimaryColor,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  color: AppTheme.textPrimaryColor,
+                  fontWeight: FontWeight.w600,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppConstants.paddingMedium),
               Text(
                 message,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.textSecondaryColor,
-                    ),
+                  color: AppTheme.textSecondaryColor,
+                ),
                 textAlign: TextAlign.center,
               ),
               if (onRetry != null) ...[

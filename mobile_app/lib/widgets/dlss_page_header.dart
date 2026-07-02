@@ -26,19 +26,19 @@ class DlssPageHeader extends StatelessWidget {
               Text(
                 title,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.textPrimaryColor,
-                      letterSpacing: -0.5,
-                    ),
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimaryColor,
+                  letterSpacing: -0.5,
+                ),
               ),
               if (subtitle != null) ...[
                 const SizedBox(height: 4),
                 Text(
                   subtitle!,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppTheme.textSecondaryColor,
-                      ),
+                    color: AppTheme.textSecondaryColor,
+                  ),
                 ),
               ],
             ],

@@ -25,11 +25,8 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconColor =
-        _isDone ? AppTheme.successColor : AppTheme.primaryColor;
-    final iconBg = _isDone
-        ? const Color(0xFFECFDF5)
-        : const Color(0xFFEFF6FF);
+    final iconColor = _isDone ? AppTheme.successColor : AppTheme.primaryColor;
+    final iconBg = _isDone ? const Color(0xFFECFDF5) : const Color(0xFFEFF6FF);
 
     return DlssCard(
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
@@ -53,8 +50,8 @@ class TaskCard extends StatelessWidget {
                   Text(
                     task.displayTitle,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Text(
@@ -64,14 +61,19 @@ class TaskCard extends StatelessWidget {
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      const Icon(Icons.schedule, size: 12, color: AppTheme.textHintColor),
+                      const Icon(
+                        Icons.schedule,
+                        size: 12,
+                        color: AppTheme.textHintColor,
+                      ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           _isDone
                               ? 'Finished: ${task.completedAt?.toLocal().toString().split('.').first ?? '-'}'
                               : 'Assigned: ${task.assignedAt?.toLocal().toString().split('.').first ?? '-'}',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
                                 color: AppTheme.textHintColor,
                                 fontSize: 11,
                               ),
@@ -89,7 +91,11 @@ class TaskCard extends StatelessWidget {
               DlssBadge.forTaskStatus(task.status),
               const SizedBox(height: 8),
               if (_isDone)
-                const Icon(Icons.check_circle, color: AppTheme.successColor, size: 20)
+                const Icon(
+                  Icons.check_circle,
+                  color: AppTheme.successColor,
+                  size: 20,
+                )
               else
                 TextButton(
                   onPressed: onStart ?? onTap,

@@ -13,7 +13,7 @@ class AnnotatorRepository {
   final DioClient _dioClient;
 
   AnnotatorRepository({DioClient? dioClient})
-      : _dioClient = dioClient ?? DioClient();
+    : _dioClient = dioClient ?? DioClient();
 
   Future<T> _unwrap<T>(
     Future<Response<dynamic>> Function() request,
@@ -57,19 +57,19 @@ class AnnotatorRepository {
       _unwrap(request, (data) => data as bool? ?? true);
 
   Future<List<MyProjectSummaryModel>> getProjects() => _unwrapList(
-        () => _dioClient.get(AnnotatorEndpoints.projects),
-        MyProjectSummaryModel.fromJson,
-      );
+    () => _dioClient.get(AnnotatorEndpoints.projects),
+    MyProjectSummaryModel.fromJson,
+  );
 
   Future<List<AnnotatorTaskModel>> getTasks({String? projectId}) => _unwrapList(
-        () => _dioClient.get(
-          AnnotatorEndpoints.tasks,
-          queryParameters: {
-            if (projectId != null && projectId.isNotEmpty) 'projectId': projectId,
-          },
-        ),
-        AnnotatorTaskModel.fromJson,
-      );
+    () => _dioClient.get(
+      AnnotatorEndpoints.tasks,
+      queryParameters: {
+        if (projectId != null && projectId.isNotEmpty) 'projectId': projectId,
+      },
+    ),
+    AnnotatorTaskModel.fromJson,
+  );
 
   Future<List<AnnotatorTaskItemModel>> getTaskItems(String taskId) =>
       _unwrapList(
@@ -78,14 +78,14 @@ class AnnotatorRepository {
       );
 
   Future<List<AnnotatorLabelModel>> getTaskLabels(String taskId) => _unwrapList(
-        () => _dioClient.get(AnnotatorEndpoints.taskLabels(taskId)),
-        AnnotatorLabelModel.fromJson,
-      );
+    () => _dioClient.get(AnnotatorEndpoints.taskLabels(taskId)),
+    AnnotatorLabelModel.fromJson,
+  );
 
   Future<AnnotatorGuidelineModel> getTaskGuideline(String taskId) => _unwrap(
-        () => _dioClient.get(AnnotatorEndpoints.taskGuideline(taskId)),
-        (data) => AnnotatorGuidelineModel.fromJson(data as Map<String, dynamic>),
-      );
+    () => _dioClient.get(AnnotatorEndpoints.taskGuideline(taskId)),
+    (data) => AnnotatorGuidelineModel.fromJson(data as Map<String, dynamic>),
+  );
 
   Future<List<AnnotatorAnnotationModel>> getTaskAnnotations(String taskId) =>
       _unwrapList(
@@ -99,21 +99,22 @@ class AnnotatorRepository {
     final response = await _dioClient.get(
       AnnotatorEndpoints.taskReviewFeedback(taskId),
     );
-    final serviceResponse = ServiceResponse<AnnotatorReviewFeedbackModel?>.fromJson(
-      response.data as Map<String, dynamic>,
-      (data) {
-        if (data == null) return null;
-        if (data is List) {
-          if (data.isEmpty) return null;
-          return AnnotatorReviewFeedbackModel.fromJson(
-            data.first as Map<String, dynamic>,
-          );
-        }
-        return AnnotatorReviewFeedbackModel.fromJson(
-          data as Map<String, dynamic>,
+    final serviceResponse =
+        ServiceResponse<AnnotatorReviewFeedbackModel?>.fromJson(
+          response.data as Map<String, dynamic>,
+          (data) {
+            if (data == null) return null;
+            if (data is List) {
+              if (data.isEmpty) return null;
+              return AnnotatorReviewFeedbackModel.fromJson(
+                data.first as Map<String, dynamic>,
+              );
+            }
+            return AnnotatorReviewFeedbackModel.fromJson(
+              data as Map<String, dynamic>,
+            );
+          },
         );
-      },
-    );
     if (!serviceResponse.isSuccess) {
       throw ApiError(
         message: serviceResponse.message.isNotEmpty
@@ -125,25 +126,20 @@ class AnnotatorRepository {
     return serviceResponse.data;
   }
 
-  Future<bool> acceptTask(String taskId) => _unwrapBool(
-        () => _dioClient.post(AnnotatorEndpoints.taskAccept(taskId)),
-      );
+  Future<bool> acceptTask(String taskId) =>
+      _unwrapBool(() => _dioClient.post(AnnotatorEndpoints.taskAccept(taskId)));
 
   Future<bool> rejectTask(String taskId, {String? reason}) => _unwrapBool(
-        () => _dioClient.post(
-          AnnotatorEndpoints.taskReject(taskId),
-          data: {'reason': reason},
-        ),
-      );
+    () => _dioClient.post(
+      AnnotatorEndpoints.taskReject(taskId),
+      data: {'reason': reason},
+    ),
+  );
 
-  Future<bool> startTask(String taskId) => _unwrapBool(
-        () => _dioClient.post(AnnotatorEndpoints.taskStart(taskId)),
-      );
+  Future<bool> startTask(String taskId) =>
+      _unwrapBool(() => _dioClient.post(AnnotatorEndpoints.taskStart(taskId)));
 
-  Future<bool> saveAnnotationDraft(
-    String taskId,
-    List<LabelingBox> boxes,
-  ) =>
+  Future<bool> saveAnnotationDraft(String taskId, List<LabelingBox> boxes) =>
       _unwrapBool(
         () => _dioClient.put(
           AnnotatorEndpoints.taskAnnotationsDraft(taskId),
@@ -151,10 +147,7 @@ class AnnotatorRepository {
         ),
       );
 
-  Future<bool> submitAnnotations(
-    String taskId,
-    List<LabelingBox> boxes,
-  ) =>
+  Future<bool> submitAnnotations(String taskId, List<LabelingBox> boxes) =>
       _unwrapBool(
         () => _dioClient.post(
           AnnotatorEndpoints.taskAnnotationsSubmit(taskId),
@@ -163,8 +156,8 @@ class AnnotatorRepository {
       );
 
   Map<String, dynamic> _upsertPayload(List<LabelingBox> boxes) => {
-        'objects': boxes.map((b) => b.toUpsertJson()).toList(),
-      };
+    'objects': boxes.map((b) => b.toUpsertJson()).toList(),
+  };
 
   Future<List<int>> getTaskDataItemContent(String taskId) async {
     try {

@@ -35,20 +35,19 @@ class DlssCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (topAccent != null && topAccent!.style != BorderStyle.none)
-          Container(
-            height: topAccent!.width,
-            color: topAccent!.color,
-          ),
+          Container(height: topAccent!.width, color: topAccent!.color),
         if (fillHeight)
           Expanded(
             child: Padding(
-              padding: padding ?? const EdgeInsets.all(AppConstants.paddingMedium),
+              padding:
+                  padding ?? const EdgeInsets.all(AppConstants.paddingMedium),
               child: child,
             ),
           )
         else
           Padding(
-            padding: padding ?? const EdgeInsets.all(AppConstants.paddingMedium),
+            padding:
+                padding ?? const EdgeInsets.all(AppConstants.paddingMedium),
             child: child,
           ),
       ],
@@ -83,11 +82,7 @@ class DlssCard extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: borderRadius,
-        child: card,
-      ),
+      child: InkWell(onTap: onTap, borderRadius: borderRadius, child: card),
     );
   }
 }

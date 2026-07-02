@@ -14,10 +14,7 @@ import '../../widgets/dlss_card.dart';
 class VerifyEmailScreen extends StatefulWidget {
   final String email;
 
-  const VerifyEmailScreen({
-    super.key,
-    required this.email,
-  });
+  const VerifyEmailScreen({super.key, required this.email});
 
   @override
   State<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
@@ -41,14 +38,12 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
   Future<void> _resendCode() async {
     final response = await context.read<AuthProvider>().resendVerificationOtp(
-          widget.email,
-        );
+      widget.email,
+    );
     if (!mounted || response == null) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          'A new verification code was sent to ${widget.email}.',
-        ),
+        content: Text('A new verification code was sent to ${widget.email}.'),
       ),
     );
   }
@@ -126,7 +121,9 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                             decoration: BoxDecoration(
                               color: const Color(0xFFF8FAFC),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                              border: Border.all(
+                                color: const Color(0xFFE2E8F0),
+                              ),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,9 +135,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                                 const SizedBox(height: 6),
                                 Text(
                                   widget.email,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleSmall
+                                  style: Theme.of(context).textTheme.titleSmall
                                       ?.copyWith(fontWeight: FontWeight.w600),
                                 ),
                                 const SizedBox(height: 10),
@@ -157,9 +152,13 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: AppTheme.errorColor.withValues(alpha: 0.08),
+                                color: AppTheme.errorColor.withValues(
+                                  alpha: 0.08,
+                                ),
                                 border: Border.all(
-                                  color: AppTheme.errorColor.withValues(alpha: 0.3),
+                                  color: AppTheme.errorColor.withValues(
+                                    alpha: 0.3,
+                                  ),
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -231,7 +230,9 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                           ),
                           const SizedBox(height: 12),
                           TextButton(
-                            onPressed: authProvider.isLoading ? null : _resendCode,
+                            onPressed: authProvider.isLoading
+                                ? null
+                                : _resendCode,
                             child: const Text('Resend code'),
                           ),
                         ],

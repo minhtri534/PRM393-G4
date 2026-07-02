@@ -21,7 +21,7 @@ class AuthProvider extends ChangeNotifier {
   String? _accessToken;
 
   AuthProvider({AuthRepository? authRepository})
-      : _authRepository = authRepository ?? AuthRepository();
+    : _authRepository = authRepository ?? AuthRepository();
 
   // Getters
   AuthState get state => _state;
@@ -71,9 +71,7 @@ class AuthProvider extends ChangeNotifier {
       _state = AuthState.authenticated;
       _errorMessage = null;
 
-      Logger.info(
-        '✅ Login successful: ${authResponse.user.fullName}',
-      );
+      Logger.info('✅ Login successful: ${authResponse.user.fullName}');
       notifyListeners();
       return true;
     } on ApiError catch (e) {

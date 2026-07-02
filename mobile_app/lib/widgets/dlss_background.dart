@@ -7,11 +7,7 @@ class DlssBackground extends StatelessWidget {
   final Widget child;
   final bool showBlobs;
 
-  const DlssBackground({
-    super.key,
-    required this.child,
-    this.showBlobs = true,
-  });
+  const DlssBackground({super.key, required this.child, this.showBlobs = true});
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +18,7 @@ class DlssBackground extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                Color(0xFFEEF2FF),
-                Color(0xFFFFFFFF),
-                Color(0xFFF8FAFC),
-              ],
+              colors: [Color(0xFFEEF2FF), Color(0xFFFFFFFF), Color(0xFFF8FAFC)],
               stops: [0.0, 0.45, 1.0],
             ),
           ),
@@ -35,26 +27,26 @@ class DlssBackground extends StatelessWidget {
           Positioned(
             top: -60,
             left: -40,
-            child: _blob(
-              180,
-              [AppTheme.primaryColor.withValues(alpha: 0.18), AppTheme.secondaryColor.withValues(alpha: 0.12)],
-            ),
+            child: _blob(180, [
+              AppTheme.primaryColor.withValues(alpha: 0.18),
+              AppTheme.secondaryColor.withValues(alpha: 0.12),
+            ]),
           ),
           Positioned(
             top: 120,
             right: -50,
-            child: _blob(
-              150,
-              [AppTheme.tertiaryColor.withValues(alpha: 0.16), AppTheme.errorColor.withValues(alpha: 0.08)],
-            ),
+            child: _blob(150, [
+              AppTheme.tertiaryColor.withValues(alpha: 0.16),
+              AppTheme.errorColor.withValues(alpha: 0.08),
+            ]),
           ),
           Positioned(
             bottom: -80,
             left: 80,
-            child: _blob(
-              200,
-              [AppTheme.successColor.withValues(alpha: 0.12), AppTheme.secondaryColor.withValues(alpha: 0.1)],
-            ),
+            child: _blob(200, [
+              AppTheme.successColor.withValues(alpha: 0.12),
+              AppTheme.secondaryColor.withValues(alpha: 0.1),
+            ]),
           ),
         ],
         child,

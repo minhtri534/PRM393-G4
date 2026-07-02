@@ -11,7 +11,7 @@ class ChatRepository {
   final DioClient _dioClient;
 
   ChatRepository({DioClient? dioClient})
-      : _dioClient = dioClient ?? DioClient();
+    : _dioClient = dioClient ?? DioClient();
 
   Future<T> _unwrap<T>(
     Future<Response<dynamic>> Function() request,
@@ -52,34 +52,32 @@ class ChatRepository {
   }
 
   Future<List<MyProjectSummaryModel>> getProjects() => _unwrapList(
-        () => _dioClient.get(ChatEndpoints.projects),
-        MyProjectSummaryModel.fromJson,
-      );
+    () => _dioClient.get(ChatEndpoints.projects),
+    MyProjectSummaryModel.fromJson,
+  );
 
   Future<List<ChatMessageModel>> getMessages(
     String projectId, {
     int page = 1,
     int pageSize = 50,
-  }) =>
-      _unwrapList(
-        () => _dioClient.get(
-          ChatEndpoints.projectMessages(projectId),
-          queryParameters: {'page': page, 'pageSize': pageSize},
-        ),
-        ChatMessageModel.fromJson,
-      );
+  }) => _unwrapList(
+    () => _dioClient.get(
+      ChatEndpoints.projectMessages(projectId),
+      queryParameters: {'page': page, 'pageSize': pageSize},
+    ),
+    ChatMessageModel.fromJson,
+  );
 
   Future<ChatMessageModel> sendTextMessage({
     required String projectId,
     required String content,
-  }) =>
-      _unwrap(
-        () => _dioClient.post(
-          ChatEndpoints.projectMessages(projectId),
-          data: {'content': content},
-        ),
-        (data) => ChatMessageModel.fromJson(data as Map<String, dynamic>),
-      );
+  }) => _unwrap(
+    () => _dioClient.post(
+      ChatEndpoints.projectMessages(projectId),
+      data: {'content': content},
+    ),
+    (data) => ChatMessageModel.fromJson(data as Map<String, dynamic>),
+  );
 
   Future<ChatMessageModel> sendAttachment({
     required String projectId,
@@ -88,11 +86,9 @@ class ChatRepository {
     String? caption,
   }) async {
     final formData = FormData.fromMap({
-      'file': await MultipartFile.fromFile(
-        filePath,
-        filename: fileName,
-      ),
-      if (caption != null && caption.trim().isNotEmpty) 'caption': caption.trim(),
+      'file': await MultipartFile.fromFile(filePath, filename: fileName),
+      if (caption != null && caption.trim().isNotEmpty)
+        'caption': caption.trim(),
     });
 
     return _unwrap(

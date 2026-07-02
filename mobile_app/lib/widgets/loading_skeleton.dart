@@ -8,10 +8,7 @@ import 'dlss_card.dart';
 class LoadingSkeleton extends StatelessWidget {
   final int itemCount;
 
-  const LoadingSkeleton({
-    super.key,
-    this.itemCount = 5,
-  });
+  const LoadingSkeleton({super.key, this.itemCount = 5});
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +30,9 @@ class LoadingSkeleton extends StatelessWidget {
                     width: 200,
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
-                      borderRadius:
-                          BorderRadius.circular(AppConstants.borderRadiusSmall),
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.borderRadiusSmall,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -43,8 +41,9 @@ class LoadingSkeleton extends StatelessWidget {
                     width: 150,
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
-                      borderRadius:
-                          BorderRadius.circular(AppConstants.borderRadiusSmall),
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.borderRadiusSmall,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),

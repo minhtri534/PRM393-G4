@@ -1,4 +1,3 @@
-
 class Conversation {
   final String id;
   final List<String> participantNames;

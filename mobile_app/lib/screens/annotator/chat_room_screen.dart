@@ -32,9 +32,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await context.read<ChatProvider>().openRoom(
-            projectId: widget.project.id,
-            projectName: widget.project.name,
-          );
+        projectId: widget.project.id,
+        projectName: widget.project.name,
+      );
       _scrollToBottom();
     });
   }
@@ -83,9 +83,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       await OpenFilex.open(file.path);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Cannot open attachment: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Cannot open attachment: $e')));
     }
   }
 
@@ -212,8 +212,9 @@ class _MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final bubbleColor = isMine ? AppTheme.primaryColor : Colors.white;
     final textColor = isMine ? Colors.white : AppTheme.textPrimaryColor;
-    final subTextColor =
-        isMine ? Colors.white.withValues(alpha: 0.85) : AppTheme.textHintColor;
+    final subTextColor = isMine
+        ? Colors.white.withValues(alpha: 0.85)
+        : AppTheme.textHintColor;
     final borderRadius = BorderRadius.only(
       topLeft: const Radius.circular(16),
       topRight: const Radius.circular(16),
@@ -241,11 +242,7 @@ class _MessageBubble extends StatelessWidget {
         if (message.isText && message.content?.trim().isNotEmpty == true)
           Text(
             message.content!,
-            style: TextStyle(
-              color: textColor,
-              fontSize: 15,
-              height: 1.35,
-            ),
+            style: TextStyle(color: textColor, fontSize: 15, height: 1.35),
           ),
         if (message.isImage) _attachmentBlock(textColor, subTextColor, true),
         if (message.isFile) _attachmentBlock(textColor, subTextColor, false),
@@ -287,10 +284,7 @@ class _MessageBubble extends StatelessWidget {
     if (isMine) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 8),
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: bubble,
-        ),
+        child: Align(alignment: Alignment.centerRight, child: bubble),
       );
     }
 
@@ -439,7 +433,11 @@ class _Composer extends StatelessWidget {
                             color: Colors.white,
                           ),
                         )
-                      : const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+                      : const Icon(
+                          Icons.send_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                 ),
               ),
             ),

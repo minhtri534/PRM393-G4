@@ -20,13 +20,13 @@ class RegisterRequest {
   });
 
   Map<String, dynamic> toJson() => {
-        'fullName': fullName,
-        'email': email,
-        'password': password,
-        'phoneNumber': phoneNumber,
-        'identifyNumber': identifyNumber,
-        'gender': gender,
-        'address': address,
-        'dateOfBirth': dateOfBirth?.toIso8601String(),
-      };
+    'fullName': fullName,
+    'email': email,
+    'password': password,
+    'phoneNumber': phoneNumber,
+    'identifyNumber': identifyNumber,
+    'gender': gender,
+    'address': address,
+    'dateOfBirth': dateOfBirth?.toIso8601String(),
+  };
 }

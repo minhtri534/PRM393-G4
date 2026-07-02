@@ -53,19 +53,13 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
                 height: 42,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
-                  children: [
-                    _chip("All"),
-                    _chip("Paid"),
-                    _chip("Failed"),
-                  ],
+                  children: [_chip("All"), _chip("Paid"), _chip("Failed")],
                 ),
               ),
 
               const SizedBox(height: 16),
 
-              Expanded(
-                child: _buildBody(provider, history),
-              ),
+              Expanded(child: _buildBody(provider, history)),
             ],
           ),
         );
@@ -90,10 +84,7 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
     );
   }
 
-  Widget _buildBody(
-    PaymentProvider provider,
-    List history,
-  ) {
+  Widget _buildBody(PaymentProvider provider, List history) {
     if (provider.isLoading && provider.history.isEmpty) {
       return const LoadingSkeleton(itemCount: 4);
     }
@@ -106,9 +97,7 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
     }
 
     if (history.isEmpty) {
-      return const Center(
-        child: Text("No payment history"),
-      );
+      return const Center(child: Text("No payment history"));
     }
 
     return RefreshIndicator(
@@ -125,26 +114,19 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
               children: [
                 Row(
                   children: [
-                    CircleAvatar(
-                      child: Text(item.workerName[0]),
-                    ),
+                    CircleAvatar(child: Text(item.workerName[0])),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             item.workerName,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           Text(
                             item.role,
-                            style: const TextStyle(
-                              color: Colors.grey,
-                            ),
+                            style: const TextStyle(color: Colors.grey),
                           ),
                         ],
                       ),
@@ -156,15 +138,12 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
                 const SizedBox(height: 12),
 
                 Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("Amount"),
                     Text(
                       "\$${item.amount}",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -172,15 +151,12 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
                 const SizedBox(height: 6),
 
                 Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("Transaction"),
                     Text(
                       item.transactionId,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -188,16 +164,10 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
                 const SizedBox(height: 6),
 
                 Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("Date"),
-                    Text(
-                      item.paymentDate
-                          .toString()
-                          .split(" ")
-                          .first,
-                    ),
+                    Text(item.paymentDate.toString().split(" ").first),
                   ],
                 ),
               ],
@@ -223,18 +193,14 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
     }
 
     return Container(
-      padding:
-          const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         status,
-        style: TextStyle(
-          color: color,
-          fontWeight: FontWeight.w600,
-        ),
+        style: TextStyle(color: color, fontWeight: FontWeight.w600),
       ),
     );
   }

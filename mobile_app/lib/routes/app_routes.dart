@@ -74,9 +74,7 @@ class AppRoutes {
           return _errorRoute('Email not provided for verification');
         }
         return MaterialPageRoute(
-          builder: (_) => VerifyEmailScreen(
-            email: args['email'] as String,
-          ),
+          builder: (_) => VerifyEmailScreen(email: args['email'] as String),
         );
       case annotatorHome:
         return MaterialPageRoute(builder: (_) => const AnnotatorShellScreen());
@@ -173,36 +171,30 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => UserFormScreen(userId: userId),
         );
-      
+
       case managerPaymentList:
-      return MaterialPageRoute(
-        builder: (_) => const PaymentListScreen(),
-      );
+        return MaterialPageRoute(builder: (_) => const PaymentListScreen());
 
-    case managerPaymentDetail:
-      return MaterialPageRoute(
-        builder: (_) => const PaymentDetailScreen(),
-      );
+      case managerPaymentDetail:
+        return MaterialPageRoute(builder: (_) => const PaymentDetailScreen());
 
-    case managerPaymentHistory:
-      return MaterialPageRoute(
-        builder: (_) => const PaymentHistoryScreen(),
-      );
+      case managerPaymentHistory:
+        return MaterialPageRoute(builder: (_) => const PaymentHistoryScreen());
 
-    case managerPaymentSuccess:
-      final args = settings.arguments as Map<String, dynamic>?;
+      case managerPaymentSuccess:
+        final args = settings.arguments as Map<String, dynamic>?;
 
-      if (args == null) {
-        return _errorRoute('Missing payment success data');
-      }
+        if (args == null) {
+          return _errorRoute('Missing payment success data');
+        }
 
-      return MaterialPageRoute(
-        builder: (_) => PaymentSuccessScreen(
-          transactionId: args['transactionId'] ?? '',
-          amount: args['amount'] ?? 0,
-          name: args['name'] ?? '',
-        ),
-      );
+        return MaterialPageRoute(
+          builder: (_) => PaymentSuccessScreen(
+            transactionId: args['transactionId'] ?? '',
+            amount: args['amount'] ?? 0,
+            name: args['name'] ?? '',
+          ),
+        );
       default:
         return _errorRoute('Route not found');
     }

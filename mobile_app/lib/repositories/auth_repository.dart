@@ -19,11 +19,9 @@ class AuthRepository {
   final DioClient _dioClient;
   final FlutterSecureStorage _secureStorage;
 
-  AuthRepository({
-    DioClient? dioClient,
-    FlutterSecureStorage? secureStorage,
-  })  : _dioClient = dioClient ?? DioClient(),
-        _secureStorage = secureStorage ?? const FlutterSecureStorage();
+  AuthRepository({DioClient? dioClient, FlutterSecureStorage? secureStorage})
+    : _dioClient = dioClient ?? DioClient(),
+      _secureStorage = secureStorage ?? const FlutterSecureStorage();
 
   /// Login with email and password
   Future<AuthResponse> login(LoginRequest request) async {
@@ -40,8 +38,7 @@ class AuthRepository {
 
       if (!serviceResponse.isSuccess) {
         throw ApiError(
-          message: serviceResponse.message ??
-              AppConstants.errorGeneric,
+          message: serviceResponse.message ?? AppConstants.errorGeneric,
           code: 'LOGIN_FAILED',
         );
       }
@@ -210,30 +207,20 @@ class AuthRepository {
 
       await _dioClient.post(
         Environment.logoutEndpoint,
-        data: {
-          'refreshToken': refreshToken,
-        },
+        data: {'refreshToken': refreshToken},
       );
 
       await _dioClient.clearAuthToken();
 
-      await _secureStorage.delete(
-        key: AppConstants.refreshTokenKey,
-      );
+      await _secureStorage.delete(key: AppConstants.refreshTokenKey);
 
-      await _secureStorage.delete(
-        key: AppConstants.userProfileKey,
-      );
+      await _secureStorage.delete(key: AppConstants.userProfileKey);
     } catch (e) {
       await _dioClient.clearAuthToken();
 
-      await _secureStorage.delete(
-        key: AppConstants.refreshTokenKey,
-      );
+      await _secureStorage.delete(key: AppConstants.refreshTokenKey);
 
-      await _secureStorage.delete(
-        key: AppConstants.userProfileKey,
-      );
+      await _secureStorage.delete(key: AppConstants.userProfileKey);
     }
   }
 
@@ -247,9 +234,7 @@ class AuthRepository {
     final raw = await _secureStorage.read(key: AppConstants.userProfileKey);
     if (raw == null || raw.isEmpty) return null;
     try {
-      return UserProfile.fromJson(
-        jsonDecode(raw) as Map<String, dynamic>,
-      );
+      return UserProfile.fromJson(jsonDecode(raw) as Map<String, dynamic>);
     } catch (_) {
       return null;
     }

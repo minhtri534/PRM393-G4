@@ -8,11 +8,7 @@ class PaymentCard extends StatelessWidget {
   final Payment payment;
   final VoidCallback? onTap;
 
-  const PaymentCard({
-    super.key,
-    required this.payment,
-    this.onTap,
-  });
+  const PaymentCard({super.key, required this.payment, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -21,25 +17,16 @@ class PaymentCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Row(
             children: [
-
-              CircleAvatar(
-                radius: 24,
-                child: Text(
-                  payment.userName[0],
-                ),
-              ),
+              CircleAvatar(radius: 24, child: Text(payment.userName[0])),
 
               const SizedBox(width: 12),
 
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                  CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     Text(
                       payment.userName,
                       style: const TextStyle(
@@ -50,17 +37,13 @@ class PaymentCard extends StatelessWidget {
 
                     Text(
                       payment.role,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ],
                 ),
               ),
 
-              PaymentStatusChip(
-                status: payment.status,
-              ),
+              PaymentStatusChip(status: payment.status),
             ],
           ),
 
@@ -68,19 +51,12 @@ class PaymentCard extends StatelessWidget {
 
           Row(
             children: [
-
               Expanded(
-                child: _info(
-                  "Tasks",
-                  payment.completedTasks.toString(),
-                ),
+                child: _info("Tasks", payment.completedTasks.toString()),
               ),
 
               Expanded(
-                child: _info(
-                  "Labels",
-                  payment.completedLabels.toString(),
-                ),
+                child: _info("Labels", payment.completedLabels.toString()),
               ),
 
               Expanded(
@@ -101,34 +77,20 @@ class PaymentCard extends StatelessWidget {
               icon: const Icon(Icons.payments),
               label: const Text("Pay Salary"),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget _info(
-      String title,
-      String value,
-      ) {
+  Widget _info(String title, String value) {
     return Column(
       children: [
-
-        Text(
-          value,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
 
         const SizedBox(height: 4),
 
-        Text(
-          title,
-          style: const TextStyle(
-            color: Colors.grey,
-          ),
-        )
+        Text(title, style: const TextStyle(color: Colors.grey)),
       ],
     );
   }

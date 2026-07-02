@@ -20,7 +20,6 @@ class QualityReportModel {
         reviewStats: ReviewStatisticsModel.fromJson(
           json['reviewStats'] as Map<String, dynamic>? ?? {},
         ),
-        inconsistentLabelsCount:
-        json['inconsistentLabelsCount'] as int? ?? 0,
+        inconsistentLabelsCount: json['inconsistentLabelsCount'] as int? ?? 0,
       );
 }

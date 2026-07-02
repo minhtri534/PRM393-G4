@@ -30,20 +30,16 @@ class PaymentSuccessScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
 
-            const Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 90,
-            ),
+            const Icon(Icons.check_circle, color: Colors.green, size: 90),
 
             const SizedBox(height: 16),
 
             Text(
               "Payment Successful!",
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 8),
@@ -90,12 +86,7 @@ class PaymentSuccessScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title),
-          Text(
-            value,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
         ],
       ),
     );

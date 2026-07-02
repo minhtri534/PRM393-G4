@@ -191,8 +191,8 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
 
                           late final bool ok;
                           if (_singleTaskMode) {
-                            final dataItemId =
-                                _dataItemIdController.text.trim();
+                            final dataItemId = _dataItemIdController.text
+                                .trim();
                             if (dataItemId.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -209,9 +209,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                           } else {
                             if (_datasetId == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Select dataset'),
-                                ),
+                                const SnackBar(content: Text('Select dataset')),
                               );
                               return;
                             }

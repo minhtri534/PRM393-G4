@@ -52,9 +52,9 @@ class ProjectCard extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             project.name,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(
@@ -70,8 +70,11 @@ class ProjectCard extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              const Icon(Icons.calendar_today_outlined,
-                  size: 14, color: AppTheme.textSecondaryColor),
+              const Icon(
+                Icons.calendar_today_outlined,
+                size: 14,
+                color: AppTheme.textSecondaryColor,
+              ),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
@@ -80,10 +83,7 @@ class ProjectCard extends StatelessWidget {
                 ),
               ),
               if (!project.isArchived && onArchive != null)
-                TextButton(
-                  onPressed: onArchive,
-                  child: const Text('Archive'),
-                ),
+                TextButton(onPressed: onArchive, child: const Text('Archive')),
             ],
           ),
         ],

@@ -82,8 +82,8 @@ class _ReviewerProjectListScreenState extends State<ReviewerProjectListScreen> {
             Text(
               'No reviewer projects yet.',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.textSecondaryColor,
-                  ),
+                color: AppTheme.textSecondaryColor,
+              ),
             ),
             const SizedBox(height: 6),
             const Text(
@@ -108,10 +108,9 @@ class _ReviewerProjectListScreenState extends State<ReviewerProjectListScreen> {
             showDoneStat: false,
             todoBadgeLabel: '${project.todoTaskCount} pending',
             primaryStatLabel: '${project.todoTaskCount} pending review',
-            onTap: () => Navigator.of(context).pushNamed(
-              AppRoutes.reviewerProjectTasks,
-              arguments: project,
-            ),
+            onTap: () => Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.reviewerProjectTasks, arguments: project),
           );
         },
       ),

@@ -66,16 +66,16 @@ class _SplashScreenState extends State<SplashScreen> {
               Text(
                 'DLSS',
                 style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: -1,
-                    ),
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: -1,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Data Labeling Support System',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.textSecondaryColor,
-                    ),
+                  color: AppTheme.textSecondaryColor,
+                ),
               ),
               const SizedBox(height: 40),
               const SizedBox(

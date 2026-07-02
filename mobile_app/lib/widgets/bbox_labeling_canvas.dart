@@ -144,8 +144,10 @@ class _BboxLabelingCanvasState extends State<BboxLabelingCanvas> {
 
     for (var i = widget.boxes.length - 1; i >= 0; i--) {
       final box = widget.boxes[i];
-      final left = imageRect.left + (box.x / widget.imageWidth) * imageRect.width;
-      final top = imageRect.top + (box.y / widget.imageHeight) * imageRect.height;
+      final left =
+          imageRect.left + (box.x / widget.imageWidth) * imageRect.width;
+      final top =
+          imageRect.top + (box.y / widget.imageHeight) * imageRect.height;
       final width = (box.width / widget.imageWidth) * imageRect.width;
       final height = (box.height / widget.imageHeight) * imageRect.height;
       final rect = Rect.fromLTWH(left, top, width, height);
@@ -176,10 +178,7 @@ class _BboxLabelingCanvasState extends State<BboxLabelingCanvas> {
                   width: imageRect.width,
                   height: imageRect.height,
                   child: widget.imageBytes != null
-                      ? Image.memory(
-                          widget.imageBytes!,
-                          fit: BoxFit.fill,
-                        )
+                      ? Image.memory(widget.imageBytes!, fit: BoxFit.fill)
                       : const Center(
                           child: Icon(
                             Icons.image_outlined,
@@ -245,8 +244,10 @@ class _BboxOverlayPainter extends CustomPainter {
   });
 
   Rect _toCanvasRect(Rect imageCoords) {
-    final left = imageRect.left + (imageCoords.left / imageWidth) * imageRect.width;
-    final top = imageRect.top + (imageCoords.top / imageHeight) * imageRect.height;
+    final left =
+        imageRect.left + (imageCoords.left / imageWidth) * imageRect.width;
+    final top =
+        imageRect.top + (imageCoords.top / imageHeight) * imageRect.height;
     final width = (imageCoords.width / imageWidth) * imageRect.width;
     final height = (imageCoords.height / imageHeight) * imageRect.height;
     return Rect.fromLTWH(left, top, width, height);

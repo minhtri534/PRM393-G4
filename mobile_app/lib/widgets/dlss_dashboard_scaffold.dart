@@ -68,7 +68,8 @@ class _DlssDashboardScaffoldState extends State<DlssDashboardScaffold> {
   @override
   Widget build(BuildContext context) {
     final email = context.watch<AuthProvider>().userProfile?.email ?? '';
-    final fullName = context.watch<AuthProvider>().userProfile?.fullName ?? 'User';
+    final fullName =
+        context.watch<AuthProvider>().userProfile?.fullName ?? 'User';
     final initial = fullName.isNotEmpty ? fullName[0].toUpperCase() : 'U';
 
     return DlssBackground(
@@ -90,10 +91,9 @@ class _DlssDashboardScaffoldState extends State<DlssDashboardScaffold> {
                 await context.read<ChatProvider>().resetSession();
                 await context.read<AuthProvider>().logout();
                 if (!context.mounted) return;
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  AppRoutes.login,
-                  (_) => false,
-                );
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil(AppRoutes.login, (_) => false);
               },
             ),
           ],
@@ -124,7 +124,8 @@ class _DlssDashboardScaffoldState extends State<DlssDashboardScaffold> {
                         const SizedBox(width: 12),
                         Text(
                           'DLSS',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -178,8 +179,9 @@ class _DlssDashboardScaffoldState extends State<DlssDashboardScaffold> {
                         ),
                         title: Text(widget.destinations[i].label),
                         selected: _index == i,
-                        selectedTileColor:
-                            AppTheme.primaryColor.withValues(alpha: 0.08),
+                        selectedTileColor: AppTheme.primaryColor.withValues(
+                          alpha: 0.08,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

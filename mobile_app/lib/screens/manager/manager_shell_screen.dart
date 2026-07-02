@@ -57,10 +57,8 @@ class ManagerShellScreen extends StatelessWidget {
         }
         if (index == 1) {
           return FloatingActionButton.extended(
-            onPressed: () => Navigator.pushNamed(
-              context,
-              AppRoutes.managerDatasetUpload,
-            ),
+            onPressed: () =>
+                Navigator.pushNamed(context, AppRoutes.managerDatasetUpload),
             icon: const Icon(Icons.upload_file),
             label: const Text('Upload Dataset'),
           );

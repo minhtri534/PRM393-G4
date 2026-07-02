@@ -20,8 +20,8 @@ class AuthResponse {
   }
 
   Map<String, dynamic> toJson() => {
-        'accessToken': accessToken,
-        'refreshToken': refreshToken,
-        'user': user.toJson(),
-      };
+    'accessToken': accessToken,
+    'refreshToken': refreshToken,
+    'user': user.toJson(),
+  };
 }

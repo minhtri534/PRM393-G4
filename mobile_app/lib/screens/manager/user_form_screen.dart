@@ -81,9 +81,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
     final provider = context.read<ManagerProvider>();
     final roleId = _selectedRoleId;
     if (roleId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a role')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please select a role')));
       return;
     }
 
@@ -114,9 +114,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
     if (ok) {
       Navigator.pop(context);
     } else if (provider.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(provider.errorMessage!)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(provider.errorMessage!)));
     }
   }
 
@@ -194,13 +194,10 @@ class _UserFormScreenState extends State<UserFormScreen> {
                           obscureText: true,
                           prefixIcon: const Icon(Icons.lock_outline),
                           validator: (v) {
-                            if (!widget.isEditing &&
-                                (v == null || v.isEmpty)) {
+                            if (!widget.isEditing && (v == null || v.isEmpty)) {
                               return 'Password is required';
                             }
-                            if (v != null &&
-                                v.isNotEmpty &&
-                                v.length < 8) {
+                            if (v != null && v.isNotEmpty && v.length < 8) {
                               return 'Password must be at least 8 characters';
                             }
                             return null;
@@ -265,7 +262,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
                         ),
                         const SizedBox(height: 24),
                         ActionButton(
-                          label: widget.isEditing ? 'Save Changes' : 'Create User',
+                          label: widget.isEditing
+                              ? 'Save Changes'
+                              : 'Create User',
                           variant: ActionButtonVariant.gradient,
                           isLoading: provider.isLoading,
                           onPressed: _submit,

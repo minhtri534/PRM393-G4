@@ -137,9 +137,9 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
 
   Future<void> _showBulkAssignDialog(ManagerProvider provider) async {
     if (_selectedTaskIds.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Select tasks first')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Select tasks first')));
       return;
     }
     String? annotatorId;
@@ -201,11 +201,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
         if (project == null) {
           return Scaffold(
             backgroundColor: AppTheme.surfaceSoftColor,
-            appBar: AppBar(
-              elevation: 0,
-              backgroundColor: Colors.transparent,
+            appBar: AppBar(elevation: 0, backgroundColor: Colors.transparent),
+            body: Center(
+              child: Text(provider.errorMessage ?? 'Project not found'),
             ),
-            body: Center(child: Text(provider.errorMessage ?? 'Project not found')),
           );
         }
 
@@ -429,8 +428,9 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             ),
             onTap: () async {
               final nameController = TextEditingController(text: l.name);
-              final classController =
-                  TextEditingController(text: '${l.yoloClassId}');
+              final classController = TextEditingController(
+                text: '${l.yoloClassId}',
+              );
               final ok = await showDialog<bool>(
                 context: context,
                 builder: (ctx) => AlertDialog(
@@ -504,7 +504,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
           ),
         ),
         const Divider(height: 32),
-        Text('Annotation Types', style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          'Annotation Types',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         Row(
           children: [
             Expanded(
@@ -632,10 +635,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                       );
                     }
                   } else if (action.startsWith('assign:')) {
-                    await provider.assignTask(
-                      task.id,
-                      action.split(':').last,
-                    );
+                    await provider.assignTask(task.id, action.split(':').last);
                   } else if (action.startsWith('reassign:')) {
                     await provider.reassignTask(
                       task.id,
@@ -660,7 +660,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                   const PopupMenuItem(value: 'resume', child: Text('Resume')),
                   const PopupMenuItem(value: 'relabel', child: Text('Relabel')),
                   const PopupMenuItem(value: 'history', child: Text('History')),
-                  const PopupMenuItem(value: 'yolo', child: Text('YOLO Export')),
+                  const PopupMenuItem(
+                    value: 'yolo',
+                    child: Text('YOLO Export'),
+                  ),
                   const PopupMenuItem(value: 'cancel', child: Text('Cancel')),
                 ],
               ),
@@ -712,8 +715,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
           ),
         ),
         const SizedBox(height: 16),
-        Text('Annotator Performance',
-            style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          'Annotator Performance',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         ...provider.annotatorPerformance.map(
           (a) => ListTile(
             title: Text(a.annotatorEmail),
@@ -767,13 +772,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             trailing: IconButton(
               icon: const Icon(Icons.download),
               onPressed: () async {
-                final bytes =
-                    await provider.downloadExport(e.id);
+                final bytes = await provider.downloadExport(e.id);
                 if (bytes != null && context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Downloaded ${bytes.length} bytes'),
-                    ),
+                    SnackBar(content: Text('Downloaded ${bytes.length} bytes')),
                   );
                 }
               },

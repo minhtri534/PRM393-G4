@@ -64,13 +64,13 @@ class _UserListScreenState extends State<UserListScreen> {
     if (!mounted) return;
 
     if (ok) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Deleted ${user.email}')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Deleted ${user.email}')));
     } else if (provider.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(provider.errorMessage!)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(provider.errorMessage!)));
     }
   }
 
@@ -127,7 +127,9 @@ class _UserListScreenState extends State<UserListScreen> {
     if (users.isEmpty) {
       return Center(
         child: Text(
-          provider.users.isEmpty ? 'No users yet' : 'No users match your search',
+          provider.users.isEmpty
+              ? 'No users yet'
+              : 'No users match your search',
           style: TextStyle(color: AppTheme.textSecondaryColor),
         ),
       );
@@ -173,8 +175,7 @@ class _UserListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isPending =
-        user.status == UserAccountStatus.pendingEmailVerification;
+    final isPending = user.status == UserAccountStatus.pendingEmailVerification;
 
     return Material(
       color: Colors.white,
@@ -239,7 +240,10 @@ class _UserListTile extends StatelessWidget {
               IconButton(
                 tooltip: 'Delete user',
                 onPressed: onDelete,
-                icon: const Icon(Icons.delete_outline, color: AppTheme.errorColor),
+                icon: const Icon(
+                  Icons.delete_outline,
+                  color: AppTheme.errorColor,
+                ),
               ),
             ],
           ),

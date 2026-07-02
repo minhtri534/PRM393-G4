@@ -1,4 +1,3 @@
-
 class PaymentResponse {
   final bool success;
 

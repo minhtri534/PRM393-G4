@@ -9,7 +9,9 @@ class Environment {
   // Android Emulator: 10.0.2.2 maps to host machine localhost
   // Physical device: use your machine LAN IP (e.g. 192.168.x.x)
 
-  static const String _apiBaseUrlOverride = String.fromEnvironment('API_BASE_URL');
+  static const String _apiBaseUrlOverride = String.fromEnvironment(
+    'API_BASE_URL',
+  );
 
   static String get baseUrl {
     if (_apiBaseUrlOverride.isNotEmpty) {
@@ -50,7 +52,9 @@ class Environment {
       return 'http://localhost:5001';
     }
 
-    final socketPort = parsed.port == 5000 || parsed.port == 80 ? 5001 : parsed.port;
+    final socketPort = parsed.port == 5000 || parsed.port == 80
+        ? 5001
+        : parsed.port;
     return Uri(
       scheme: parsed.scheme.isEmpty ? 'http' : parsed.scheme,
       host: parsed.host,
@@ -73,7 +77,8 @@ class Environment {
   static const String loginEndpoint = '/auth/login';
   static const String registerEndpoint = '/auth/register';
   static const String verifyEmailOtpEndpoint = '/auth/verify-email-otp';
-  static const String resendVerificationOtpEndpoint = '/auth/resend-verification-otp';
+  static const String resendVerificationOtpEndpoint =
+      '/auth/resend-verification-otp';
   static const String logoutEndpoint = '/auth/logout';
   static const String refreshTokenEndpoint = '/auth/refresh-token';
 

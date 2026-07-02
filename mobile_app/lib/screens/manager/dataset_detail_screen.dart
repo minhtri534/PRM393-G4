@@ -84,9 +84,9 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
         files: multipartFiles,
       );
       if (mounted && !ok && provider.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(provider.errorMessage!)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(provider.errorMessage!)));
       }
     }
   }
@@ -105,10 +105,7 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
         if (dataset == null) {
           return Scaffold(
             backgroundColor: AppTheme.surfaceSoftColor,
-            appBar: AppBar(
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-            ),
+            appBar: AppBar(elevation: 0, backgroundColor: Colors.transparent),
             body: const Center(child: Text('Dataset not found')),
           );
         }
@@ -159,9 +156,7 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                           ),
                           Text(
                             '${dataset.totalItems ?? 0} items',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
+                            style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                         ],
@@ -183,15 +178,15 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                     Text(
                       'Dataset settings',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     CustomTextField(
-                controller: _nameController,
-                label: 'Dataset Name',
-                hintText: 'Rename dataset',
-              ),
+                      controller: _nameController,
+                      label: 'Dataset Name',
+                      hintText: 'Rename dataset',
+                    ),
                     ActionButton(
                       label: 'Save Name',
                       variant: ActionButtonVariant.gradient,
@@ -219,19 +214,19 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                     Text(
                       'Import data',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     TextField(
-                controller: _itemsJsonController,
-                maxLines: 4,
-                decoration: const InputDecoration(
-                  labelText: 'Upload items (JSON array)',
-                  hintText: '[{"fileName":"a.jpg","fileUrl":"..."}]',
-                  border: OutlineInputBorder(),
-                ),
-              ),
+                      controller: _itemsJsonController,
+                      maxLines: 4,
+                      decoration: const InputDecoration(
+                        labelText: 'Upload items (JSON array)',
+                        hintText: '[{"fileName":"a.jpg","fileUrl":"..."}]',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
                     ActionButton(
                       label: 'Upload Items JSON',
                       variant: ActionButtonVariant.outline,
@@ -252,10 +247,10 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                     ),
                     const SizedBox(height: 16),
                     CustomTextField(
-                controller: _sourceNameController,
-                label: 'External source name',
-                hintText: 'e.g. COCO import',
-              ),
+                      controller: _sourceNameController,
+                      label: 'External source name',
+                      hintText: 'e.g. COCO import',
+                    ),
                     ActionButton(
                       label: 'Import External Items',
                       variant: ActionButtonVariant.outline,
@@ -290,32 +285,32 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                     Text(
                       'Versions',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomTextField(
-                      controller: _versionController,
-                      label: 'Version name',
-                      hintText: 'v1.0',
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                            controller: _versionController,
+                            label: 'Version name',
+                            hintText: 'v1.0',
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            if (_versionController.text.trim().isEmpty) return;
+                            await provider.createDatasetVersion(
+                              datasetId: widget.datasetId,
+                              versionName: _versionController.text.trim(),
+                            );
+                            _versionController.clear();
+                          },
+                          icon: const Icon(Icons.save),
+                        ),
+                      ],
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () async {
-                      if (_versionController.text.trim().isEmpty) return;
-                      await provider.createDatasetVersion(
-                        datasetId: widget.datasetId,
-                        versionName: _versionController.text.trim(),
-                      );
-                      _versionController.clear();
-                    },
-                    icon: const Icon(Icons.save),
-                  ),
-                ],
-              ),
                     ...provider.datasetVersions.map(
                       (v) => ListTile(
                         contentPadding: EdgeInsets.zero,
@@ -323,8 +318,7 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                         subtitle: Text(v.createdAt?.toLocal().toString() ?? ''),
                         trailing: IconButton(
                           icon: const Icon(Icons.restore),
-                          onPressed: () =>
-                              provider.restoreDatasetVersion(v.id),
+                          onPressed: () => provider.restoreDatasetVersion(v.id),
                         ),
                       ),
                     ),

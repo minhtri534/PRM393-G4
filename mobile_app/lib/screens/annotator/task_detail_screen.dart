@@ -47,10 +47,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
   }) async {
     final result = await Navigator.of(context).pushNamed(
       AppRoutes.annotatorLabeling,
-      arguments: {
-        'taskId': widget.taskId,
-        'readOnly': readOnly,
-      },
+      arguments: {'taskId': widget.taskId, 'readOnly': readOnly},
     );
     if (!mounted) return;
     if (result == true) {
@@ -117,7 +114,9 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(ok ? 'Task rejected' : provider.errorMessage ?? 'Failed')),
+      SnackBar(
+        content: Text(ok ? 'Task rejected' : provider.errorMessage ?? 'Failed'),
+      ),
     );
     if (ok) {
       Navigator.of(context).pop();
@@ -138,10 +137,9 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
               const SizedBox(width: 8),
               Text(
                 'Review Feedback',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -178,10 +176,15 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
     );
   }
 
-  Widget _actionBar(BuildContext context, AnnotatorProvider provider, AnnotatorTaskModel task) {
+  Widget _actionBar(
+    BuildContext context,
+    AnnotatorProvider provider,
+    AnnotatorTaskModel task,
+  ) {
     final canLabel = annotatorTaskCanLabel(task.status);
     final isAssigned = task.status == AppConstants.taskStatusAssigned;
-    final isSubmitted = task.status == AppConstants.taskStatusSubmitted ||
+    final isSubmitted =
+        task.status == AppConstants.taskStatusSubmitted ||
         task.status == 'Completed' ||
         task.status == AppConstants.taskStatusApproved;
 
@@ -295,7 +298,8 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
               ? provider.taskItems.first.fileName
               : TaskDisplayUtils.fileNameFromObjectKey(task.dataItemObjectKey);
           final progress = provider.selectedTaskProgress;
-          final showActions = task.status == AppConstants.taskStatusAssigned ||
+          final showActions =
+              task.status == AppConstants.taskStatusAssigned ||
               annotatorTaskCanLabel(task.status) ||
               task.status == AppConstants.taskStatusSubmitted ||
               task.status == 'Completed';
@@ -323,8 +327,11 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(color: AppTheme.borderColor),
                       ),
-                      child: const Icon(Icons.image_outlined,
-                          size: 48, color: AppTheme.textHintColor),
+                      child: const Icon(
+                        Icons.image_outlined,
+                        size: 48,
+                        color: AppTheme.textHintColor,
+                      ),
                     ),
                   const SizedBox(height: 16),
                   if (provider.reviewFeedback != null) ...[
@@ -337,14 +344,14 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.description_outlined,
-                                color: AppTheme.primaryColor),
+                            const Icon(
+                              Icons.description_outlined,
+                              color: AppTheme.primaryColor,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               'Task Description',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
+                              style: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                           ],
@@ -375,9 +382,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                       children: [
                         Text(
                           'Guidelines',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
+                          style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 12),
@@ -393,7 +398,8 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                             provider.guideline?.trim().isNotEmpty == true
                                 ? provider.guideline!
                                 : 'No specific guideline for this project.',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
                                   color: const Color(0xFF1E3A8A),
                                   fontStyle: FontStyle.italic,
                                 ),
@@ -409,9 +415,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                       children: [
                         Text(
                           'Labels',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
+                          style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 12),
@@ -450,7 +454,8 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                       children: [
                         Text(
                           'Status',
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
                                 color: AppTheme.textHintColor,
                                 letterSpacing: 1.2,
                               ),

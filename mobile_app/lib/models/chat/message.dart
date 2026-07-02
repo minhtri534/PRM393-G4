@@ -1,4 +1,3 @@
-
 class ChatMessage {
   final String id;
   final String conversationId;

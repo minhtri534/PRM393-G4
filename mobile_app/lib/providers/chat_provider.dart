@@ -14,11 +14,9 @@ class ChatProvider extends ChangeNotifier {
   final ChatRepository _repository;
   final ChatSocketService _socketService;
 
-  ChatProvider({
-    ChatRepository? repository,
-    ChatSocketService? socketService,
-  })  : _repository = repository ?? ChatRepository(),
-        _socketService = socketService ?? ChatSocketService();
+  ChatProvider({ChatRepository? repository, ChatSocketService? socketService})
+    : _repository = repository ?? ChatRepository(),
+      _socketService = socketService ?? ChatSocketService();
 
   ChatLoadState _projectsState = ChatLoadState.initial;
   ChatLoadState _roomState = ChatLoadState.initial;

@@ -41,10 +41,9 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
 
           final matchedKeyword =
               payment.userName.toLowerCase().contains(keyword) ||
-                  payment.role.toLowerCase().contains(keyword);
+              payment.role.toLowerCase().contains(keyword);
 
-          final matchedFilter =
-              _filter == 'All' || payment.status == _filter;
+          final matchedFilter = _filter == 'All' || payment.status == _filter;
 
           return matchedKeyword && matchedFilter;
         }).toList();
@@ -85,8 +84,7 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                   fillColor: Colors.white.withValues(alpha: .85),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide:
-                        const BorderSide(color: AppTheme.borderColor),
+                    borderSide: const BorderSide(color: AppTheme.borderColor),
                   ),
                 ),
                 onChanged: (value) {
@@ -113,12 +111,7 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
 
               const SizedBox(height: 16),
 
-              Expanded(
-                child: _buildBody(
-                  provider,
-                  payments,
-                ),
-              ),
+              Expanded(child: _buildBody(provider, payments)),
             ],
           ),
         );
@@ -143,17 +136,12 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
     );
   }
 
-  Widget _buildBody(
-    PaymentProvider provider,
-    List payments,
-  ) {
-    if (provider.isLoading &&
-        provider.payments.isEmpty) {
+  Widget _buildBody(PaymentProvider provider, List payments) {
+    if (provider.isLoading && provider.payments.isEmpty) {
       return const LoadingSkeleton(itemCount: 5);
     }
 
-    if (provider.error != null &&
-        provider.payments.isEmpty) {
+    if (provider.error != null && provider.payments.isEmpty) {
       return error_widget.ErrorWidget(
         message: provider.error!,
         onRetry: provider.loadPayments,
@@ -161,37 +149,27 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
     }
 
     if (payments.isEmpty) {
-      return const Center(
-        child: Text(
-          "No employee found",
-        ),
-      );
+      return const Center(child: Text("No employee found"));
     }
 
     return RefreshIndicator(
       onRefresh: provider.loadPayments,
       child: ListView.separated(
         itemCount: payments.length,
-        separatorBuilder: (_, __) =>
-            const SizedBox(height: 12),
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemBuilder: (_, index) {
           final payment = payments[index];
 
           return PaymentCard(
             payment: payment,
             onTap: () async {
-              await provider.loadPaymentDetail(
-                payment.paymentId,
-              );
+              await provider.loadPaymentDetail(payment.paymentId);
 
               if (!mounted) return;
 
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (_) =>
-                      const PaymentDetailScreen(),
-                ),
+                MaterialPageRoute(builder: (_) => const PaymentDetailScreen()),
               );
             },
           );

@@ -30,23 +30,25 @@ class _AnnotatorProjectTasksScreenState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AnnotatorProvider>().fetchTasks(projectId: widget.project.id);
+      context.read<AnnotatorProvider>().fetchTasks(
+        projectId: widget.project.id,
+      );
     });
   }
 
   bool _isTodo(String status) => [
-        AppConstants.taskStatusAssigned,
-        AppConstants.taskStatusInProgress,
-        'Returned',
-        'Rejected',
-        'Rework',
-      ].contains(status);
+    AppConstants.taskStatusAssigned,
+    AppConstants.taskStatusInProgress,
+    'Returned',
+    'Rejected',
+    'Rework',
+  ].contains(status);
 
   bool _isDone(String status) => [
-        AppConstants.taskStatusSubmitted,
-        'Completed',
-        AppConstants.taskStatusApproved,
-      ].contains(status);
+    AppConstants.taskStatusSubmitted,
+    'Completed',
+    AppConstants.taskStatusApproved,
+  ].contains(status);
 
   @override
   Widget build(BuildContext context) {
@@ -56,20 +58,21 @@ class _AnnotatorProjectTasksScreenState
         actions: [
           IconButton(
             tooltip: 'Project chat',
-            onPressed: () => Navigator.of(context).pushNamed(
-              AppRoutes.annotatorChatRoom,
-              arguments: widget.project,
-            ),
+            onPressed: () => Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.annotatorChatRoom, arguments: widget.project),
             icon: const Icon(Icons.chat_bubble_outline),
           ),
         ],
       ),
       body: Consumer<AnnotatorProvider>(
         builder: (context, provider, _) {
-          final todoCount =
-              provider.tasks.where((t) => _isTodo(t.status)).length;
-          final doneCount =
-              provider.tasks.where((t) => _isDone(t.status)).length;
+          final todoCount = provider.tasks
+              .where((t) => _isTodo(t.status))
+              .length;
+          final doneCount = provider.tasks
+              .where((t) => _isDone(t.status))
+              .length;
           final filtered = provider.tasks.where((t) {
             return _tab == 0 ? _isTodo(t.status) : _isDone(t.status);
           }).toList();
@@ -138,8 +141,8 @@ class _AnnotatorProjectTasksScreenState
                   ? 'No tasks to do in this project.'
                   : 'No completed tasks in this project yet.',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.textSecondaryColor,
-                  ),
+                color: AppTheme.textSecondaryColor,
+              ),
             ),
           ],
         ),
@@ -156,10 +159,9 @@ class _AnnotatorProjectTasksScreenState
           final task = filtered[index];
           return TaskCard(
             task: task,
-            onTap: () => Navigator.of(context).pushNamed(
-              AppRoutes.annotatorTaskDetail,
-              arguments: task.id,
-            ),
+            onTap: () => Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.annotatorTaskDetail, arguments: task.id),
             onStart: () async {
               final provider = context.read<AnnotatorProvider>();
               await provider.startTask(task.id);

@@ -58,9 +58,9 @@ class AnnotatorProjectCard extends StatelessWidget {
           const SizedBox(height: 14),
           Text(
             project.name,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(
@@ -80,7 +80,10 @@ class AnnotatorProjectCard extends StatelessWidget {
               ),
               if (showDoneStat) ...[
                 const SizedBox(width: 12),
-                _stat(Icons.check_circle_outline, '${project.doneTaskCount} done'),
+                _stat(
+                  Icons.check_circle_outline,
+                  '${project.doneTaskCount} done',
+                ),
               ],
             ],
           ),
@@ -91,8 +94,11 @@ class AnnotatorProjectCard extends StatelessWidget {
             const SizedBox(height: 10),
             Row(
               children: [
-                const Icon(Icons.chat_bubble_outline,
-                    size: 14, color: AppTheme.textSecondaryColor),
+                const Icon(
+                  Icons.chat_bubble_outline,
+                  size: 14,
+                  color: AppTheme.textSecondaryColor,
+                ),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(

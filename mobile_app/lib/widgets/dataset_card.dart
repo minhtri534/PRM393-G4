@@ -9,11 +9,7 @@ class DatasetCard extends StatelessWidget {
   final DatasetModel dataset;
   final VoidCallback? onTap;
 
-  const DatasetCard({
-    super.key,
-    required this.dataset,
-    this.onTap,
-  });
+  const DatasetCard({super.key, required this.dataset, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +40,8 @@ class DatasetCard extends StatelessWidget {
                 Text(
                   dataset.name,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(

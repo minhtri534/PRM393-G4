@@ -33,9 +33,7 @@ class ExportModel {
     exportPath: json['exportPath']?.toString(),
     createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? ''),
     config: json['config'] != null
-        ? ExportConfigModel.fromJson(
-      json['config'] as Map<String, dynamic>,
-    )
+        ? ExportConfigModel.fromJson(json['config'] as Map<String, dynamic>)
         : null,
   );
 }

@@ -28,9 +28,7 @@ class ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final resolvedVariant = isOutlined
-        ? ActionButtonVariant.outline
-        : variant;
+    final resolvedVariant = isOutlined ? ActionButtonVariant.outline : variant;
 
     if (resolvedVariant == ActionButtonVariant.gradient) {
       return SizedBox(
@@ -105,10 +103,7 @@ class ActionButton extends StatelessWidget {
       return SizedBox(
         width: 20,
         height: 20,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          color: color,
-        ),
+        child: CircularProgressIndicator(strokeWidth: 2, color: color),
       );
     }
 

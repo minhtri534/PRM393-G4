@@ -88,7 +88,8 @@ class ChatMessageModel {
         json['attachmentSizeBytes']?.toString() ?? '',
       ),
       attachmentUrl: json['attachmentUrl']?.toString(),
-      createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
+      createdAt:
+          DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
           DateTime.now(),
     );
   }

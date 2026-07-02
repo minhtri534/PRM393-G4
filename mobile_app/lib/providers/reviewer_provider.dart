@@ -16,7 +16,7 @@ class ReviewerProvider extends ChangeNotifier {
   final ReviewerRepository _repository;
 
   ReviewerProvider({ReviewerRepository? repository})
-      : _repository = repository ?? ReviewerRepository();
+    : _repository = repository ?? ReviewerRepository();
 
   ReviewerLoadState _projectsState = ReviewerLoadState.initial;
   ReviewerLoadState _listState = ReviewerLoadState.initial;

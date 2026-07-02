@@ -18,18 +18,30 @@ class DlssBadge extends StatelessWidget {
   factory DlssBadge.forTaskStatus(String status) {
     switch (status) {
       case AppConstants.taskStatusAssigned:
-        return DlssBadge(label: 'Assigned', variant: DlssBadgeVariant.secondary);
+        return DlssBadge(
+          label: 'Assigned',
+          variant: DlssBadgeVariant.secondary,
+        );
       case AppConstants.taskStatusInProgress:
         return const DlssBadge(label: 'In Progress');
       case AppConstants.taskStatusSubmitted:
-        return const DlssBadge(label: 'Submitted', variant: DlssBadgeVariant.success);
+        return const DlssBadge(
+          label: 'Submitted',
+          variant: DlssBadgeVariant.success,
+        );
       case AppConstants.taskStatusApproved:
       case 'Completed':
-        return const DlssBadge(label: 'Completed', variant: DlssBadgeVariant.success);
+        return const DlssBadge(
+          label: 'Completed',
+          variant: DlssBadgeVariant.success,
+        );
       case AppConstants.taskStatusRejected:
       case 'Returned':
       case 'Rework':
-        return const DlssBadge(label: 'Revision Required', variant: DlssBadgeVariant.danger);
+        return const DlssBadge(
+          label: 'Revision Required',
+          variant: DlssBadgeVariant.danger,
+        );
       default:
         return DlssBadge(label: status, variant: DlssBadgeVariant.outline);
     }
@@ -73,11 +85,7 @@ class DlssBadge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(
-          color: fg,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-        ),
+        style: TextStyle(color: fg, fontSize: 12, fontWeight: FontWeight.w600),
       ),
     );
   }

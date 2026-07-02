@@ -27,17 +27,17 @@ class AnnotatorTaskModel {
   });
 
   String get displayTitle => TaskDisplayUtils.taskTitle(
-        objectKey: dataItemObjectKey,
-        datasetName: datasetName,
-        projectName: projectName,
-        fallbackId: id,
-      );
+    objectKey: dataItemObjectKey,
+    datasetName: datasetName,
+    projectName: projectName,
+    fallbackId: id,
+  );
 
   String get displaySubtitle => TaskDisplayUtils.taskSubtitle(
-        projectName: projectName,
-        datasetName: datasetName,
-        status: status,
-      );
+    projectName: projectName,
+    datasetName: datasetName,
+    status: status,
+  );
 
   factory AnnotatorTaskModel.fromJson(Map<String, dynamic> json) {
     return AnnotatorTaskModel(
@@ -95,8 +95,7 @@ class AnnotatorTaskItemModel {
     required this.originalHeight,
   });
 
-  String get fileName =>
-      TaskDisplayUtils.fileNameFromObjectKey(objectKey);
+  String get fileName => TaskDisplayUtils.fileNameFromObjectKey(objectKey);
 
   factory AnnotatorTaskItemModel.fromJson(Map<String, dynamic> json) {
     return AnnotatorTaskItemModel(
@@ -147,10 +146,7 @@ class AnnotatorGuidelineModel {
   final String projectId;
   final String? guideline;
 
-  AnnotatorGuidelineModel({
-    required this.projectId,
-    this.guideline,
-  });
+  AnnotatorGuidelineModel({required this.projectId, this.guideline});
 
   factory AnnotatorGuidelineModel.fromJson(Map<String, dynamic> json) {
     return AnnotatorGuidelineModel(
@@ -199,12 +195,12 @@ class BboxGeometry {
   });
 
   Map<String, dynamic> toJson() => {
-        'type': 'bbox',
-        'x': x.round(),
-        'y': y.round(),
-        'width': width.round(),
-        'height': height.round(),
-      };
+    'type': 'bbox',
+    'x': x.round(),
+    'y': y.round(),
+    'width': width.round(),
+    'height': height.round(),
+  };
 
   static BboxGeometry? tryParse(dynamic data) {
     try {
@@ -285,14 +281,14 @@ class LabelingBox {
   }
 
   Map<String, dynamic> toUpsertJson() => {
-        'labelId': labelId,
-        'geometryData': BboxGeometry(
-          x: x,
-          y: y,
-          width: width,
-          height: height,
-        ).toJson(),
-      };
+    'labelId': labelId,
+    'geometryData': BboxGeometry(
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+    ).toJson(),
+  };
 }
 
 class AnnotatorReviewFeedbackModel {
@@ -324,9 +320,8 @@ class AnnotatorReviewFeedbackModel {
       reviewedAt: DateTime.tryParse(json['reviewedAt']?.toString() ?? ''),
       errorCategories: (json['errorCategories'] as List<dynamic>? ?? [])
           .map(
-            (e) => AnnotatorReviewErrorModel.fromJson(
-              e as Map<String, dynamic>,
-            ),
+            (e) =>
+                AnnotatorReviewErrorModel.fromJson(e as Map<String, dynamic>),
           )
           .toList(),
     );

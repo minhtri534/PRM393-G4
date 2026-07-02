@@ -13,7 +13,7 @@ class AnnotatorProvider extends ChangeNotifier {
   final AnnotatorRepository _repository;
 
   AnnotatorProvider({AnnotatorRepository? repository})
-      : _repository = repository ?? AnnotatorRepository();
+    : _repository = repository ?? AnnotatorRepository();
 
   AnnotatorLoadState _projectsState = AnnotatorLoadState.initial;
   AnnotatorLoadState _listState = AnnotatorLoadState.initial;
@@ -67,7 +67,9 @@ class AnnotatorProvider extends ChangeNotifier {
   double get selectedTaskProgress {
     final task = _selectedTask;
     if (task == null) return 0;
-    final count = _annotations.isNotEmpty ? _annotations.length : _labelingBoxes.length;
+    final count = _annotations.isNotEmpty
+        ? _annotations.length
+        : _labelingBoxes.length;
     return annotatorTaskProgress(task.status, count);
   }
 

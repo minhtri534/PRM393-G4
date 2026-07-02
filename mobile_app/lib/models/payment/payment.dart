@@ -1,4 +1,3 @@
-
 class Payment {
   final int paymentId;
   final int userId;
@@ -48,9 +47,7 @@ class Payment {
       paymentMethod: json['paymentMethod'],
       transactionId: json['transactionId'],
       reference: json['reference'],
-      paidAt: json['paidAt'] == null
-          ? null
-          : DateTime.parse(json['paidAt']),
+      paidAt: json['paidAt'] == null ? null : DateTime.parse(json['paidAt']),
     );
   }
 

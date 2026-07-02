@@ -7,34 +7,34 @@ class AppTheme {
   static const Color primaryColor = Color(0xFF2563eb); // Blue
   static const Color primaryLight = Color(0xFFEEF2FF);
   static const Color primaryDark = Color(0xFF1e40af);
-  
+
   static const Color secondaryColor = Color(0xFF22d3ee); // Cyan
   static const Color tertiaryColor = Color(0xFF7c3aed); // Violet
-  
+
   // Semantic colors
   static const Color successColor = Color(0xFF10b981); // Emerald
   static const Color warningColor = Color(0xFFF59e0b); // Amber
   static const Color errorColor = Color(0xFFF43f5e); // Rose
   static const Color infoColor = Color(0xFF22d3ee); // Cyan
-  
+
   // Surface colors
   static const Color backgroundColor = Color(0xFFffffff); // White
   static const Color surfaceSoftColor = Color(0xFFF8FAFC); // Slate soft
-  
+
   // Text colors
   static const Color textPrimaryColor = Color(0xFF1e293b);
   static const Color textSecondaryColor = Color(0xFF64748b);
   static const Color textHintColor = Color(0xFF94a3b8);
-  
+
   // Border and divider
   static const Color borderColor = Color(0xFFe2e8f0);
   static const Color dividerColor = Color(0xFFf1f5f9);
-  
+
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      
+
       // Color scheme
       colorScheme: ColorScheme.light(
         primary: primaryColor,
@@ -44,7 +44,7 @@ class AppTheme {
         error: errorColor,
         outline: borderColor,
       ),
-      
+
       // App bar
       appBarTheme: AppBarTheme(
         backgroundColor: backgroundColor,
@@ -57,7 +57,7 @@ class AppTheme {
           color: textPrimaryColor,
         ),
       ),
-      
+
       // Text theme
       textTheme: TextTheme(
         displayLarge: GoogleFonts.inter(
@@ -101,15 +101,12 @@ class AppTheme {
           color: textPrimaryColor,
         ),
       ),
-      
+
       // Input decoration
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: surfaceSoftColor,
-        hintStyle: GoogleFonts.inter(
-          fontSize: 14,
-          color: textHintColor,
-        ),
+        hintStyle: GoogleFonts.inter(fontSize: 14, color: textHintColor),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 12,
@@ -135,16 +132,13 @@ class AppTheme {
           borderSide: const BorderSide(color: errorColor, width: 2),
         ),
       ),
-      
+
       // Button themes
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 12,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -155,15 +149,12 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: primaryColor,
           side: const BorderSide(color: primaryColor),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 12,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -173,7 +164,7 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       // Card theme
       cardTheme: CardThemeData(
         color: backgroundColor,
@@ -183,15 +174,13 @@ class AppTheme {
           side: const BorderSide(color: borderColor),
         ),
       ),
-      
+
       // Dialog theme
       dialogTheme: DialogThemeData(
         backgroundColor: backgroundColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
-      
+
       // Chip theme
       chipTheme: ChipThemeData(
         backgroundColor: surfaceSoftColor,
@@ -206,14 +195,14 @@ class AppTheme {
           color: textPrimaryColor,
         ),
       ),
-      
+
       // Divider theme
       dividerTheme: const DividerThemeData(
         color: dividerColor,
         thickness: 1,
         space: 16,
       ),
-      
+
       // Scaffold background
       scaffoldBackgroundColor: surfaceSoftColor,
 
@@ -230,7 +219,7 @@ class AppTheme {
         foregroundColor: Colors.white,
         elevation: 2,
       ),
-      
+
       // Progress indicators
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: primaryColor,

@@ -14,12 +14,7 @@ class SalarySummaryCard extends StatelessWidget {
     required this.workers,
   });
 
-  Widget _item(
-      String title,
-      String value,
-      IconData icon,
-      Color color,
-      ) {
+  Widget _item(String title, String value, IconData icon, Color color) {
     return Expanded(
       child: Column(
         children: [
@@ -31,17 +26,9 @@ class SalarySummaryCard extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             value,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.grey,
-            ),
-          ),
+          Text(title, style: const TextStyle(color: Colors.grey)),
         ],
       ),
     );
@@ -52,12 +39,7 @@ class SalarySummaryCard extends StatelessWidget {
     return DlssCard(
       child: Row(
         children: [
-          _item(
-            "Workers",
-            workers.toString(),
-            Icons.people,
-            Colors.blue,
-          ),
+          _item("Workers", workers.toString(), Icons.people, Colors.blue),
           _item(
             "Pending",
             "\$${totalPending.toStringAsFixed(0)}",

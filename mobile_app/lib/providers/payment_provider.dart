@@ -42,22 +42,19 @@ class PaymentProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    selectedPayment =
-        await _repository.getPaymentDetail(paymentId);
+    selectedPayment = await _repository.getPaymentDetail(paymentId);
 
     isLoading = false;
 
     notifyListeners();
   }
 
-  Future<PaymentResponse> paySalary(
-      PaymentRequest request) async {
+  Future<PaymentResponse> paySalary(PaymentRequest request) async {
     isLoading = true;
 
     notifyListeners();
 
-    final response =
-        await _repository.paySalary(request);
+    final response = await _repository.paySalary(request);
 
     if (response.success) {
       await loadPayments();

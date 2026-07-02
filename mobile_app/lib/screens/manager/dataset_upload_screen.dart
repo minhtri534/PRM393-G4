@@ -68,9 +68,9 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
     );
     if (!datasetOk || provider.datasets.isEmpty) {
       if (mounted && provider.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(provider.errorMessage!)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(provider.errorMessage!)));
       }
       return;
     }
@@ -82,18 +82,12 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
       if (kIsWeb) {
         if (file.bytes != null) {
           multipartFiles.add(
-            MultipartFile.fromBytes(
-              file.bytes!,
-              filename: file.name,
-            ),
+            MultipartFile.fromBytes(file.bytes!, filename: file.name),
           );
         }
       } else if (file.path != null) {
         multipartFiles.add(
-          await MultipartFile.fromFile(
-            file.path!,
-            filename: file.name,
-          ),
+          await MultipartFile.fromFile(file.path!, filename: file.name),
         );
       }
     }
@@ -118,9 +112,9 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
       );
       Navigator.pop(context);
     } else if (mounted && provider.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(provider.errorMessage!)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(provider.errorMessage!)));
     }
   }
 
@@ -168,7 +162,8 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
                               ),
                             )
                             .toList(),
-                        onChanged: (v) => setState(() => _selectedProjectId = v),
+                        onChanged: (v) =>
+                            setState(() => _selectedProjectId = v),
                       ),
                       const SizedBox(height: AppConstants.paddingLarge),
                       CustomTextField(

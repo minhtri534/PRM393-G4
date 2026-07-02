@@ -44,8 +44,7 @@ class ManagerEndpoints {
   static const String annotationTypes = '/manager/annotation-types';
   static String projectAnnotationTypes(String projectId) =>
       '/manager/projects/$projectId/annotation-types';
-  static String annotationType(String id) =>
-      '/manager/annotation-types/$id';
+  static String annotationType(String id) => '/manager/annotation-types/$id';
 
   // Tasks
   static const String tasks = '/manager/tasks';

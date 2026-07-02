@@ -23,7 +23,8 @@ class ReviewerSubmittedTaskModel {
     required this.status,
   });
 
-  String get displayTitle => 'Task ${id.length > 8 ? id.substring(id.length - 8) : id}';
+  String get displayTitle =>
+      'Task ${id.length > 8 ? id.substring(id.length - 8) : id}';
 
   String get displaySubtitle =>
       'By $annotatorName · $annotationCount annotation${annotationCount == 1 ? '' : 's'}';
@@ -37,7 +38,8 @@ class ReviewerSubmittedTaskModel {
       annotatorName: json['annotatorName']?.toString() ?? 'Unknown',
       annotationSetId: json['annotationSetId']?.toString() ?? '',
       submittedAt:
-          DateTime.tryParse(json['submittedAt']?.toString() ?? '') ?? DateTime.now(),
+          DateTime.tryParse(json['submittedAt']?.toString() ?? '') ??
+          DateTime.now(),
       annotationCount: json['annotationCount'] as int? ?? 0,
       status: json['status']?.toString() ?? 'Submitted',
     );
@@ -117,10 +119,12 @@ class ReviewerLabeledDataModel {
       objectKey: json['objectKey']?.toString() ?? '',
       annotations: raw is List
           ? raw
-              .map((item) => ReviewerAnnotationItemModel.fromJson(
+                .map(
+                  (item) => ReviewerAnnotationItemModel.fromJson(
                     item as Map<String, dynamic>,
-                  ))
-              .toList()
+                  ),
+                )
+                .toList()
           : [],
     );
   }
