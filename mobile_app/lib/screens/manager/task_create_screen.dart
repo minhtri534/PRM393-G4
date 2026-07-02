@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
-import '../../models/manager/yolo_label_file_model.dart';
+import '../../models/manager/dataset_model.dart';
+import '../../models/manager/project_model.dart';
 import '../../providers/manager_provider.dart';
 import '../../widgets/action_button.dart';
 import '../../widgets/custom_text_field.dart';

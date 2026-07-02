@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/constants/manager_endpoints.dart';
 import '../../core/theme/app_theme.dart';
-import '../../models/manager/yolo_label_file_model.dart';
+import '../../models/manager/project_model.dart';
 import '../../providers/manager_provider.dart';
 import '../../models/chat/chat_models.dart';
 import '../../routes/app_routes.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/constants/app_constants.dart';
 import '../core/theme/app_theme.dart';
-import '../models/manager/yolo_label_file_model.dart';
+import '../models/manager/project_model.dart';
 import 'dlss_badge.dart';
 import 'dlss_card.dart';
 
