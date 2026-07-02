@@ -49,7 +49,7 @@ class ReviewerAnnotationItemModel {
   final String labelId;
   final String labelName;
   final String annotationType;
-  final String geometryData;
+  final dynamic geometryData;
 
   ReviewerAnnotationItemModel({
     required this.annotationId,
@@ -85,7 +85,7 @@ class ReviewerAnnotationItemModel {
       labelId: json['labelId']?.toString() ?? '',
       labelName: json['labelName']?.toString() ?? '',
       annotationType: json['annotationType']?.toString() ?? 'bbox',
-      geometryData: json['geometryData']?.toString() ?? '',
+      geometryData: json['geometryData'],
     );
   }
 }

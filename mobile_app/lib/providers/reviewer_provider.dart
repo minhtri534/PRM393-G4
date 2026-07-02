@@ -162,6 +162,8 @@ class ReviewerProvider extends ChangeNotifier {
         _taskImageBytes = null;
       }
 
+      _ensureImageDimensionsFromBoxes();
+
       _detailState = ReviewerLoadState.loaded;
       notifyListeners();
     } on ApiError catch (e) {
@@ -247,8 +249,27 @@ class ReviewerProvider extends ChangeNotifier {
       _imageHeight = frame.image.height;
       frame.image.dispose();
     } catch (_) {
+      _imageWidth = 0;
+      _imageHeight = 0;
+    }
+  }
+
+  void _ensureImageDimensionsFromBoxes() {
+    if (_imageWidth > 0 && _imageHeight > 0) return;
+    if (_labelingBoxes.isEmpty) {
       _imageWidth = 800;
       _imageHeight = 600;
+      return;
     }
+
+    var maxX = 0.0;
+    var maxY = 0.0;
+    for (final box in _labelingBoxes) {
+      maxX = maxX < box.x + box.width ? box.x + box.width : maxX;
+      maxY = maxY < box.y + box.height ? box.y + box.height : maxY;
+    }
+
+    _imageWidth = maxX.ceil().clamp(1, 100000);
+    _imageHeight = maxY.ceil().clamp(1, 100000);
   }
 }
