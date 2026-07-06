@@ -199,7 +199,7 @@ class _LabelingScreenState extends State<LabelingScreen> {
                             return Padding(
                               padding: const EdgeInsets.only(right: 8),
                               child: ChoiceChip(
-                                label: Text('${label.name} (${label.yoloClassId})'),
+                                label: Text(label.name),
                                 selected: selected,
                                 selectedColor: color.withValues(alpha: 0.2),
                                 onSelected: editable

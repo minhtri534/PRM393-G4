@@ -642,11 +642,6 @@ class ManagerRepository {
     }
   }
 
-  Future<YoloExportModel> exportYoloTask(String taskId) => _unwrap(
-        () => _dioClient.get(ManagerEndpoints.yoloExportTask(taskId)),
-        (data) => YoloExportModel.fromJson(data as Map<String, dynamic>),
-      );
-
   // ================= ACTIVITY LOGS =================
 
   Future<List<ActivityLogModel>> getActivityLogs({

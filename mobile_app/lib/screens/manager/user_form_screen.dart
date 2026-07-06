@@ -28,9 +28,10 @@ class _UserFormScreenState extends State<UserFormScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _roleController = TextEditingController();
+  final _statusController = TextEditingController(text: 'Active');
 
   String? _selectedRoleId;
-  int _selectedStatus = UserAccountStatus.active;
   bool _initialized = false;
 
   @override
@@ -50,8 +51,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
         _fullNameController.text = user.fullName;
         _emailController.text = user.email;
         _phoneController.text = user.phoneNumber ?? '';
+        _roleController.text = user.roleName ?? 'Unknown role';
+        _statusController.text = 'Active';
         _selectedRoleId = user.roleId;
-        _selectedStatus = user.status;
         _initialized = true;
         setState(() {});
       }
@@ -71,6 +73,8 @@ class _UserFormScreenState extends State<UserFormScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _phoneController.dispose();
+    _roleController.dispose();
+    _statusController.dispose();
     super.dispose();
   }
 
@@ -87,26 +91,14 @@ class _UserFormScreenState extends State<UserFormScreen> {
     }
 
     final phone = _phoneController.text.trim();
-    final ok = widget.isEditing
-        ? await provider.updateUser(
-            userId: widget.userId!,
-            fullName: _fullNameController.text.trim(),
-            email: _emailController.text.trim(),
-            roleId: roleId,
-            status: _selectedStatus,
-            password: _passwordController.text.trim().isEmpty
-                ? null
-                : _passwordController.text,
-            phoneNumber: phone.isEmpty ? null : phone,
-          )
-        : await provider.createUser(
-            fullName: _fullNameController.text.trim(),
-            email: _emailController.text.trim(),
-            password: _passwordController.text,
-            roleId: roleId,
-            status: _selectedStatus,
-            phoneNumber: phone.isEmpty ? null : phone,
-          );
+    final ok = await provider.createUser(
+      fullName: _fullNameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+      roleId: roleId,
+      status: UserAccountStatus.active,
+      phoneNumber: phone.isEmpty ? null : phone,
+    );
 
     if (!mounted) return;
 
@@ -124,7 +116,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
     return Scaffold(
       backgroundColor: AppTheme.surfaceSoftColor,
       appBar: AppBar(
-        title: Text(widget.isEditing ? 'Edit User' : 'Create User'),
+        title: Text(widget.isEditing ? 'User Details' : 'Create User'),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
@@ -153,9 +145,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 DlssPageHeader(
-                  title: widget.isEditing ? 'Edit User' : 'New User',
+                  title: widget.isEditing ? 'User Details' : 'New User',
                   subtitle: widget.isEditing
-                      ? 'Update account details or reset password'
+                      ? 'View account information (read-only)'
                       : 'Create an Annotator or Reviewer account',
                 ),
                 const SizedBox(height: 16),
@@ -170,9 +162,12 @@ class _UserFormScreenState extends State<UserFormScreen> {
                           label: 'Full Name',
                           hintText: 'Enter full name',
                           prefixIcon: const Icon(Icons.person_outline),
-                          validator: (v) => v == null || v.trim().isEmpty
-                              ? 'Name is required'
-                              : null,
+                          readOnly: widget.isEditing,
+                          validator: widget.isEditing
+                              ? null
+                              : (v) => v == null || v.trim().isEmpty
+                                  ? 'Name is required'
+                                  : null,
                         ),
                         const SizedBox(height: 16),
                         CustomTextField(
@@ -181,30 +176,28 @@ class _UserFormScreenState extends State<UserFormScreen> {
                           hintText: 'user@example.com',
                           keyboardType: TextInputType.emailAddress,
                           prefixIcon: const Icon(Icons.mail_outline),
-                          validator: validateEmail,
+                          readOnly: widget.isEditing,
+                          validator: widget.isEditing ? null : validateEmail,
                         ),
-                        const SizedBox(height: 16),
-                        CustomTextField(
-                          controller: _passwordController,
-                          label: widget.isEditing
-                              ? 'New Password (optional)'
-                              : 'Password',
-                          hintText: 'At least 8 characters',
-                          obscureText: true,
-                          prefixIcon: const Icon(Icons.lock_outline),
-                          validator: (v) {
-                            if (!widget.isEditing &&
-                                (v == null || v.isEmpty)) {
-                              return 'Password is required';
-                            }
-                            if (v != null &&
-                                v.isNotEmpty &&
-                                v.length < 8) {
-                              return 'Password must be at least 8 characters';
-                            }
-                            return null;
-                          },
-                        ),
+                        if (!widget.isEditing) ...[
+                          const SizedBox(height: 16),
+                          CustomTextField(
+                            controller: _passwordController,
+                            label: 'Password',
+                            hintText: 'At least 8 characters',
+                            obscureText: true,
+                            prefixIcon: const Icon(Icons.lock_outline),
+                            validator: (v) {
+                              if (v == null || v.isEmpty) {
+                                return 'Password is required';
+                              }
+                              if (v.length < 8) {
+                                return 'Password must be at least 8 characters';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
                         const SizedBox(height: 16),
                         CustomTextField(
                           controller: _phoneController,
@@ -212,63 +205,59 @@ class _UserFormScreenState extends State<UserFormScreen> {
                           hintText: '+84 ...',
                           keyboardType: TextInputType.phone,
                           prefixIcon: const Icon(Icons.phone_outlined),
+                          readOnly: widget.isEditing,
                         ),
                         const SizedBox(height: 16),
-                        DropdownButtonFormField<String>(
-                          initialValue: _selectedRoleId,
-                          decoration: InputDecoration(
-                            labelText: 'Role',
+                        if (widget.isEditing)
+                          CustomTextField(
+                            controller: _roleController,
+                            label: 'Role',
+                            hintText: 'Role',
                             prefixIcon: const Icon(Icons.badge_outlined),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                            readOnly: true,
+                          )
+                        else
+                          DropdownButtonFormField<String>(
+                            initialValue: _selectedRoleId,
+                            decoration: InputDecoration(
+                              labelText: 'Role',
+                              prefixIcon: const Icon(Icons.badge_outlined),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
+                            items: roles
+                                .map(
+                                  (RoleModel role) => DropdownMenuItem(
+                                    value: role.id,
+                                    child: Text(role.name),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) =>
+                                setState(() => _selectedRoleId = value),
+                            validator: (value) =>
+                                value == null ? 'Role is required' : null,
                           ),
-                          items: roles
-                              .map(
-                                (RoleModel role) => DropdownMenuItem(
-                                  value: role.id,
-                                  child: Text(role.name),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) =>
-                              setState(() => _selectedRoleId = value),
-                          validator: (value) =>
-                              value == null ? 'Role is required' : null,
-                        ),
-                        const SizedBox(height: 16),
-                        DropdownButtonFormField<int>(
-                          initialValue: _selectedStatus,
-                          decoration: InputDecoration(
-                            labelText: 'Status',
+                        if (widget.isEditing) ...[
+                          const SizedBox(height: 16),
+                          CustomTextField(
+                            controller: _statusController,
+                            label: 'Status',
+                            hintText: 'Active',
                             prefixIcon: const Icon(Icons.info_outline),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                            readOnly: true,
                           ),
-                          items: const [
-                            DropdownMenuItem(
-                              value: UserAccountStatus.active,
-                              child: Text('Active'),
-                            ),
-                            DropdownMenuItem(
-                              value: UserAccountStatus.pendingEmailVerification,
-                              child: Text('Pending email verification'),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            if (value != null) {
-                              setState(() => _selectedStatus = value);
-                            }
-                          },
-                        ),
-                        const SizedBox(height: 24),
-                        ActionButton(
-                          label: widget.isEditing ? 'Save Changes' : 'Create User',
-                          variant: ActionButtonVariant.gradient,
-                          isLoading: provider.isLoading,
-                          onPressed: _submit,
-                        ),
+                        ],
+                        if (!widget.isEditing) ...[
+                          const SizedBox(height: 24),
+                          ActionButton(
+                            label: 'Create User',
+                            variant: ActionButtonVariant.gradient,
+                            isLoading: provider.isLoading,
+                            onPressed: _submit,
+                          ),
+                        ],
                       ],
                     ),
                   ),

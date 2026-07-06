@@ -427,9 +427,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                             children: provider.taskLabels
                                 .map(
                                   (label) => Chip(
-                                    label: Text(
-                                      '${label.name} (${label.yoloClassId})',
-                                    ),
+                                    label: Text(label.name),
                                     backgroundColor: Color(
                                       int.parse(
                                         'FF${label.colorHex.replaceAll('#', '')}',

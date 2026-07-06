@@ -86,7 +86,7 @@ class _UserListScreenState extends State<UserListScreen> {
             children: [
               const DlssPageHeader(
                 title: 'User Management',
-                subtitle: 'Create, edit, and remove team accounts',
+                subtitle: 'Create and remove team accounts',
               ),
               const SizedBox(height: 16),
               TextField(
@@ -172,9 +172,6 @@ class _UserListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isPending =
-        user.status == UserAccountStatus.pendingEmailVerification;
-
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
@@ -223,12 +220,6 @@ class _UserListTile extends StatelessWidget {
                         _Badge(
                           label: user.roleName ?? 'Unknown role',
                           color: AppTheme.primaryColor,
-                        ),
-                        _Badge(
-                          label: user.statusLabel,
-                          color: isPending
-                              ? const Color(0xFFD97706)
-                              : const Color(0xFF059669),
                         ),
                       ],
                     ),

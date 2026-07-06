@@ -23,16 +23,12 @@ class ManagerProvider extends ChangeNotifier {
   List<DatasetModel> _datasets = [];
   List<DatasetModel> _allDatasets = [];
   DatasetModel? _selectedDataset;
-  List<DatasetVersionModel> _datasetVersions = [];
   List<LabelModel> _labels = [];
-  List<LabelCategoryModel> _labelCategories = [];
-  List<AnnotationTypeModel> _annotationTypes = [];
   List<UserProjectRoleModel> _projectRoles = [];
   List<ManagerTaskModel> _projectTasks = [];
   TaskProgressModel? _taskProgress;
   QualityReportModel? _qualityReport;
   List<AnnotatorPerformanceModel> _annotatorPerformance = [];
-  List<InconsistentLabelModel> _inconsistentLabels = [];
   List<ExportModel> _exports = [];
   ExportValidationModel? _exportValidation;
   List<ActivityLogModel> _activityLogs = [];
@@ -50,17 +46,13 @@ class ManagerProvider extends ChangeNotifier {
   List<DatasetModel> get datasets => _datasets;
   List<DatasetModel> get allDatasets => _allDatasets;
   DatasetModel? get selectedDataset => _selectedDataset;
-  List<DatasetVersionModel> get datasetVersions => _datasetVersions;
   List<LabelModel> get labels => _labels;
-  List<LabelCategoryModel> get labelCategories => _labelCategories;
-  List<AnnotationTypeModel> get annotationTypes => _annotationTypes;
   List<UserProjectRoleModel> get projectRoles => _projectRoles;
   List<ManagerTaskModel> get projectTasks => _projectTasks;
   TaskProgressModel? get taskProgress => _taskProgress;
   QualityReportModel? get qualityReport => _qualityReport;
   List<AnnotatorPerformanceModel> get annotatorPerformance =>
       _annotatorPerformance;
-  List<InconsistentLabelModel> get inconsistentLabels => _inconsistentLabels;
   List<ExportModel> get exports => _exports;
   ExportValidationModel? get exportValidation => _exportValidation;
   List<ActivityLogModel> get activityLogs => _activityLogs;
@@ -176,15 +168,11 @@ class ManagerProvider extends ChangeNotifier {
     final results = await Future.wait([
       _repository.getDatasets(projectId),
       _repository.getLabels(projectId),
-      _repository.getLabelCategories(projectId),
-      _repository.getAnnotationTypes(projectId),
       _repository.getProjectRoles(projectId),
     ]);
     _datasets = results[0] as List<DatasetModel>;
     _labels = results[1] as List<LabelModel>;
-    _labelCategories = results[2] as List<LabelCategoryModel>;
-    _annotationTypes = results[3] as List<AnnotationTypeModel>;
-    _projectRoles = results[4] as List<UserProjectRoleModel>;
+    _projectRoles = results[2] as List<UserProjectRoleModel>;
   }
 
   Future<bool> updateGuideline(String projectId, String guideline) async {
@@ -333,8 +321,6 @@ class ManagerProvider extends ChangeNotifier {
     notifyListeners();
     await _runAction(() async {
       _selectedDataset = await _repository.getDatasetById(datasetId);
-      _datasetVersions =
-          await _repository.getDatasetVersions(datasetId);
     });
   }
 
@@ -372,73 +358,27 @@ class ManagerProvider extends ChangeNotifier {
     });
   }
 
-  Future<bool> createDatasetVersion({
-    required String datasetId,
-    required String versionName,
-  }) async {
-    return _runAction(() async {
-      final version = await _repository.createDatasetVersion(
-        datasetId: datasetId,
-        versionName: versionName,
-      );
-      _datasetVersions = [version, ..._datasetVersions];
-    });
-  }
-
-  Future<bool> restoreDatasetVersion(String versionId) async {
-    return _runAction(() async {
-      await _repository.restoreDatasetVersion(versionId);
-      if (_selectedDataset != null) {
-        _datasetVersions = await _repository.getDatasetVersions(
-          _selectedDataset!.id,
-        );
-      }
-    });
-  }
-
   Future<bool> createLabel({
     required String projectId,
     required String name,
-    required int yoloClassId,
   }) async {
     return _runAction(() async {
       final label = await _repository.createLabel(
         projectId: projectId,
         name: name,
-        yoloClassId: yoloClassId,
+        yoloClassId: _nextLabelClassId(_labels),
       );
       _labels = [label, ..._labels];
     });
   }
 
-  Future<bool> createLabelCategory({
-    required String projectId,
-    required String name,
-    String? description,
-  }) async {
-    return _runAction(() async {
-      final category = await _repository.createLabelCategory(
-        projectId: projectId,
-        name: name,
-        description: description,
-      );
-      _labelCategories = [category, ..._labelCategories];
-    });
-  }
-
-  Future<bool> createAnnotationType({
-    required String projectId,
-    required String name,
-    String? description,
-  }) async {
-    return _runAction(() async {
-      final type = await _repository.createAnnotationType(
-        projectId: projectId,
-        name: name,
-        description: description,
-      );
-      _annotationTypes = [type, ..._annotationTypes];
-    });
+  int _nextLabelClassId(List<LabelModel> labels) {
+    if (labels.isEmpty) return 0;
+    var maxId = labels.first.yoloClassId;
+    for (final label in labels) {
+      if (label.yoloClassId > maxId) maxId = label.yoloClassId;
+    }
+    return maxId + 1;
   }
 
   Future<void> loadProjectTasks(String projectId) async {
@@ -498,11 +438,9 @@ class ManagerProvider extends ChangeNotifier {
       final results = await Future.wait([
         _repository.getQualityReport(projectId),
         _repository.getAnnotatorPerformance(projectId),
-        _repository.getInconsistentLabels(projectId),
       ]);
       _qualityReport = results[0] as QualityReportModel;
       _annotatorPerformance = results[1] as List<AnnotatorPerformanceModel>;
-      _inconsistentLabels = results[2] as List<InconsistentLabelModel>;
     });
   }
 
@@ -521,14 +459,14 @@ class ManagerProvider extends ChangeNotifier {
 
   Future<bool> createExport({
     required String projectId,
-    String format = 'YOLO',
-    String labelFormat = 'YOLO',
+    String format = 'JSON',
+    String labelFormat = 'JSON',
   }) async {
     return _runAction(() async {
       final export = await _repository.createExport(
         projectId: projectId,
         format: format,
-        exportPath: 'exports/$projectId',
+        exportPath: 'exports/$projectId/export.json',
         labelFormat: labelFormat,
       );
       _exports = [export, ..._exports];
@@ -586,13 +524,22 @@ class ManagerProvider extends ChangeNotifier {
   Future<bool> updateLabel(
     String labelId, {
     required String name,
-    required int yoloClassId,
   }) async {
+    LabelModel? existing;
+    for (final label in _labels) {
+      if (label.id == labelId) {
+        existing = label;
+        break;
+      }
+    }
+    if (existing == null) return false;
+    final labelClassId = existing.yoloClassId;
+
     return _runAction(() async {
       final updated = await _repository.updateLabel(
         labelId,
         name: name,
-        yoloClassId: yoloClassId,
+        yoloClassId: labelClassId,
       );
       _labels = _labels.map((l) => l.id == labelId ? updated : l).toList();
     });
@@ -602,53 +549,6 @@ class ManagerProvider extends ChangeNotifier {
     return _runAction(() async {
       await _repository.deleteLabel(labelId);
       _labels = _labels.where((l) => l.id != labelId).toList();
-    });
-  }
-
-  Future<bool> updateLabelCategory(
-    String categoryId, {
-    required String name,
-    String? description,
-  }) async {
-    return _runAction(() async {
-      final updated = await _repository.updateLabelCategory(
-        categoryId,
-        name: name,
-        description: description,
-      );
-      _labelCategories =
-          _labelCategories.map((c) => c.id == categoryId ? updated : c).toList();
-    });
-  }
-
-  Future<bool> deleteLabelCategory(String categoryId) async {
-    return _runAction(() async {
-      await _repository.deleteLabelCategory(categoryId);
-      _labelCategories =
-          _labelCategories.where((c) => c.id != categoryId).toList();
-    });
-  }
-
-  Future<bool> updateAnnotationType(
-    String typeId, {
-    required String name,
-    String? description,
-  }) async {
-    return _runAction(() async {
-      final updated = await _repository.updateAnnotationType(
-        typeId,
-        name: name,
-        description: description,
-      );
-      _annotationTypes =
-          _annotationTypes.map((t) => t.id == typeId ? updated : t).toList();
-    });
-  }
-
-  Future<bool> deleteAnnotationType(String typeId) async {
-    return _runAction(() async {
-      await _repository.deleteAnnotationType(typeId);
-      _annotationTypes = _annotationTypes.where((t) => t.id != typeId).toList();
     });
   }
 
@@ -664,21 +564,6 @@ class ManagerProvider extends ChangeNotifier {
         annotatorId: annotatorId,
       );
       _projectTasks = [task, ..._projectTasks];
-    });
-  }
-
-  Future<bool> bulkAssignTasks({
-    required List<String> taskIds,
-    required String annotatorId,
-  }) async {
-    return _runAction(() async {
-      await _repository.bulkAssignTasks(
-        taskIds: taskIds,
-        annotatorId: annotatorId,
-      );
-      if (_selectedProject != null) {
-        await loadProjectTasks(_selectedProject!.id);
-      }
     });
   }
 
@@ -713,41 +598,6 @@ class ManagerProvider extends ChangeNotifier {
       _errorMessage = e.message;
       notifyListeners();
       return [];
-    }
-  }
-
-  Future<bool> uploadDatasetItems({
-    required String datasetId,
-    required List<Map<String, dynamic>> items,
-  }) async {
-    return _runAction(() async {
-      await _repository.uploadDatasetItems(datasetId: datasetId, items: items);
-      _selectedDataset = await _repository.getDatasetById(datasetId);
-    });
-  }
-
-  Future<bool> importDatasetExternal({
-    required String datasetId,
-    required String sourceName,
-    required List<Map<String, dynamic>> items,
-  }) async {
-    return _runAction(() async {
-      await _repository.importDatasetExternal(
-        datasetId: datasetId,
-        sourceName: sourceName,
-        items: items,
-      );
-      _selectedDataset = await _repository.getDatasetById(datasetId);
-    });
-  }
-
-  Future<YoloExportModel?> exportYoloTask(String taskId) async {
-    try {
-      return await _repository.exportYoloTask(taskId);
-    } on ApiError catch (e) {
-      _errorMessage = e.message;
-      notifyListeners();
-      return null;
     }
   }
 }

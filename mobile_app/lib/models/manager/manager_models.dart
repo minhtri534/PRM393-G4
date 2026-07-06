@@ -620,9 +620,7 @@ class UserModel {
         updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? ''),
       );
 
-  String get statusLabel => status == UserAccountStatus.pendingEmailVerification
-      ? 'Pending verification'
-      : 'Active';
+  String get statusLabel => 'Active';
 }
 
 class RoleModel {
@@ -647,36 +645,6 @@ DateTime? _parseDateOnly(dynamic value) {
   final raw = value.toString();
   if (raw.isEmpty) return null;
   return DateTime.tryParse(raw);
-}
-
-class YoloExportModel {
-  final List<String> classes;
-  final List<YoloLabelFileModel> files;
-
-  YoloExportModel({required this.classes, required this.files});
-
-  factory YoloExportModel.fromJson(Map<String, dynamic> json) =>
-      YoloExportModel(
-        classes: (json['classes'] as List<dynamic>? ?? [])
-            .map((e) => e.toString())
-            .toList(),
-        files: (json['files'] as List<dynamic>? ?? [])
-            .map((e) => YoloLabelFileModel.fromJson(e as Map<String, dynamic>))
-            .toList(),
-      );
-}
-
-class YoloLabelFileModel {
-  final String fileName;
-  final String content;
-
-  YoloLabelFileModel({required this.fileName, required this.content});
-
-  factory YoloLabelFileModel.fromJson(Map<String, dynamic> json) =>
-      YoloLabelFileModel(
-        fileName: json['fileName']?.toString() ?? '',
-        content: json['content']?.toString() ?? '',
-      );
 }
 
 int? _parseInt(dynamic value) {

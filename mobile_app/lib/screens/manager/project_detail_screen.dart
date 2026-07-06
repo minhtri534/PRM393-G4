@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants/app_constants.dart';
@@ -27,12 +32,8 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
   final _guidelineController = TextEditingController();
   final _datasetNameController = TextEditingController();
   final _labelNameController = TextEditingController();
-  final _labelClassController = TextEditingController(text: '0');
-  final _categoryNameController = TextEditingController();
-  final _annotationTypeController = TextEditingController();
   final _userSearchController = TextEditingController();
   final _projectNameController = TextEditingController();
-  final Set<String> _selectedTaskIds = {};
   int? _projectStatus;
 
   @override
@@ -67,9 +68,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
     _guidelineController.dispose();
     _datasetNameController.dispose();
     _labelNameController.dispose();
-    _labelClassController.dispose();
-    _categoryNameController.dispose();
-    _annotationTypeController.dispose();
     _userSearchController.dispose();
     _projectNameController.dispose();
     super.dispose();
@@ -133,58 +131,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
       await provider.requestRelabeling(taskId, reasonController.text.trim());
     }
     reasonController.dispose();
-  }
-
-  Future<void> _showBulkAssignDialog(ManagerProvider provider) async {
-    if (_selectedTaskIds.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Select tasks first')),
-      );
-      return;
-    }
-    String? annotatorId;
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialogState) => AlertDialog(
-          title: Text('Bulk assign ${_selectedTaskIds.length} tasks'),
-          content: DropdownButtonFormField<String>(
-            decoration: const InputDecoration(
-              labelText: 'Annotator',
-              border: OutlineInputBorder(),
-            ),
-            items: provider.annotators
-                .map(
-                  (a) => DropdownMenuItem(
-                    value: a.userId,
-                    child: Text(a.userEmail),
-                  ),
-                )
-                .toList(),
-            onChanged: (v) => setDialogState(() => annotatorId = v),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, annotatorId != null),
-              child: const Text('Assign'),
-            ),
-          ],
-        ),
-      ),
-    );
-    if (ok == true && annotatorId != null) {
-      final success = await provider.bulkAssignTasks(
-        taskIds: _selectedTaskIds.toList(),
-        annotatorId: annotatorId!,
-      );
-      if (success && mounted) {
-        setState(() => _selectedTaskIds.clear());
-      }
-    }
   }
 
   @override
@@ -397,57 +343,39 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                 hintText: 'e.g. Car',
               ),
             ),
-            SizedBox(
-              width: 80,
-              child: CustomTextField(
-                controller: _labelClassController,
-                label: 'YOLO ID',
-                hintText: '0',
-                keyboardType: TextInputType.number,
-              ),
-            ),
             IconButton(
               onPressed: () async {
-                final classId = int.tryParse(_labelClassController.text) ?? 0;
-                await provider.createLabel(
+                final name = _labelNameController.text.trim();
+                if (name.isEmpty) return;
+                final ok = await provider.createLabel(
                   projectId: widget.projectId,
-                  name: _labelNameController.text.trim(),
-                  yoloClassId: classId,
+                  name: name,
                 );
+                if (ok) _labelNameController.clear();
               },
               icon: const Icon(Icons.add),
             ),
           ],
         ),
-        ...provider.labels.map(
+        ...([...provider.labels]
+              ..sort((a, b) => a.yoloClassId.compareTo(b.yoloClassId)))
+            .map(
           (l) => ListTile(
             title: Text(l.name),
-            subtitle: Text('YOLO class ${l.yoloClassId}'),
+            subtitle: Text('ID ${l.yoloClassId}'),
             trailing: IconButton(
               icon: const Icon(Icons.delete_outline),
               onPressed: () => provider.deleteLabel(l.id),
             ),
             onTap: () async {
               final nameController = TextEditingController(text: l.name);
-              final classController =
-                  TextEditingController(text: '${l.yoloClassId}');
               final ok = await showDialog<bool>(
                 context: context,
                 builder: (ctx) => AlertDialog(
                   title: const Text('Edit Label'),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextField(
-                        controller: nameController,
-                        decoration: const InputDecoration(labelText: 'Name'),
-                      ),
-                      TextField(
-                        controller: classController,
-                        decoration: const InputDecoration(labelText: 'YOLO ID'),
-                        keyboardType: TextInputType.number,
-                      ),
-                    ],
+                  content: TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(labelText: 'Name'),
                   ),
                   actions: [
                     TextButton(
@@ -465,71 +393,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                 await provider.updateLabel(
                   l.id,
                   name: nameController.text.trim(),
-                  yoloClassId: int.tryParse(classController.text) ?? 0,
                 );
               }
               nameController.dispose();
-              classController.dispose();
             },
-          ),
-        ),
-        const Divider(height: 32),
-        Text('Categories', style: Theme.of(context).textTheme.titleMedium),
-        Row(
-          children: [
-            Expanded(
-              child: CustomTextField(
-                controller: _categoryNameController,
-                label: 'Category name',
-                hintText: 'Category',
-              ),
-            ),
-            IconButton(
-              onPressed: () => provider.createLabelCategory(
-                projectId: widget.projectId,
-                name: _categoryNameController.text.trim(),
-              ),
-              icon: const Icon(Icons.add),
-            ),
-          ],
-        ),
-        ...provider.labelCategories.map(
-          (c) => ListTile(
-            title: Text(c.name),
-            subtitle: Text(c.description ?? ''),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete_outline),
-              onPressed: () => provider.deleteLabelCategory(c.id),
-            ),
-          ),
-        ),
-        const Divider(height: 32),
-        Text('Annotation Types', style: Theme.of(context).textTheme.titleMedium),
-        Row(
-          children: [
-            Expanded(
-              child: CustomTextField(
-                controller: _annotationTypeController,
-                label: 'Type name',
-                hintText: 'Bounding box',
-              ),
-            ),
-            IconButton(
-              onPressed: () => provider.createAnnotationType(
-                projectId: widget.projectId,
-                name: _annotationTypeController.text.trim(),
-              ),
-              icon: const Icon(Icons.add),
-            ),
-          ],
-        ),
-        ...provider.annotationTypes.map(
-          (t) => ListTile(
-            title: Text(t.name),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete_outline),
-              onPressed: () => provider.deleteAnnotationType(t.id),
-            ),
           ),
         ),
       ],
@@ -574,32 +441,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
               _statTile('Rework', '${progress.rework}'),
             ],
           ),
-        Row(
-          children: [
-            TextButton.icon(
-              onPressed: () => _showBulkAssignDialog(provider),
-              icon: const Icon(Icons.group_add),
-              label: Text('Bulk assign (${_selectedTaskIds.length})'),
-            ),
-          ],
-        ),
         const SizedBox(height: 8),
         ...provider.projectTasks.map((task) {
-          final selected = _selectedTaskIds.contains(task.id);
           return Card(
             child: ListTile(
-              leading: Checkbox(
-                value: selected,
-                onChanged: (v) {
-                  setState(() {
-                    if (v == true) {
-                      _selectedTaskIds.add(task.id);
-                    } else {
-                      _selectedTaskIds.remove(task.id);
-                    }
-                  });
-                },
-              ),
               title: Text(task.displayTitle),
               subtitle: Text(
                 [
@@ -620,17 +465,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                     await _showTaskHistory(provider, task.id);
                   } else if (action == 'relabel') {
                     await _showRelabelDialog(provider, task.id);
-                  } else if (action == 'yolo') {
-                    final result = await provider.exportYoloTask(task.id);
-                    if (result != null && context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'YOLO export: ${result.classes.length} classes, ${result.files.length} files',
-                          ),
-                        ),
-                      );
-                    }
                   } else if (action.startsWith('assign:')) {
                     await provider.assignTask(
                       task.id,
@@ -660,7 +494,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                   const PopupMenuItem(value: 'resume', child: Text('Resume')),
                   const PopupMenuItem(value: 'relabel', child: Text('Relabel')),
                   const PopupMenuItem(value: 'history', child: Text('History')),
-                  const PopupMenuItem(value: 'yolo', child: Text('YOLO Export')),
                   const PopupMenuItem(value: 'cancel', child: Text('Cancel')),
                 ],
               ),
@@ -705,12 +538,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             ),
           ),
         ),
-        Card(
-          child: ListTile(
-            title: const Text('Inconsistent Labels'),
-            trailing: Text('${report.inconsistentLabelsCount}'),
-          ),
-        ),
         const SizedBox(height: 16),
         Text('Annotator Performance',
             style: Theme.of(context).textTheme.titleMedium),
@@ -722,18 +549,48 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             ),
           ),
         ),
-        if (provider.inconsistentLabels.isNotEmpty) ...[
-          const SizedBox(height: 16),
-          Text('Issues', style: Theme.of(context).textTheme.titleMedium),
-          ...provider.inconsistentLabels.map(
-            (i) => ListTile(
-              title: Text(i.issue),
-              subtitle: Text('Task ${i.taskId}'),
-            ),
-          ),
-        ],
       ],
     );
+  }
+
+  Future<void> _downloadExport(ManagerProvider provider, ExportModel export) async {
+    if (kIsWeb) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Download is not supported on web.')),
+      );
+      return;
+    }
+
+    final bytes = await provider.downloadExport(export.id);
+    if (!mounted) return;
+
+    if (bytes == null) {
+      if (provider.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(provider.errorMessage!)),
+        );
+      }
+      return;
+    }
+
+    try {
+      final dir = await getTemporaryDirectory();
+      final isZip = export.format.toUpperCase() == 'YOLO';
+      final fileName = 'dlss-export-${export.id}${isZip ? '.zip' : '.json'}';
+      final file = File('${dir.path}/$fileName');
+      await file.writeAsBytes(bytes, flush: true);
+      await OpenFilex.open(file.path);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Opened ${isZip ? 'ZIP' : 'JSON'} export')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Cannot open export: $e')),
+      );
+    }
   }
 
   Widget _exportsTab(ManagerProvider provider) {
@@ -749,34 +606,55 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             child: ListTile(
               title: Text(validation.isValid ? 'Ready to export' : 'Not ready'),
               subtitle: Text(
-                'Submitted: ${validation.submittedAnnotationSets} • Reviewed: ${validation.reviewedAnnotationSets}',
+                validation.isValid
+                    ? 'All submitted annotation sets have been reviewed.'
+                    : 'Submitted: ${validation.submittedAnnotationSets} • Reviewed: ${validation.reviewedAnnotationSets}. '
+                        'Export still works, but annotations/reviews may be empty until tasks are reviewed.',
               ),
             ),
           ),
+        Text(
+          'Export project labeling data as a JSON file (labels, tasks, approved annotations, reviews).',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppTheme.textSecondaryColor,
+              ),
+        ),
+        const SizedBox(height: 12),
         ActionButton(
-          label: 'Create YOLO Export',
+          label: 'Create JSON Export',
           isLoading: provider.isLoading,
-          onPressed: () => provider.createExport(projectId: widget.projectId),
+          onPressed: () async {
+            final ok = await provider.createExport(projectId: widget.projectId);
+            if (!context.mounted) return;
+            if (ok) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Export created. Tap download to open the JSON file.')),
+              );
+            } else if (provider.errorMessage != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(provider.errorMessage!)),
+              );
+            }
+          },
         ),
         const SizedBox(height: 16),
         Text('Export History', style: Theme.of(context).textTheme.titleMedium),
+        if (provider.exports.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              'No exports yet',
+              style: TextStyle(color: AppTheme.textSecondaryColor),
+            ),
+          ),
         ...provider.exports.map(
           (e) => ListTile(
             title: Text('${e.format} • ${e.createdAt?.toLocal()}'),
             subtitle: Text(e.exportedByEmail ?? ''),
             trailing: IconButton(
+              tooltip: 'Download JSON',
               icon: const Icon(Icons.download),
-              onPressed: () async {
-                final bytes =
-                    await provider.downloadExport(e.id);
-                if (bytes != null && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Downloaded ${bytes.length} bytes'),
-                    ),
-                  );
-                }
-              },
+              onPressed: () => _downloadExport(provider, e),
             ),
           ),
         ),
@@ -837,15 +715,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             },
           ),
           const SizedBox(height: 24),
-          ActionButton(
-            label: 'Archive Project',
-            isOutlined: true,
-            onPressed: () async {
-              final ok = await provider.archiveProject(widget.projectId);
-              if (ok && context.mounted) Navigator.pop(context);
-            },
-          ),
-          const SizedBox(height: 12),
           ActionButton(
             label: 'Delete Project',
             isOutlined: true,
