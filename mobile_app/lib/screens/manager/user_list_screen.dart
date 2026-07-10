@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
-import '../../models/manager/manager_models.dart';
+import '../../models/manager/user_model.dart';
 import '../../providers/manager_provider.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/dlss_page_header.dart';
