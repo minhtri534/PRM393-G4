@@ -13,7 +13,7 @@ class ManagerProvider extends ChangeNotifier {
   final ManagerRepository _repository;
 
   ManagerProvider({ManagerRepository? repository})
-      : _repository = repository ?? ManagerRepository();
+    : _repository = repository ?? ManagerRepository();
 
   ManagerLoadState _state = ManagerLoadState.initial;
   String? _errorMessage;
@@ -112,18 +112,14 @@ class ManagerProvider extends ChangeNotifier {
       }
       final results = <DatasetModel>[];
       for (final project in _projects) {
-        final projectDatasets =
-            await _repository.getDatasets(project.id);
+        final projectDatasets = await _repository.getDatasets(project.id);
         results.addAll(projectDatasets);
       }
       _allDatasets = results;
     });
   }
 
-  Future<bool> createProject({
-    required String name,
-    String? guideline,
-  }) async {
+  Future<bool> createProject({required String name, String? guideline}) async {
     return _runAction(() async {
       final project = await _repository.createProject(
         name: name,
@@ -177,8 +173,10 @@ class ManagerProvider extends ChangeNotifier {
 
   Future<bool> updateGuideline(String projectId, String guideline) async {
     return _runAction(() async {
-      _selectedProject =
-          await _repository.updateGuideline(projectId, guideline);
+      _selectedProject = await _repository.updateGuideline(
+        projectId,
+        guideline,
+      );
       _projects = _projects
           .map((p) => p.id == projectId ? _selectedProject! : p)
           .toList();
@@ -309,8 +307,10 @@ class ManagerProvider extends ChangeNotifier {
     required String name,
   }) async {
     return _runAction(() async {
-      final dataset =
-          await _repository.createDataset(projectId: projectId, name: name);
+      final dataset = await _repository.createDataset(
+        projectId: projectId,
+        name: name,
+      );
       _datasets = [dataset, ..._datasets];
       _allDatasets = [dataset, ..._allDatasets];
     });
@@ -350,10 +350,7 @@ class ManagerProvider extends ChangeNotifier {
     required List<MultipartFile> files,
   }) async {
     return _runAction(() async {
-      await _repository.uploadDatasetFiles(
-        datasetId: datasetId,
-        files: files,
-      );
+      await _repository.uploadDatasetFiles(datasetId: datasetId, files: files);
       _selectedDataset = await _repository.getDatasetById(datasetId);
     });
   }
@@ -409,8 +406,7 @@ class ManagerProvider extends ChangeNotifier {
 
   Future<bool> assignTask(String taskId, String annotatorId) async {
     return _runAction(() async {
-      final updated =
-          await _repository.assignTask(taskId, annotatorId);
+      final updated = await _repository.assignTask(taskId, annotatorId);
       _projectTasks = _projectTasks
           .map((t) => t.id == taskId ? updated : t)
           .toList();
@@ -420,16 +416,18 @@ class ManagerProvider extends ChangeNotifier {
   Future<bool> pauseTask(String taskId) async {
     return _runAction(() async {
       final updated = await _repository.pauseTask(taskId);
-      _projectTasks =
-          _projectTasks.map((t) => t.id == taskId ? updated : t).toList();
+      _projectTasks = _projectTasks
+          .map((t) => t.id == taskId ? updated : t)
+          .toList();
     });
   }
 
   Future<bool> cancelTask(String taskId) async {
     return _runAction(() async {
       final updated = await _repository.cancelTask(taskId);
-      _projectTasks =
-          _projectTasks.map((t) => t.id == taskId ? updated : t).toList();
+      _projectTasks = _projectTasks
+          .map((t) => t.id == taskId ? updated : t)
+          .toList();
     });
   }
 
@@ -521,10 +519,7 @@ class ManagerProvider extends ChangeNotifier {
     });
   }
 
-  Future<bool> updateLabel(
-    String labelId, {
-    required String name,
-  }) async {
+  Future<bool> updateLabel(String labelId, {required String name}) async {
     LabelModel? existing;
     for (final label in _labels) {
       if (label.id == labelId) {
@@ -570,24 +565,27 @@ class ManagerProvider extends ChangeNotifier {
   Future<bool> reassignTask(String taskId, String annotatorId) async {
     return _runAction(() async {
       final updated = await _repository.reassignTask(taskId, annotatorId);
-      _projectTasks =
-          _projectTasks.map((t) => t.id == taskId ? updated : t).toList();
+      _projectTasks = _projectTasks
+          .map((t) => t.id == taskId ? updated : t)
+          .toList();
     });
   }
 
   Future<bool> resumeTask(String taskId) async {
     return _runAction(() async {
       final updated = await _repository.resumeTask(taskId);
-      _projectTasks =
-          _projectTasks.map((t) => t.id == taskId ? updated : t).toList();
+      _projectTasks = _projectTasks
+          .map((t) => t.id == taskId ? updated : t)
+          .toList();
     });
   }
 
   Future<bool> requestRelabeling(String taskId, String reason) async {
     return _runAction(() async {
       final updated = await _repository.requestRelabeling(taskId, reason);
-      _projectTasks =
-          _projectTasks.map((t) => t.id == taskId ? updated : t).toList();
+      _projectTasks = _projectTasks
+          .map((t) => t.id == taskId ? updated : t)
+          .toList();
     });
   }
 

@@ -66,9 +66,9 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
         files: multipartFiles,
       );
       if (mounted && !ok && provider.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(provider.errorMessage!)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(provider.errorMessage!)));
       }
     }
   }
@@ -87,10 +87,7 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
         if (dataset == null) {
           return Scaffold(
             backgroundColor: AppTheme.surfaceSoftColor,
-            appBar: AppBar(
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-            ),
+            appBar: AppBar(elevation: 0, backgroundColor: Colors.transparent),
             body: const Center(child: Text('Dataset not found')),
           );
         }
@@ -141,9 +138,7 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                           ),
                           Text(
                             '${dataset.totalItems ?? 0} items',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
+                            style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                         ],
@@ -165,8 +160,8 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                     Text(
                       'Dataset settings',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     CustomTextField(

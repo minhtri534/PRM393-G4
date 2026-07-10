@@ -84,9 +84,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
     final provider = context.read<ManagerProvider>();
     final roleId = _selectedRoleId;
     if (roleId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a role')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please select a role')));
       return;
     }
 
@@ -105,9 +105,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
     if (ok) {
       Navigator.pop(context);
     } else if (provider.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(provider.errorMessage!)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(provider.errorMessage!)));
     }
   }
 
@@ -166,8 +166,8 @@ class _UserFormScreenState extends State<UserFormScreen> {
                           validator: widget.isEditing
                               ? null
                               : (v) => v == null || v.trim().isEmpty
-                                  ? 'Name is required'
-                                  : null,
+                                    ? 'Name is required'
+                                    : null,
                         ),
                         const SizedBox(height: 16),
                         CustomTextField(

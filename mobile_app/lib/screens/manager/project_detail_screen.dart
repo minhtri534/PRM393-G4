@@ -147,11 +147,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
         if (project == null) {
           return Scaffold(
             backgroundColor: AppTheme.surfaceSoftColor,
-            appBar: AppBar(
-              elevation: 0,
-              backgroundColor: Colors.transparent,
+            appBar: AppBar(elevation: 0, backgroundColor: Colors.transparent),
+            body: Center(
+              child: Text(provider.errorMessage ?? 'Project not found'),
             ),
-            body: Center(child: Text(provider.errorMessage ?? 'Project not found')),
           );
         }
 
@@ -357,9 +356,9 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             ),
           ],
         ),
-        ...([...provider.labels]
-              ..sort((a, b) => a.yoloClassId.compareTo(b.yoloClassId)))
-            .map(
+        ...([
+          ...provider.labels,
+        ]..sort((a, b) => a.yoloClassId.compareTo(b.yoloClassId))).map(
           (l) => ListTile(
             title: Text(l.name),
             subtitle: Text('ID ${l.yoloClassId}'),
@@ -466,10 +465,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                   } else if (action == 'relabel') {
                     await _showRelabelDialog(provider, task.id);
                   } else if (action.startsWith('assign:')) {
-                    await provider.assignTask(
-                      task.id,
-                      action.split(':').last,
-                    );
+                    await provider.assignTask(task.id, action.split(':').last);
                   } else if (action.startsWith('reassign:')) {
                     await provider.reassignTask(
                       task.id,
@@ -539,8 +535,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
           ),
         ),
         const SizedBox(height: 16),
-        Text('Annotator Performance',
-            style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          'Annotator Performance',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         ...provider.annotatorPerformance.map(
           (a) => ListTile(
             title: Text(a.annotatorEmail),
@@ -553,7 +551,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
     );
   }
 
-  Future<void> _downloadExport(ManagerProvider provider, ExportModel export) async {
+  Future<void> _downloadExport(
+    ManagerProvider provider,
+    ExportModel export,
+  ) async {
     if (kIsWeb) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -567,9 +568,9 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
 
     if (bytes == null) {
       if (provider.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(provider.errorMessage!)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(provider.errorMessage!)));
       }
       return;
     }
@@ -587,9 +588,9 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Cannot open export: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Cannot open export: $e')));
     }
   }
 
@@ -609,15 +610,15 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                 validation.isValid
                     ? 'All submitted annotation sets have been reviewed.'
                     : 'Submitted: ${validation.submittedAnnotationSets} • Reviewed: ${validation.reviewedAnnotationSets}. '
-                        'Export still works, but annotations/reviews may be empty until tasks are reviewed.',
+                          'Export still works, but annotations/reviews may be empty until tasks are reviewed.',
               ),
             ),
           ),
         Text(
           'Export project labeling data as a JSON file (labels, tasks, approved annotations, reviews).',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppTheme.textSecondaryColor,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondaryColor),
         ),
         const SizedBox(height: 12),
         ActionButton(
@@ -628,12 +629,16 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             if (!context.mounted) return;
             if (ok) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Export created. Tap download to open the JSON file.')),
+                const SnackBar(
+                  content: Text(
+                    'Export created. Tap download to open the JSON file.',
+                  ),
+                ),
               );
             } else if (provider.errorMessage != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(provider.errorMessage!)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(provider.errorMessage!)));
             }
           },
         ),

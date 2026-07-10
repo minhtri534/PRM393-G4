@@ -56,7 +56,9 @@ class _LabelingScreenState extends State<LabelingScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(ok ? 'Draft saved' : provider.errorMessage ?? 'Save failed'),
+        content: Text(
+          ok ? 'Draft saved' : provider.errorMessage ?? 'Save failed',
+        ),
       ),
     );
   }
@@ -89,7 +91,9 @@ class _LabelingScreenState extends State<LabelingScreen> {
             IconButton(
               tooltip: _drawMode ? 'Select mode' : 'Draw mode',
               onPressed: () => setState(() => _drawMode = !_drawMode),
-              icon: Icon(_drawMode ? Icons.pan_tool_alt_outlined : Icons.crop_free),
+              icon: Icon(
+                _drawMode ? Icons.pan_tool_alt_outlined : Icons.crop_free,
+              ),
             ),
         ],
       ),
@@ -121,20 +125,22 @@ class _LabelingScreenState extends State<LabelingScreen> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.feedback_outlined,
-                                color: AppTheme.warningColor),
+                            const Icon(
+                              Icons.feedback_outlined,
+                              color: AppTheme.warningColor,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               'Review feedback',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall
+                              style: Theme.of(context).textTheme.titleSmall
                                   ?.copyWith(fontWeight: FontWeight.w600),
                             ),
                           ],
                         ),
                         const SizedBox(height: 8),
-                        Text('Result: ${feedback.result} • Score: ${feedback.score}'),
+                        Text(
+                          'Result: ${feedback.result} • Score: ${feedback.score}',
+                        ),
                         if (feedback.comment?.isNotEmpty == true) ...[
                           const SizedBox(height: 6),
                           Text(feedback.comment!),
@@ -189,7 +195,8 @@ class _LabelingScreenState extends State<LabelingScreen> {
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: labels.map((label) {
-                            final selected = provider.selectedLabelId == label.id;
+                            final selected =
+                                provider.selectedLabelId == label.id;
                             final color = Color(
                               int.parse(
                                 'FF${label.colorHex.replaceAll('#', '')}',
