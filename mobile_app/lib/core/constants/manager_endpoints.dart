@@ -95,9 +95,6 @@ class ManagerEndpoints {
 
   // Roles
   static const String roles = '/roles';
-
-  // YOLO export (exports controller)
-  static String yoloExportTask(String taskId) => '/exports/yolo/tasks/$taskId';
 }
 
 /// Default system role IDs used when assigning project members.

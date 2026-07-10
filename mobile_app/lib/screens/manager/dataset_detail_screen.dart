@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -26,9 +24,6 @@ class DatasetDetailScreen extends StatefulWidget {
 
 class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
   final _nameController = TextEditingController();
-  final _versionController = TextEditingController();
-  final _sourceNameController = TextEditingController();
-  final _itemsJsonController = TextEditingController();
 
   @override
   void initState() {
@@ -41,20 +36,7 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
   @override
   void dispose() {
     _nameController.dispose();
-    _versionController.dispose();
-    _sourceNameController.dispose();
-    _itemsJsonController.dispose();
     super.dispose();
-  }
-
-  List<Map<String, dynamic>>? _parseItemsJson() {
-    try {
-      final decoded = jsonDecode(_itemsJsonController.text.trim());
-      if (decoded is! List) return null;
-      return decoded.cast<Map<String, dynamic>>();
-    } catch (_) {
-      return null;
-    }
   }
 
   Future<void> _addFiles(ManagerProvider provider) async {
@@ -84,9 +66,9 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
         files: multipartFiles,
       );
       if (mounted && !ok && provider.errorMessage != null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(provider.errorMessage!)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(provider.errorMessage!)),
+        );
       }
     }
   }
@@ -105,7 +87,10 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
         if (dataset == null) {
           return Scaffold(
             backgroundColor: AppTheme.surfaceSoftColor,
-            appBar: AppBar(elevation: 0, backgroundColor: Colors.transparent),
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+            ),
             body: const Center(child: Text('Dataset not found')),
           );
         }
@@ -156,7 +141,9 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                           ),
                           Text(
                             '${dataset.totalItems ?? 0} items',
-                            style: Theme.of(context).textTheme.titleMedium
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                         ],
@@ -178,8 +165,8 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                     Text(
                       'Dataset settings',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                     const SizedBox(height: 16),
                     CustomTextField(
@@ -201,126 +188,6 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                       label: 'Add More Files',
                       variant: ActionButtonVariant.outline,
                       onPressed: () => _addFiles(provider),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              DlssCard(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Import data',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _itemsJsonController,
-                      maxLines: 4,
-                      decoration: const InputDecoration(
-                        labelText: 'Upload items (JSON array)',
-                        hintText: '[{"fileName":"a.jpg","fileUrl":"..."}]',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    ActionButton(
-                      label: 'Upload Items JSON',
-                      variant: ActionButtonVariant.outline,
-                      isLoading: provider.isLoading,
-                      onPressed: () async {
-                        final items = _parseItemsJson();
-                        if (items == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Invalid JSON array')),
-                          );
-                          return;
-                        }
-                        await provider.uploadDatasetItems(
-                          datasetId: widget.datasetId,
-                          items: items,
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    CustomTextField(
-                      controller: _sourceNameController,
-                      label: 'External source name',
-                      hintText: 'e.g. COCO import',
-                    ),
-                    ActionButton(
-                      label: 'Import External Items',
-                      variant: ActionButtonVariant.outline,
-                      isLoading: provider.isLoading,
-                      onPressed: () async {
-                        final items = _parseItemsJson();
-                        final source = _sourceNameController.text.trim();
-                        if (items == null || source.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Enter source name and valid JSON'),
-                            ),
-                          );
-                          return;
-                        }
-                        await provider.importDatasetExternal(
-                          datasetId: widget.datasetId,
-                          sourceName: source,
-                          items: items,
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              DlssCard(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Versions',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CustomTextField(
-                            controller: _versionController,
-                            label: 'Version name',
-                            hintText: 'v1.0',
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            if (_versionController.text.trim().isEmpty) return;
-                            await provider.createDatasetVersion(
-                              datasetId: widget.datasetId,
-                              versionName: _versionController.text.trim(),
-                            );
-                            _versionController.clear();
-                          },
-                          icon: const Icon(Icons.save),
-                        ),
-                      ],
-                    ),
-                    ...provider.datasetVersions.map(
-                      (v) => ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(v.versionName),
-                        subtitle: Text(v.createdAt?.toLocal().toString() ?? ''),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.restore),
-                          onPressed: () => provider.restoreDatasetVersion(v.id),
-                        ),
-                      ),
                     ),
                   ],
                 ),

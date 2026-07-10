@@ -3,8 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
-import '../../models/manager/user_account_status.dart';
-import '../../models/manager/user_model.dart';
+import '../../models/manager/manager_models.dart';
 import '../../providers/manager_provider.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/dlss_page_header.dart';
@@ -64,13 +63,13 @@ class _UserListScreenState extends State<UserListScreen> {
     if (!mounted) return;
 
     if (ok) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Deleted ${user.email}')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Deleted ${user.email}')),
+      );
     } else if (provider.errorMessage != null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(provider.errorMessage!)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(provider.errorMessage!)),
+      );
     }
   }
 
@@ -87,7 +86,7 @@ class _UserListScreenState extends State<UserListScreen> {
             children: [
               const DlssPageHeader(
                 title: 'User Management',
-                subtitle: 'Create, edit, and remove team accounts',
+                subtitle: 'Create and remove team accounts',
               ),
               const SizedBox(height: 16),
               TextField(
@@ -127,9 +126,7 @@ class _UserListScreenState extends State<UserListScreen> {
     if (users.isEmpty) {
       return Center(
         child: Text(
-          provider.users.isEmpty
-              ? 'No users yet'
-              : 'No users match your search',
+          provider.users.isEmpty ? 'No users yet' : 'No users match your search',
           style: TextStyle(color: AppTheme.textSecondaryColor),
         ),
       );
@@ -175,8 +172,6 @@ class _UserListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isPending = user.status == UserAccountStatus.pendingEmailVerification;
-
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
@@ -226,12 +221,6 @@ class _UserListTile extends StatelessWidget {
                           label: user.roleName ?? 'Unknown role',
                           color: AppTheme.primaryColor,
                         ),
-                        _Badge(
-                          label: user.statusLabel,
-                          color: isPending
-                              ? const Color(0xFFD97706)
-                              : const Color(0xFF059669),
-                        ),
                       ],
                     ),
                   ],
@@ -240,10 +229,7 @@ class _UserListTile extends StatelessWidget {
               IconButton(
                 tooltip: 'Delete user',
                 onPressed: onDelete,
-                icon: const Icon(
-                  Icons.delete_outline,
-                  color: AppTheme.errorColor,
-                ),
+                icon: const Icon(Icons.delete_outline, color: AppTheme.errorColor),
               ),
             ],
           ),

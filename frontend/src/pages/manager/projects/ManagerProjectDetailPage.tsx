@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { 
-  ArrowLeft, Archive, Calendar, FileText, Clock, Loader2, Plus, Tag, List, Layers, Type,
+  ArrowLeft, Archive, Calendar, FileText, Clock, Loader2, Plus, Tag, List,
   Users, BarChart3, Download, History, Settings, CheckCircle2, AlertCircle, Play, Pause, XCircle, Info
 } from "lucide-react";
 import DashboardLayout from "../../../layouts/DashboardLayout";
@@ -16,8 +16,6 @@ import type {
   ProjectResponse, 
   DatasetResponse, 
   LabelResponse, 
-  LabelCategoryResponse, 
-  AnnotationTypeResponse,
   TaskResponse,
   TaskProgressResponse,
   QualityReportResponse,
@@ -61,8 +59,6 @@ const ProjectDetailPage: React.FC = () => {
   const [project, setProject] = useState<ProjectResponse | null>(null);
   const [datasets, setDatasets] = useState<DatasetResponse[]>([]);
   const [labels, setLabels] = useState<LabelResponse[]>([]);
-  const [categories, setCategories] = useState<LabelCategoryResponse[]>([]);
-  const [annotationTypes, setAnnotationTypes] = useState<AnnotationTypeResponse[]>([]);
   const [taskProgress, setTaskProgress] = useState<TaskProgressResponse | null>(null);
   const [tasks, setTasks] = useState<TaskResponse[]>([]);
   const [qualityReport, setQualityReport] = useState<QualityReportResponse | null>(null);
@@ -86,8 +82,6 @@ const ProjectDetailPage: React.FC = () => {
   const [newLabelName, setNewLabelName] = useState("");
   const [newLabelYoloClassId, setNewLabelYoloClassId] = useState<string>("");
   const [selectedYoloPreset, setSelectedYoloPreset] = useState<string>("");
-  const [newCategoryName, setNewCategoryName] = useState("");
-  const [newTypeName, setNewTypeName] = useState("");
   const [guidelineText, setGuidelineText] = useState("");
 
   const [isActionLoading, setIsActionLoading] = useState(false);
@@ -100,12 +94,10 @@ const ProjectDetailPage: React.FC = () => {
     if (!projectId) return;
     setLoading(true);
     try {
-      const [projRes, dsRes, lblRes, catRes, typeRes, rolesRes] = await Promise.all([
+      const [projRes, dsRes, lblRes, rolesRes] = await Promise.all([
         managerService.getProjectById(projectId),
         managerService.getDatasets(projectId),
         managerService.getLabels(projectId),
-        managerService.getLabelCategories(projectId),
-        managerService.getAnnotationTypes(projectId),
         managerService.getProjectRoles(projectId)
       ]);
 
@@ -115,8 +107,6 @@ const ProjectDetailPage: React.FC = () => {
       }
       if (dsRes.isSuccess) setDatasets(dsRes.data || []);
       if (lblRes.isSuccess) setLabels(lblRes.data || []);
-      if (catRes.isSuccess) setCategories(catRes.data || []);
-      if (typeRes.isSuccess) setAnnotationTypes(typeRes.data || []);
       if (rolesRes.isSuccess) setProjectRoles(rolesRes.data || []);
 
       // Fetch tab-specific data
@@ -184,43 +174,11 @@ const ProjectDetailPage: React.FC = () => {
       projectId, 
       name: newLabelName.trim(), 
       yoloClassId: parsedYoloClassId,
-      categoryId: categories.length > 0 ? categories[0].id : undefined,
-      annotationTypeId: annotationTypes.length > 0 ? annotationTypes[0].id : undefined
     });
     if (res.isSuccess) {
       setNewLabelName("");
       setNewLabelYoloClassId("");
       setSelectedYoloPreset("");
-      fetchData();
-    }
-    setIsActionLoading(false);
-  };
-
-  const handleCreateCategory = async () => {
-    if (!projectId || !newCategoryName) return;
-    setIsActionLoading(true);
-    const res = await managerService.createLabelCategory({ 
-      projectId, 
-      name: newCategoryName,
-      description: ""
-    });
-    if (res.isSuccess) {
-      setNewCategoryName("");
-      fetchData();
-    }
-    setIsActionLoading(false);
-  };
-
-  const handleCreateType = async () => {
-    if (!projectId || !newTypeName) return;
-    setIsActionLoading(true);
-    const res = await managerService.createAnnotationType({ 
-      projectId, 
-      name: newTypeName,
-      description: ""
-    });
-    if (res.isSuccess) {
-      setNewTypeName("");
       fetchData();
     }
     setIsActionLoading(false);
@@ -694,56 +652,6 @@ const ProjectDetailPage: React.FC = () => {
                       </div>
                     ))}
                     {labels.length === 0 && <p className="col-span-2 text-gray-400 text-center py-8 text-sm">No labels defined yet.</p>}
-                  </div>
-                </Card>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Categories */}
-                <Card className="p-6">
-                  <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                    <Layers className="h-5 w-5 text-purple-500" />
-                    Categories
-                  </h3>
-                  <div className="flex gap-2 mb-4">
-                    <Input 
-                      placeholder="Category name..."
-                      value={newCategoryName} 
-                      onChange={e => setNewCategoryName(e.target.value)} 
-                    />
-                    <Button onClick={handleCreateCategory} disabled={isActionLoading}>
-                      {isActionLoading ? <Loader2 className="animate-spin h-4 w-4"/> : <Plus className="h-4 w-4" />}
-                    </Button>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {categories.map(c => (
-                      <Badge key={c.id} variant="secondary" className="px-3 py-1">{c.name}</Badge>
-                    ))}
-                    {categories.length === 0 && <p className="w-full text-gray-400 text-center py-4 text-sm">No categories.</p>}
-                  </div>
-                </Card>
-
-                {/* Annotation Types */}
-                <Card className="p-6">
-                  <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                    <Type className="h-5 w-5 text-orange-500" />
-                    Annotation Types
-                  </h3>
-                  <div className="flex gap-2 mb-4">
-                    <Input 
-                      placeholder="Type name..."
-                      value={newTypeName} 
-                      onChange={e => setNewTypeName(e.target.value)} 
-                    />
-                    <Button onClick={handleCreateType} disabled={isActionLoading}>
-                      {isActionLoading ? <Loader2 className="animate-spin h-4 w-4"/> : <Plus className="h-4 w-4" />}
-                    </Button>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {annotationTypes.map(t => (
-                      <Badge key={t.id} variant="secondary" className="px-3 py-1 bg-orange-50 text-orange-700 border-orange-100">{t.name}</Badge>
-                    ))}
-                    {annotationTypes.length === 0 && <p className="w-full text-gray-400 text-center py-4 text-sm">No types.</p>}
                   </div>
                 </Card>
               </div>
