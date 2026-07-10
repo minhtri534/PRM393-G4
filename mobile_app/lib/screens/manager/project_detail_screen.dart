@@ -155,9 +155,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
           );
         }
 
-        if (_guidelineController.text.isEmpty &&
-            (project.guideline?.isNotEmpty ?? false)) {
+        if (project.guideline?.isNotEmpty ?? false) {
           _guidelineController.text = project.guideline!;
+        } else {
+          _guidelineController.text = '';
         }
         if (_projectNameController.text.isEmpty) {
           _projectNameController.text = project.name;
