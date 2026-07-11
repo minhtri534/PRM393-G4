@@ -20,10 +20,6 @@ import '../screens/splash_screen.dart';
 import '../screens/reviewer/reviewer_project_tasks_screen.dart';
 import '../screens/reviewer/reviewer_shell_screen.dart';
 import '../screens/reviewer/reviewer_task_detail_screen.dart';
-import '../screens/manager/payment_list_screen.dart';
-import '../screens/manager/payment_detail_screen.dart';
-import '../screens/manager/payment_history_screen.dart';
-import '../screens/manager/payment_success_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -170,30 +166,6 @@ class AppRoutes {
         final userId = settings.arguments as String?;
         return MaterialPageRoute(
           builder: (_) => UserFormScreen(userId: userId),
-        );
-
-      case managerPaymentList:
-        return MaterialPageRoute(builder: (_) => const PaymentListScreen());
-
-      case managerPaymentDetail:
-        return MaterialPageRoute(builder: (_) => const PaymentDetailScreen());
-
-      case managerPaymentHistory:
-        return MaterialPageRoute(builder: (_) => const PaymentHistoryScreen());
-
-      case managerPaymentSuccess:
-        final args = settings.arguments as Map<String, dynamic>?;
-
-        if (args == null) {
-          return _errorRoute('Missing payment success data');
-        }
-
-        return MaterialPageRoute(
-          builder: (_) => PaymentSuccessScreen(
-            transactionId: args['transactionId'] ?? '',
-            amount: args['amount'] ?? 0,
-            name: args['name'] ?? '',
-          ),
         );
       default:
         return _errorRoute('Route not found');
