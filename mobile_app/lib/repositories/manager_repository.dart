@@ -164,8 +164,10 @@ class ManagerRepository {
   );
 
   Future<bool> removeProjectRole(String projectId, String userId) => _unwrap(
-        () => _dioClient.delete(ManagerEndpoints.projectRoleRemove(projectId, userId)),
-        (data) => data as bool,
+    () => _dioClient.delete(
+      ManagerEndpoints.projectRoleRemove(projectId, userId),
+    ),
+    (data) => data as bool,
   );
 
   // ================= DATASETS =================

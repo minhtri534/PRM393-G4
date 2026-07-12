@@ -92,9 +92,7 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
           );
         }
 
-
         _nameController.text = dataset.name;
-
 
         return Scaffold(
           backgroundColor: AppTheme.surfaceSoftColor,

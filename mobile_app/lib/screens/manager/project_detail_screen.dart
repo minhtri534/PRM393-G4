@@ -261,11 +261,11 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             title: Text(role.userEmail),
             subtitle: Text(role.roleName),
             trailing: TextButton(
-              onPressed: () => provider.removeProjectRole(role.projectId, role.userId),
+              onPressed: () =>
+                  provider.removeProjectRole(role.projectId, role.userId),
               child: Text('Remove'),
             ),
           ),
-
         ),
         const SizedBox(height: 12),
         CustomTextField(
@@ -282,28 +282,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
               onPressed: () => provider.assignProjectRole(
                 projectId: widget.projectId,
                 userId: user.id,
-                roleId: ManagerRoleIds.annotator //default dummy value
+                roleId: ManagerRoleIds.annotator, //default dummy value
               ),
               child: const Text('Assign'),
-            )
-
-            /*PopupMenuButton<String>(
-              onSelected: (roleId) => provider.assignProjectRole(
-                projectId: widget.projectId,
-                userId: user.id,
-                roleId: roleId,
-              ),
-              itemBuilder: (_) => [
-                const PopupMenuItem(
-                  value: ManagerRoleIds.annotator,
-                  child: Text('Assign as Annotator'),
-                ),
-                const PopupMenuItem(
-                  value: ManagerRoleIds.reviewer,
-                  child: Text('Assign as Reviewer'),
-                ),
-              ],
-            )*/,
+            ),
           ),
         ),
       ],
