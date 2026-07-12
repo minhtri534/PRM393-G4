@@ -10,6 +10,8 @@ class ManagerEndpoints {
   static String projectRoles(String id) =>
       '/manager/projects/$id/project-roles';
   static const String projectRolesAssign = '/manager/project-roles';
+  static String projectRoleRemove(String projectId, String userId) =>
+      '/manager/projects/$projectId/project-roles/$userId';
 
   // Datasets
   static const String datasets = '/manager/datasets';

@@ -13,6 +13,7 @@ public interface IManagerService
     Task<ServiceResponse<bool>> DeleteProjectAsync(string actorUserId, string projectId);
 
     Task<ServiceResponse<UserProjectRoleResponse>> AssignUserProjectRoleAsync(string actorUserId, AssignUserProjectRoleRequest request);
+    Task<ServiceResponse<bool>> RemoveProjectRole(string actorUserId, string projectId, string userId);
     Task<ServiceResponse<List<UserProjectRoleResponse>>> GetProjectRolesAsync(string actorUserId, string projectId);
 
     Task<ServiceResponse<DatasetVersionResponse>> CreateDatasetVersionAsync(string actorUserId, CreateDatasetVersionRequest request);

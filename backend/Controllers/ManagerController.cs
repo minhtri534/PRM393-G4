@@ -182,6 +182,26 @@ public sealed class ManagerController(
             : BadRequest(result);
     }
 
+    [HttpDelete("projects/{projectId}/project-roles/{userId}")]
+    public async Task<ActionResult<ServiceResponse<bool>>> RemoveProjectRole([FromRoute] string projectId, [FromRoute] string userId)
+    {
+        var actorUserId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(actorUserId))
+        {
+            return Unauthorized(ServiceResponse<List<UserProjectRoleResponse>>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await managerService.RemoveProjectRole(actorUserId, projectId, userId);
+        
+        if (result.IsSuccess) {
+            return Ok(result);
+        }
+
+        return result.Message == ErrorMessages.NotFound
+            ? NotFound(result)
+            : BadRequest(result);
+    }
+
     [HttpPost("dataset-versions")]
     public async Task<ActionResult<ServiceResponse<DatasetVersionResponse>>> CreateDatasetVersion([FromBody] CreateDatasetVersionRequest request)
     {

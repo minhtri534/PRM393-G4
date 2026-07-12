@@ -163,6 +163,11 @@ class ManagerRepository {
     (data) => UserProjectRoleModel.fromJson(data as Map<String, dynamic>),
   );
 
+  Future<bool> removeProjectRole(String projectId, String userId) => _unwrap(
+        () => _dioClient.delete(ManagerEndpoints.projectRoleRemove(projectId, userId)),
+        (data) => data as bool,
+  );
+
   // ================= DATASETS =================
 
   Future<List<DatasetModel>> getDatasets(String projectId) => _unwrapList(

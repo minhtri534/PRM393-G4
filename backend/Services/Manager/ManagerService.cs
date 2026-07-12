@@ -239,12 +239,6 @@ public sealed class ManagerService(
             return ServiceResponse<UserProjectRoleResponse>.Failure(ErrorMessages.NotFound, ["Project not found"]);
         }
 
-        var role = await dbContext.Roles.AsNoTracking().FirstOrDefaultAsync(x => x.Id == roleId);
-        if (role is null)
-        {
-            return ServiceResponse<UserProjectRoleResponse>.Failure(ErrorMessages.NotFound, ["Role not found"]);
-        }
-
         var exists = await dbContext.UserProjectRoles
             .AsNoTracking()
             .AnyAsync(x => x.UserId == userId && x.ProjectId == projectId && x.RoleId == roleId);
@@ -254,11 +248,19 @@ public sealed class ManagerService(
             return ServiceResponse<UserProjectRoleResponse>.Failure("Assignment already exists", ["This user already has this role in the project"]);
         }
 
+        var realRole = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId);
+
+        var role = await dbContext.Roles.AsNoTracking().FirstOrDefaultAsync(x => x.Id == realRole.RoleId);
+        if (role is null)
+        {
+            return ServiceResponse<UserProjectRoleResponse>.Failure(ErrorMessages.NotFound, ["Role not found"]);
+        }
+
         var entity = new UserProjectRole
         {
             UserId = userId,
             ProjectId = projectId,
-            RoleId = roleId
+            RoleId = role.Id
         };
 
         dbContext.UserProjectRoles.Add(entity);
@@ -269,6 +271,44 @@ public sealed class ManagerService(
         return ServiceResponse<UserProjectRoleResponse>.Success(
             new UserProjectRoleResponse(user.Id, user.Email, project.Id, project.Name, role.Id, role.Name),
             "Created");
+    }
+
+    public async Task<ServiceResponse<bool>> RemoveProjectRole(string actorUserId, string projectId, string userId)
+    {
+        var access = await EnsureProjectAccessAsync(actorUserId, projectId);
+        if (access is not null)
+        {
+            return ServiceResponse<bool>.Failure(access.Message, access.Errors);
+        }
+
+        var user = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId);
+        if (user is null)
+        {
+            return ServiceResponse<bool>.Failure(ErrorMessages.NotFound, ["User not found"]);
+        }
+
+        var project = await dbContext.Projects.AsNoTracking().FirstOrDefaultAsync(x => x.Id == projectId);
+        if (project is null)
+        {
+            return ServiceResponse<bool>.Failure(ErrorMessages.NotFound, ["Project not found"]);
+        }
+
+        var projectRole = await dbContext.UserProjectRoles.FirstOrDefaultAsync(x => x.UserId == userId && x.ProjectId == projectId);
+        
+        if (projectRole is null)
+        {
+            return ServiceResponse<bool>.Failure(ErrorMessages.NotFound, ["Project role not found"]);
+        }
+
+        try
+        {
+            dbContext.UserProjectRoles.Remove(projectRole);
+            await dbContext.SaveChangesAsync();
+            return ServiceResponse<bool>.Success(true, "Deleted");
+        } catch
+        {
+            return ServiceResponse<bool>.Failure("An error occured");
+        }
     }
 
     public async Task<ServiceResponse<List<UserProjectRoleResponse>>> GetProjectRolesAsync(string actorUserId, string projectId)
@@ -294,13 +334,16 @@ public sealed class ManagerService(
         var items = await dbContext.UserProjectRoles
             .AsNoTracking()
             .Where(x => x.ProjectId == id)
-            .Select(x => new UserProjectRoleResponse(
+            .Join(dbContext.Users,
+            x => x.UserId,
+            y => y.Id,
+            (x, y) => new UserProjectRoleResponse(
                 x.UserId,
                 x.User != null ? x.User.Email : string.Empty,
                 x.ProjectId,
                 x.Project != null ? x.Project.Name : string.Empty,
-                x.RoleId,
-                x.Role != null ? x.Role.Name : string.Empty))
+                y.RoleId,
+                y.Role != null ? y.Role.Name : string.Empty))
             .ToListAsync();
 
         return ServiceResponse<List<UserProjectRoleResponse>>.Success(items, "OK");

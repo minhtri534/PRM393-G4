@@ -213,6 +213,13 @@ class ManagerProvider extends ChangeNotifier {
     });
   }
 
+  Future<bool> removeProjectRole(String projectId, String userId) async {
+    return _runAction(() async {
+      await _repository.removeProjectRole(projectId, userId);
+      _projectRoles.removeWhere((a) => a.userId == userId);
+    });
+  }
+
   Future<void> searchUsers(String query, {String? role}) async {
     if (query.trim().length < 2) {
       _userSearchResults = [];
