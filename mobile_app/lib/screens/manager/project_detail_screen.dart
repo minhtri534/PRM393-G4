@@ -160,10 +160,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
         } else {
           _guidelineController.text = '';
         }
-        if (_projectNameController.text.isEmpty) {
-          _projectNameController.text = project.name;
-        }
-        _projectStatus ??= project.status;
+
+        _projectNameController.text = project.name;
+
+        _projectStatus = project.status;
 
         return Scaffold(
           backgroundColor: AppTheme.surfaceSoftColor,

@@ -216,7 +216,7 @@ class ManagerProvider extends ChangeNotifier {
   Future<bool> removeProjectRole(String projectId, String userId) async {
     return _runAction(() async {
       await _repository.removeProjectRole(projectId, userId);
-      _projectRoles.removeWhere((a) => a.userId == userId);
+      _projectRoles.removeWhere((projectRole) => projectRole.userId == userId);
     });
   }
 
