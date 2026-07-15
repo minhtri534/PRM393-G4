@@ -4,10 +4,14 @@ import 'package:flutter/foundation.dart';
 class Environment {
   // Override at run time:
   // flutter run --dart-define=API_BASE_URL=http://10.0.2.2:5000/api
+  // flutter run --dart-define=API_BASE_URL=https://flinch-captivity-outlook.ngrok-free.dev/api
   //
   // Web / iOS Simulator / desktop: localhost
   // Android Emulator: 10.0.2.2 maps to host machine localhost
-  // Physical device: use your machine LAN IP (e.g. 192.168.x.x)
+  // Physical device: use your machine LAN IP (e.g. 192.168.x.x) or ngrok URL below
+
+  static const String ngrokOrigin = 'https://flinch-captivity-outlook.ngrok-free.dev';
+  static const String ngrokApiBaseUrl = '$ngrokOrigin/api';
 
   static const String _apiBaseUrlOverride = String.fromEnvironment('API_BASE_URL');
 
@@ -18,9 +22,10 @@ class Environment {
     if (kIsWeb) {
       return 'http://localhost:5000/api';
     }
-    return defaultTargetPlatform == TargetPlatform.android
+    return ngrokApiBaseUrl;
+    /*return defaultTargetPlatform == TargetPlatform.android
         ? 'http://10.0.2.2:5000/api'
-        : 'http://localhost:5000/api';
+        : 'http://localhost:5000/api';*/
   }
 
   static const String _socketUrlOverride = String.fromEnvironment('SOCKET_URL');
