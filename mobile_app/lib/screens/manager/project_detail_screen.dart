@@ -82,9 +82,9 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
       builder: (ctx) => ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text('Task History', style: Theme.of(ctx).textTheme.titleMedium),
+          Text(AppConstants.managerProjectDetailTasksTaskHistory, style: Theme.of(ctx).textTheme.titleMedium),
           if (history.isEmpty)
-            const ListTile(title: Text('No history'))
+            const ListTile(title: Text(AppConstants.managerProjectDetailTasksNoHistory))
           else
             ...history.map(
               (h) => ListTile(
@@ -107,11 +107,11 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Request Relabel'),
+        title: const Text(AppConstants.managerProjectDetailTasksRequestRelabel),
         content: TextField(
           controller: reasonController,
           decoration: const InputDecoration(
-            labelText: 'Reason',
+            labelText: AppConstants.managerProjectDetailTasksRelabelReason,
             border: OutlineInputBorder(),
           ),
           maxLines: 3,
@@ -119,11 +119,11 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: const Text(AppConstants.managerProjectDetailTasksRelabelCancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Submit'),
+            child: const Text(AppConstants.managerProjectDetailTasksRelabelSubmit),
           ),
         ],
       ),
@@ -150,7 +150,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             backgroundColor: AppTheme.surfaceSoftColor,
             appBar: AppBar(elevation: 0, backgroundColor: Colors.transparent),
             body: Center(
-              child: Text(provider.errorMessage ?? 'Project not found'),
+              child: Text(provider.errorMessage ?? AppConstants.managerProjectDetailErrorProjectNotFound),
             ),
           );
         }
@@ -173,7 +173,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             backgroundColor: Colors.transparent,
             actions: [
               IconButton(
-                tooltip: 'Project chat',
+                tooltip: AppConstants.managerProjectDetailProjectChat,
                 onPressed: () => Navigator.of(context).pushNamed(
                   AppRoutes.annotatorChatRoom,
                   arguments: MyProjectSummaryModel(
@@ -194,12 +194,12 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
               labelColor: AppTheme.primaryColor,
               unselectedLabelColor: AppTheme.textSecondaryColor,
               tabs: const [
-                Tab(text: 'Overview'),
-                Tab(text: 'Data'),
-                Tab(text: 'Tasks'),
-                Tab(text: 'Monitor'),
-                Tab(text: 'Exports'),
-                Tab(text: 'Settings'),
+                Tab(text: AppConstants.managerProjectDetailTabOverview),
+                Tab(text: AppConstants.managerProjectDetailTabData),
+                Tab(text: AppConstants.managerProjectDetailTabTasks),
+                Tab(text: AppConstants.managerProjectDetailTabMonitor),
+                Tab(text: AppConstants.managerProjectDetailTabExports),
+                Tab(text: AppConstants.managerProjectDetailTabSettings),
               ],
             ),
           ),
@@ -225,7 +225,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                   arguments: widget.projectId,
                 ),
                 icon: const Icon(Icons.add_task),
-                label: const Text('Create Tasks'),
+                label: const Text(AppConstants.managerProjectDetailTasksCreateTasks),
               );
             },
           ),
@@ -238,16 +238,16 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
     return ListView(
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
       children: [
-        Text('Guideline', style: Theme.of(context).textTheme.titleMedium),
+        Text(AppConstants.managerProjectDetailOverviewGuidelines, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         CustomTextField(
           controller: _guidelineController,
-          label: 'Project Guideline',
-          hintText: 'Instructions for annotators',
+          label: AppConstants.managerProjectDetailOverviewProjectGuidelines,
+          hintText: AppConstants.managerProjectDetailOverviewGuidelinesHint,
         ),
         const SizedBox(height: 12),
         ActionButton(
-          label: 'Save Guideline',
+          label: AppConstants.managerProjectDetailOverviewSaveGuideline,
           isLoading: provider.isLoading,
           onPressed: () => provider.updateGuideline(
             widget.projectId,
@@ -255,7 +255,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
           ),
         ),
         const SizedBox(height: 24),
-        Text('Team Members', style: Theme.of(context).textTheme.titleMedium),
+        Text(AppConstants.managerProjectDetailOverviewTeamMembers, style: Theme.of(context).textTheme.titleMedium),
         ...provider.projectRoles.map(
           (role) => ListTile(
             title: Text(role.userEmail),
@@ -263,15 +263,15 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             trailing: TextButton(
               onPressed: () =>
                   provider.removeProjectRole(role.projectId, role.userId),
-              child: Text('Remove'),
+              child: Text(AppConstants.managerProjectDetailOverviewRemove),
             ),
           ),
         ),
         const SizedBox(height: 12),
         CustomTextField(
           controller: _userSearchController,
-          label: 'Search user to assign',
-          hintText: 'Type name or email',
+          label: AppConstants.managerProjectDetailOverviewSearch,
+          hintText: AppConstants.managerProjectDetailOverviewSearchHint,
           onChanged: (v) => provider.searchUsers(v),
         ),
         ...provider.userSearchResults.map(
@@ -284,7 +284,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                 userId: user.id,
                 roleId: ManagerRoleIds.annotator, //default dummy value
               ),
-              child: const Text('Assign'),
+              child: const Text(AppConstants.managerProjectDetailOverviewAssign),
             ),
           ),
         ),
@@ -296,14 +296,14 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
     return ListView(
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
       children: [
-        Text('Datasets', style: Theme.of(context).textTheme.titleMedium),
+        Text(AppConstants.managerProjectDetailDataDataSet, style: Theme.of(context).textTheme.titleMedium),
         Row(
           children: [
             Expanded(
               child: CustomTextField(
                 controller: _datasetNameController,
-                label: 'New dataset name',
-                hintText: 'Dataset name',
+                label: AppConstants.managerProjectDetailDataNewDataSet,
+                hintText: AppConstants.managerProjectDetailDataDataSetName,
               ),
             ),
             IconButton(
@@ -330,14 +330,14 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
           ),
         ),
         const Divider(height: 32),
-        Text('Labels', style: Theme.of(context).textTheme.titleMedium),
+        Text(AppConstants.managerProjectDetailDataLabels, style: Theme.of(context).textTheme.titleMedium),
         Row(
           children: [
             Expanded(
               child: CustomTextField(
                 controller: _labelNameController,
-                label: 'Label name',
-                hintText: 'e.g. Car',
+                label: AppConstants.managerProjectDetailDataLabelName,
+                hintText: AppConstants.managerProjectDetailDataLabelNameHint,
               ),
             ),
             IconButton(
@@ -359,7 +359,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
         ]..sort((a, b) => a.yoloClassId.compareTo(b.yoloClassId))).map(
           (l) => ListTile(
             title: Text(l.name),
-            subtitle: Text('ID ${l.yoloClassId}'),
+            subtitle: Text('${AppConstants.managerProjectDetailDataID} ${l.yoloClassId}'),
             trailing: IconButton(
               icon: const Icon(Icons.delete_outline),
               onPressed: () => provider.deleteLabel(l.id),
@@ -369,19 +369,19 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
               final ok = await showDialog<bool>(
                 context: context,
                 builder: (ctx) => AlertDialog(
-                  title: const Text('Edit Label'),
+                  title: const Text(AppConstants.managerProjectDetailDataEditLabel),
                   content: TextField(
                     controller: nameController,
-                    decoration: const InputDecoration(labelText: 'Name'),
+                    decoration: const InputDecoration(labelText: AppConstants.managerProjectDetailDataEditLabelName),
                   ),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(ctx, false),
-                      child: const Text('Cancel'),
+                      child: const Text(AppConstants.managerProjectDetailDataEditLabelCancel),
                     ),
                     TextButton(
                       onPressed: () => Navigator.pop(ctx, true),
-                      child: const Text('Save'),
+                      child: const Text(AppConstants.managerProjectDetailDataEditLabelSave),
                     ),
                   ],
                 ),
@@ -424,18 +424,18 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
         if (progress != null)
           Row(
             children: [
-              _statTile('Total', '${progress.total}'),
-              _statTile('Assigned', '${progress.assigned}'),
-              _statTile('In Progress', '${progress.inProgress}'),
+              _statTile(AppConstants.managerProjectDetailTasksTotal, '${progress.total}'),
+              _statTile(AppConstants.managerProjectDetailTasksAssigned, '${progress.assigned}'),
+              _statTile(AppConstants.managerProjectDetailTasksInProgress, '${progress.inProgress}'),
             ],
           ),
         if (progress != null) const SizedBox(height: 8),
         if (progress != null)
           Row(
             children: [
-              _statTile('Submitted', '${progress.submitted}'),
-              _statTile('Completed', '${progress.completed}'),
-              _statTile('Rework', '${progress.rework}'),
+              _statTile(AppConstants.managerProjectDetailTasksSubmitted, '${progress.submitted}'),
+              _statTile(AppConstants.managerProjectDetailTasksCompleted, '${progress.completed}'),
+              _statTile(AppConstants.managerProjectDetailTasksRework, '${progress.rework}'),
             ],
           ),
         const SizedBox(height: 8),
@@ -452,43 +452,41 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
               ),
               trailing: PopupMenuButton<String>(
                 onSelected: (action) async {
-                  if (action == 'pause') {
+                  if (action == AppConstants.managerProjectDetailTasksActionPause) {
                     await provider.pauseTask(task.id);
-                  } else if (action == 'resume') {
+                  } else if (action == AppConstants.managerProjectDetailTasksActionResume) {
                     await provider.resumeTask(task.id);
-                  } else if (action == 'cancel') {
+                  } else if (action == AppConstants.managerProjectDetailTasksActionCancel) {
                     await provider.cancelTask(task.id);
-                  } else if (action == 'history') {
+                  } else if (action == AppConstants.managerProjectDetailTasksActionHistory) {
                     await _showTaskHistory(provider, task.id);
-                  } else if (action == 'relabel') {
+                  } else if (action == AppConstants.managerProjectDetailTasksActionRelabel) {
                     await _showRelabelDialog(provider, task.id);
-                  } else if (action.startsWith('assign:')) {
+                  } else if (action.startsWith('${AppConstants.managerProjectDetailTasksActionAssign}:')) {
                     await provider.assignTask(task.id, action.split(':').last);
-                  } else if (action.startsWith('reassign:')) {
-                    await provider.reassignTask(
-                      task.id,
-                      action.split(':').last,
+                  } else if (action.startsWith('${AppConstants.managerProjectDetailTasksActionReassign}:')) {
+                    await provider.reassignTask(task.id, action.split(':').last,
                     );
                   }
                 },
                 itemBuilder: (_) => [
                   ...provider.annotators.map(
                     (a) => PopupMenuItem(
-                      value: 'assign:${a.userId}',
-                      child: Text('Assign ${a.userEmail}'),
+                      value: '${AppConstants.managerProjectDetailTasksActionAssign}:${a.userId}',
+                      child: Text('${AppConstants.managerProjectDetailTasksActionAssign} ${a.userEmail}'),
                     ),
                   ),
                   ...provider.annotators.map(
                     (a) => PopupMenuItem(
-                      value: 'reassign:${a.userId}',
-                      child: Text('Reassign ${a.userEmail}'),
+                      value: '${AppConstants.managerProjectDetailTasksActionReassign}:${a.userId}',
+                      child: Text('${AppConstants.managerProjectDetailTasksActionReassign} ${a.userEmail}'),
                     ),
                   ),
-                  const PopupMenuItem(value: 'pause', child: Text('Pause')),
-                  const PopupMenuItem(value: 'resume', child: Text('Resume')),
-                  const PopupMenuItem(value: 'relabel', child: Text('Relabel')),
-                  const PopupMenuItem(value: 'history', child: Text('History')),
-                  const PopupMenuItem(value: 'cancel', child: Text('Cancel')),
+                  const PopupMenuItem(value: AppConstants.managerProjectDetailTasksActionPause, child: Text(AppConstants.managerProjectDetailTasksActionPause)),
+                  const PopupMenuItem(value: AppConstants.managerProjectDetailTasksActionResume, child: Text(AppConstants.managerProjectDetailTasksActionResume)),
+                  const PopupMenuItem(value: AppConstants.managerProjectDetailTasksActionRelabel, child: Text(AppConstants.managerProjectDetailTasksActionRelabel)),
+                  const PopupMenuItem(value: AppConstants.managerProjectDetailTasksActionHistory, child: Text(AppConstants.managerProjectDetailTasksActionHistory)),
+                  const PopupMenuItem(value: AppConstants.managerProjectDetailTasksActionCancel, child: Text(AppConstants.managerProjectDetailTasksActionCancel)),
                 ],
               ),
             ),
@@ -508,9 +506,9 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
       children: [
         Card(
           child: ListTile(
-            title: const Text('Completion'),
+            title: const Text(AppConstants.managerProjectDetailMonitorCompletion),
             subtitle: Text(
-              '${report.progress.completedTasks}/${report.progress.totalTasks} tasks completed',
+              '${report.progress.completedTasks}/${report.progress.totalTasks} ${AppConstants.managerProjectDetailMonitorTasksCompleted}',
             ),
             trailing: Text(
               report.progress.totalTasks == 0
@@ -526,22 +524,22 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
         ),
         Card(
           child: ListTile(
-            title: const Text('Review Stats'),
+            title: const Text(AppConstants.managerProjectDetailMonitorReviewStats),
             subtitle: Text(
-              'Approved: ${report.reviewStats.approvedReviews} • Rejected: ${report.reviewStats.rejectedReviews}',
+              '${AppConstants.managerProjectDetailMonitorApproved}: ${report.reviewStats.approvedReviews} • ${AppConstants.managerProjectDetailMonitorRejected}: ${report.reviewStats.rejectedReviews}',
             ),
           ),
         ),
         const SizedBox(height: 16),
         Text(
-          'Annotator Performance',
+          AppConstants.managerProjectDetailMonitorAnnotatorPerformance,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         ...provider.annotatorPerformance.map(
           (a) => ListTile(
             title: Text(a.annotatorEmail),
             subtitle: Text(
-              'Assigned ${a.assignedTasks} • Submitted ${a.submittedTasks} • Done ${a.completedTasks}',
+              '${AppConstants.managerProjectDetailMonitorAssigned} ${a.assignedTasks} • ${AppConstants.managerProjectDetailMonitorSubmitted} ${a.submittedTasks} • ${AppConstants.managerProjectDetailMonitorDone} ${a.completedTasks}',
             ),
           ),
         ),
@@ -556,7 +554,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
     if (kIsWeb) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Download is not supported on web.')),
+        const SnackBar(content: Text(AppConstants.managerProjectDetailExportWebDownloadWarning)),
       );
       return;
     }
@@ -582,13 +580,13 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
       await OpenFilex.open(file.path);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Opened ${isZip ? 'ZIP' : 'JSON'} export')),
+        SnackBar(content: Text(AppConstants.managerProjectDetailExportOpenedExport(isZip ? 'ZIP' : 'JSON'))),
       );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Cannot open export: $e')));
+      ).showSnackBar(SnackBar(content: Text('${AppConstants.managerProjectDetailExportOpenError}: $e')));
     }
   }
 
@@ -603,24 +601,24 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                 ? AppTheme.successColor.withValues(alpha: 0.1)
                 : AppTheme.warningColor.withValues(alpha: 0.1),
             child: ListTile(
-              title: Text(validation.isValid ? 'Ready to export' : 'Not ready'),
+              title: Text(validation.isValid ? AppConstants.managerProjectDetailExportReady : AppConstants.managerProjectDetailExportNotReady),
               subtitle: Text(
                 validation.isValid
-                    ? 'All submitted annotation sets have been reviewed.'
-                    : 'Submitted: ${validation.submittedAnnotationSets} • Reviewed: ${validation.reviewedAnnotationSets}. '
-                          'Export still works, but annotations/reviews may be empty until tasks are reviewed.',
+                    ? AppConstants.managerProjectDetailExportAllReviewed
+                    : AppConstants.managerProjectDetailExportSubmittedReviewedCount(validation.submittedAnnotationSets, validation.reviewedAnnotationSets) +
+                          AppConstants.managerProjectDetailExportExportWarning,
               ),
             ),
           ),
         Text(
-          'Export project labeling data as a JSON file (labels, tasks, approved annotations, reviews).',
+          AppConstants.managerProjectDetailExportInfo,
           style: Theme.of(
             context,
           ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondaryColor),
         ),
         const SizedBox(height: 12),
         ActionButton(
-          label: 'Create JSON Export',
+          label: AppConstants.managerProjectDetailExportCreateExport,
           isLoading: provider.isLoading,
           onPressed: () async {
             final ok = await provider.createExport(projectId: widget.projectId);
@@ -629,7 +627,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text(
-                    'Export created. Tap download to open the JSON file.',
+                    AppConstants.managerProjectDetailExportExportCreated,
                   ),
                 ),
               );
@@ -641,12 +639,12 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
           },
         ),
         const SizedBox(height: 16),
-        Text('Export History', style: Theme.of(context).textTheme.titleMedium),
+        Text(AppConstants.managerProjectDetailExportHistory, style: Theme.of(context).textTheme.titleMedium),
         if (provider.exports.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Text(
-              'No exports yet',
+              AppConstants.managerProjectDetailExportNoExports,
               style: TextStyle(color: AppTheme.textSecondaryColor),
             ),
           ),
@@ -655,14 +653,14 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             title: Text('${e.format} • ${e.createdAt?.toLocal()}'),
             subtitle: Text(e.exportedByEmail ?? ''),
             trailing: IconButton(
-              tooltip: 'Download JSON',
+              tooltip: AppConstants.managerProjectDetailExportDownload,
               icon: const Icon(Icons.download),
               onPressed: () => _downloadExport(provider, e),
             ),
           ),
         ),
         const Divider(height: 32),
-        Text('Activity Log', style: Theme.of(context).textTheme.titleMedium),
+        Text(AppConstants.managerProjectDetailExportActivityLog, style: Theme.of(context).textTheme.titleMedium),
         ...provider.activityLogs.map(
           (log) => ListTile(
             title: Text(log.action),
@@ -684,20 +682,20 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
         children: [
           CustomTextField(
             controller: _projectNameController,
-            label: 'Project Name',
-            hintText: 'Project name',
+            label: AppConstants.managerProjectDetailSettingsProjectName,
+            hintText: AppConstants.managerProjectDetailSettingsProjectName,
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<int>(
             initialValue: _projectStatus ?? project?.status ?? 0,
             decoration: const InputDecoration(
-              labelText: 'Status',
+              labelText: AppConstants.managerProjectDetailSettingsStatus,
               border: OutlineInputBorder(),
             ),
             items: const [
-              DropdownMenuItem(value: 0, child: Text('Active')),
-              DropdownMenuItem(value: 1, child: Text('Paused')),
-              DropdownMenuItem(value: 9, child: Text('Archived')),
+              DropdownMenuItem(value: 0, child: Text(AppConstants.managerProjectDetailSettingsStatusActive)),
+              DropdownMenuItem(value: 1, child: Text(AppConstants.managerProjectDetailSettingsStatusPaused)),
+              DropdownMenuItem(value: 9, child: Text(AppConstants.managerProjectDetailSettingsStatusArchived)),
             ],
             onChanged: (status) {
               if (status != null) setState(() => _projectStatus = status);
@@ -705,7 +703,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
           ),
           const SizedBox(height: 12),
           ActionButton(
-            label: 'Save Project',
+            label: AppConstants.managerProjectDetailSettingsSave,
             isLoading: provider.isLoading,
             onPressed: () async {
               if (project == null) return;
@@ -719,22 +717,22 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
           ),
           const SizedBox(height: 24),
           ActionButton(
-            label: 'Delete Project',
+            label: AppConstants.managerProjectDetailSettingsDeleteProject,
             isOutlined: true,
             onPressed: () async {
               final confirm = await showDialog<bool>(
                 context: context,
                 builder: (_) => AlertDialog(
-                  title: const Text('Delete project?'),
-                  content: const Text('This action cannot be undone.'),
+                  title: const Text(AppConstants.managerProjectDetailSettingsDeleteConfirm),
+                  content: const Text(AppConstants.managerProjectDetailSettingsDeleteWarning),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context, false),
-                      child: const Text('Cancel'),
+                      child: const Text(AppConstants.managerProjectDetailSettingsDeleteCancel),
                     ),
                     TextButton(
                       onPressed: () => Navigator.pop(context, true),
-                      child: const Text('Delete'),
+                      child: const Text(AppConstants.managerProjectDetailSettingsDelete),
                     ),
                   ],
                 ),

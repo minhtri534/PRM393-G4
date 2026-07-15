@@ -36,8 +36,8 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const DlssPageHeader(
-                title: 'Project Management',
-                subtitle: 'View and manage data labeling projects',
+                title: AppConstants.managerProjectListTitle,
+                subtitle: AppConstants.managerProjectListSubtitle,
               ),
               const SizedBox(height: 16),
               Expanded(child: _buildContent(provider)),
@@ -55,7 +55,7 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
 
     if (provider.state == ManagerLoadState.error && provider.projects.isEmpty) {
       return error_widget.ErrorWidget(
-        message: provider.errorMessage ?? 'Failed to load projects',
+        message: provider.errorMessage ?? AppConstants.managerProjectListProjectLoadError,
         onRetry: provider.fetchProjects,
       );
     }
@@ -63,7 +63,7 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
     if (provider.projects.isEmpty) {
       return Center(
         child: Text(
-          'No projects yet',
+          AppConstants.managerProjectListNoProjects,
           style: TextStyle(color: AppTheme.textSecondaryColor),
         ),
       );
@@ -89,7 +89,7 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                     final ok = await provider.archiveProject(project.id);
                     if (ok && context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Project archived')),
+                        const SnackBar(content: Text(AppConstants.managerProjectListAlertProjectArchived)),
                       );
                     }
                   },

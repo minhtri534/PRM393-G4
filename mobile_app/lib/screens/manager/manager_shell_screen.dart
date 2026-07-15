@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/core/constants/app_constants.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/manager_provider.dart';
@@ -14,21 +15,21 @@ class ManagerShellScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DlssDashboardScaffold(
-      roleTitle: 'Manager',
+      roleTitle: AppConstants.managerShellRoleTitle,
       roleIcon: Icons.manage_accounts_outlined,
       destinations: const [
         DlssNavDestination(
-          label: 'Projects',
+          label: AppConstants.managerShellTabProjects,
           icon: Icons.folder_outlined,
           body: ProjectListScreen(),
         ),
         DlssNavDestination(
-          label: 'Datasets',
+          label: AppConstants.managerShellTabDatasets,
           icon: Icons.storage_outlined,
           body: DatasetListScreen(),
         ),
         DlssNavDestination(
-          label: 'Users',
+          label: AppConstants.managerShellTabProjectsNewProject,
           icon: Icons.people_outline,
           body: UserListScreen(),
         ),
@@ -46,7 +47,7 @@ class ManagerShellScreen extends StatelessWidget {
               }
             },
             icon: const Icon(Icons.add),
-            label: const Text('New Project'),
+            label: const Text(AppConstants.managerShellTabProjectsNewProject),
           );
         }
         if (index == 1) {
@@ -54,7 +55,7 @@ class ManagerShellScreen extends StatelessWidget {
             onPressed: () =>
                 Navigator.pushNamed(context, AppRoutes.managerDatasetUpload),
             icon: const Icon(Icons.upload_file),
-            label: const Text('Upload Dataset'),
+            label: const Text(AppConstants.managerShellTabDatasetUploadDataset),
           );
         }
         return FloatingActionButton.extended(
@@ -65,7 +66,7 @@ class ManagerShellScreen extends StatelessWidget {
             }
           },
           icon: const Icon(Icons.person_add_outlined),
-          label: const Text('New User'),
+          label: const Text(AppConstants.managerShellTabUsersNewUser),
         );
       },
     );
