@@ -357,16 +357,16 @@ double annotatorTaskProgress(String status, int annotationCount) {
   switch (status) {
     case AppConstants.taskStatusSubmitted:
     case AppConstants.taskStatusApproved:
-    case 'Completed':
+    case AppConstants.taskStatusCompleted:
       return 1.0;
     case AppConstants.taskStatusInProgress:
       if (annotationCount > 0) {
         return (0.4 + annotationCount * 0.15).clamp(0.0, 0.95);
       }
       return 0.3;
-    case 'Returned':
+    case AppConstants.taskStatusReturned:
     case AppConstants.taskStatusRejected:
-    case 'Rework':
+    case AppConstants.taskStatusRework:
       return annotationCount > 0 ? 0.5 : 0.2;
     case AppConstants.taskStatusAssigned:
     default:
@@ -376,10 +376,10 @@ double annotatorTaskProgress(String status, int annotationCount) {
 
 bool annotatorTaskNeedsReviewFeedback(String status) {
   return const {
-    'Returned',
+    AppConstants.taskStatusReturned,
     AppConstants.taskStatusRejected,
-    'Rework',
-    'Completed',
+    AppConstants.taskStatusRework,
+    AppConstants.taskStatusCompleted,
     AppConstants.taskStatusSubmitted,
   }.contains(status);
 }
@@ -388,8 +388,17 @@ bool annotatorTaskCanLabel(String status) {
   return const {
     AppConstants.taskStatusAssigned,
     AppConstants.taskStatusInProgress,
-    'Returned',
+    AppConstants.taskStatusReturned,
     AppConstants.taskStatusRejected,
-    'Rework',
+    AppConstants.taskStatusRework,
   }.contains(status);
+}
+
+String annotatorLabelingButtonLabel(String status) {
+  if (status == AppConstants.taskStatusReturned ||
+      status == AppConstants.taskStatusRejected ||
+      status == AppConstants.taskStatusRework) {
+    return 'Revise Labeling';
+  }
+  return 'Continue Labeling';
 }

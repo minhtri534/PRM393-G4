@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/constants/workflow_strings.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/reviewer_provider.dart';
-import '../../widgets/action_button.dart';
-import '../../widgets/bbox_labeling_canvas.dart';
 import '../../widgets/dlss_card.dart';
 import '../../widgets/error_widget.dart' as error_widget;
+import '../../widgets/reviewer/reviewer_task_detail_sections.dart';
 
 class ReviewerTaskDetailScreen extends StatefulWidget {
   final String taskId;
@@ -50,7 +50,7 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
     if (!mounted) return;
     if (ok) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Task approved successfully')),
+        const SnackBar(content: Text(WorkflowStrings.reviewerApproved)),
       );
       Navigator.of(context).pop(true);
     } else {
@@ -64,7 +64,7 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
     final feedback = _commentController.text.trim();
     if (feedback.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please provide feedback before returning')),
+        const SnackBar(content: Text(WorkflowStrings.reviewerFeedbackRequired)),
       );
       return;
     }
@@ -80,7 +80,7 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
     if (!mounted) return;
     if (ok) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Task returned with feedback')),
+        const SnackBar(content: Text(WorkflowStrings.reviewerReturned)),
       );
       Navigator.of(context).pop(true);
     } else {
@@ -95,7 +95,9 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
     return Scaffold(
       backgroundColor: AppTheme.surfaceSoftColor,
       appBar: AppBar(
-        title: Text('Review #${widget.taskId.length > 6 ? widget.taskId.substring(widget.taskId.length - 6) : widget.taskId}'),
+        title: Text(
+          'Review #${widget.taskId.length > 6 ? widget.taskId.substring(widget.taskId.length - 6) : widget.taskId}',
+        ),
       ),
       body: Consumer<ReviewerProvider>(
         builder: (context, provider, _) {
@@ -114,7 +116,9 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
 
           final data = provider.labeledData;
           if (data == null) {
-            return const Center(child: Text('No labeled data available'));
+            return const Center(
+              child: Text(WorkflowStrings.reviewerNoLabeledData),
+            );
           }
 
           return Column(
@@ -125,31 +129,14 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _validationChips(provider),
-                      const SizedBox(height: 12),
-                      DlssCard(
-                        padding: const EdgeInsets.all(12),
-                        child: SizedBox(
-                          height: 360,
-                          child: provider.taskImageBytes == null
-                              ? const Center(child: Text('Image not available'))
-                              : BboxLabelingCanvas(
-                                  imageBytes: provider.taskImageBytes,
-                                  imageWidth: provider.imageWidth,
-                                  imageHeight: provider.imageHeight,
-                                  boxes: provider.labelingBoxes,
-                                  labels: provider.taskLabels,
-                                  selectedLabelId: null,
-                                  selectedBoxIndex: null,
-                                  drawMode: false,
-                                  readOnly: true,
-                                  onBoxCreated: (_) {},
-                                  onBoxSelected: (_) {},
-                                ),
-                        ),
+                      ReviewerValidationChips(
+                        guidelineComparison: provider.guidelineComparison,
+                        labelConsistency: provider.labelConsistency,
                       ),
                       const SizedBox(height: 12),
-                      _validationNotes(provider),
+                      ReviewerAnnotationPreview(provider: provider),
+                      const SizedBox(height: 12),
+                      ReviewerValidationNotes(provider: provider),
                       if (data.guideline?.trim().isNotEmpty == true) ...[
                         const SizedBox(height: 12),
                         DlssCard(
@@ -158,10 +145,11 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Project Guideline',
-                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                WorkflowStrings.reviewerProjectGuideline,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleSmall
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Text(data.guideline!),
@@ -176,17 +164,18 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Annotations (${data.annotations.length})',
-                              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              '${WorkflowStrings.reviewerAnnotations} (${data.annotations.length})',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 8),
                             ...data.annotations.map(
-                              (ann) => Padding(
+                              (annotation) => Padding(
                                 padding: const EdgeInsets.only(bottom: 6),
                                 child: Text(
-                                  '• ${ann.labelName} (${ann.annotationType})',
+                                  '• ${annotation.labelName} (${annotation.annotationType})',
                                   style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ),
@@ -202,10 +191,11 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Error types (optional)',
-                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                WorkflowStrings.reviewerErrorTypes,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleSmall
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Wrap(
@@ -238,8 +228,8 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                         controller: _commentController,
                         maxLines: 4,
                         decoration: const InputDecoration(
-                          labelText: 'Comment / feedback',
-                          hintText: 'Required when returning a task',
+                          labelText: WorkflowStrings.reviewerCommentLabel,
+                          hintText: WorkflowStrings.reviewerCommentHint,
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -248,123 +238,14 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                   ),
                 ),
               ),
-              _actionBar(provider),
+              ReviewerReviewActionBar(
+                isSubmitting: provider.isSubmitting,
+                onReturn: () => _returnTask(provider),
+                onApprove: () => _approve(provider),
+              ),
             ],
           );
         },
-      ),
-    );
-  }
-
-  Widget _validationChips(ReviewerProvider provider) {
-    final guideline = provider.guidelineComparison;
-    final consistency = provider.labelConsistency;
-
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: [
-        if (guideline != null)
-          _chip(
-            guideline.isAligned ? 'Guideline OK' : 'Guideline issues',
-            guideline.isAligned ? AppTheme.successColor : Colors.red,
-          ),
-        if (consistency != null)
-          _chip(
-            consistency.isConsistent ? 'Labels consistent' : 'Label issues',
-            consistency.isConsistent ? AppTheme.successColor : Colors.orange,
-          ),
-      ],
-    );
-  }
-
-  Widget _chip(String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.4)),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: color),
-      ),
-    );
-  }
-
-  Widget _validationNotes(ReviewerProvider provider) {
-    final notes = <String>[
-      ...?provider.guidelineComparison?.notes,
-      ...?provider.labelConsistency?.issues,
-    ];
-    if (notes.isEmpty) return const SizedBox.shrink();
-
-    return DlssCard(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Validation insights',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          ...notes.map(
-            (note) => Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(Icons.info_outline, size: 14, color: AppTheme.primaryColor),
-                  const SizedBox(width: 6),
-                  Expanded(child: Text(note, style: const TextStyle(fontSize: 12))),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _actionBar(ReviewerProvider provider) {
-    return Container(
-      padding: const EdgeInsets.all(AppConstants.paddingMedium),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 12,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: Row(
-          children: [
-            Expanded(
-              child: ActionButton(
-                label: 'Return',
-                variant: ActionButtonVariant.outline,
-                icon: Icons.undo,
-                isLoading: provider.isSubmitting,
-                onPressed: provider.isSubmitting ? null : () => _returnTask(provider),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: ActionButton(
-                label: 'Approve',
-                icon: Icons.check_circle_outline,
-                isLoading: provider.isSubmitting,
-                onPressed: provider.isSubmitting ? null : () => _approve(provider),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

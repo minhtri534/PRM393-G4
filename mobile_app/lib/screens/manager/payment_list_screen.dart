@@ -172,7 +172,7 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
       onRefresh: provider.loadPayments,
       child: ListView.separated(
         itemCount: payments.length,
-        separatorBuilder: (_, __) =>
+        separatorBuilder: (_, _) =>
             const SizedBox(height: 12),
         itemBuilder: (_, index) {
           final payment = payments[index];

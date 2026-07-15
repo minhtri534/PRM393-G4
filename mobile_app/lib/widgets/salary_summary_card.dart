@@ -25,7 +25,7 @@ class SalarySummaryCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 22,
-            backgroundColor: color.withOpacity(.12),
+            backgroundColor: color.withValues(alpha: .12),
             child: Icon(icon, color: color),
           ),
           const SizedBox(height: 10),

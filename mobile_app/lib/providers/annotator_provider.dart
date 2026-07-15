@@ -287,7 +287,7 @@ class AnnotatorProvider extends ChangeNotifier {
   Future<bool> rejectTask(String taskId, {String? reason}) async {
     try {
       await _repository.rejectTask(taskId, reason: reason);
-      _updateTaskStatus(taskId, 'Cancelled');
+      _updateTaskStatus(taskId, AppConstants.taskStatusCancelled);
       return true;
     } on ApiError catch (e) {
       _errorMessage = e.message;

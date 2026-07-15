@@ -36,7 +36,7 @@ class ManagerShellScreen extends StatelessWidget {
         DlssNavDestination(
           label: 'Payments',
           icon: Icons.payments,
-          body: const PaymentListScreen(),
+          body: PaymentListScreen(),
         ),
       ],
       fabBuilder: (index) {
