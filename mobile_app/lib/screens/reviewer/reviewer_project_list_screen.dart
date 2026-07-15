@@ -5,7 +5,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/constants/workflow_strings.dart';
 import '../../providers/reviewer_provider.dart';
 import '../../routes/app_routes.dart';
-import '../../widgets/annotator_project_card.dart';
+import '../../widgets/annotator/annotator_project_card.dart';
 import '../../widgets/dlss_card.dart';
 import '../../widgets/dlss_empty_state.dart';
 import '../../widgets/dlss_page_header.dart';

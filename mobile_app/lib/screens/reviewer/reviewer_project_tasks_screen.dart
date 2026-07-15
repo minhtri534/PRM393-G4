@@ -11,7 +11,7 @@ import '../../widgets/dlss_empty_state.dart';
 import '../../widgets/dlss_page_header.dart';
 import '../../widgets/error_widget.dart' as error_widget;
 import '../../widgets/loading_skeleton.dart';
-import '../../widgets/reviewer_task_card.dart';
+import '../../widgets/reviewer/reviewer_task_card.dart';
 
 class ReviewerProjectTasksScreen extends StatefulWidget {
   final MyProjectSummaryModel project;

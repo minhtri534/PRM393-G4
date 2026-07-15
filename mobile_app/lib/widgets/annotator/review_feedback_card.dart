@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../core/constants/workflow_strings.dart';
-import '../core/theme/app_theme.dart';
-import '../models/annotator/annotator_models.dart';
-import 'dlss_card.dart';
+import '../../core/constants/workflow_strings.dart';
+import '../../core/theme/app_theme.dart';
+import '../../models/annotator/annotator_models.dart';
+import '../dlss_card.dart';
 
 class ReviewFeedbackCard extends StatelessWidget {
   final AnnotatorReviewFeedbackModel feedback;

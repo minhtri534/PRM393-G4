@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../core/constants/workflow_strings.dart';
-import '../core/theme/app_theme.dart';
+import '../../core/constants/workflow_strings.dart';
+import '../../core/theme/app_theme.dart';
 
 class TaskWorkflowTabs extends StatelessWidget {
   final int selectedTab;

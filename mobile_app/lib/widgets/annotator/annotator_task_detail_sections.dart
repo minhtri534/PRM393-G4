@@ -8,9 +8,9 @@ import '../../providers/annotator_provider.dart';
 import '../action_button.dart';
 import '../dlss_badge.dart';
 import '../dlss_card.dart';
-import '../label_chip_row.dart';
-import '../review_feedback_card.dart';
 import 'annotator_task_preview_image.dart';
+import 'label_chip_row.dart';
+import 'review_feedback_card.dart';
 
 class AnnotatorTaskDetailContent extends StatelessWidget {
   final AnnotatorProvider provider;

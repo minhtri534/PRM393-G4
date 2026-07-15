@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../core/constants/app_constants.dart';
-import '../core/constants/workflow_strings.dart';
-import '../core/theme/app_theme.dart';
-import '../models/reviewer/reviewer_models.dart';
-import 'dlss_badge.dart';
-import 'dlss_card.dart';
+import '../../core/constants/app_constants.dart';
+import '../../core/constants/workflow_strings.dart';
+import '../../core/theme/app_theme.dart';
+import '../../models/reviewer/reviewer_models.dart';
+import '../dlss_badge.dart';
+import '../dlss_card.dart';
 
 class ReviewerTaskCard extends StatelessWidget {
   final ReviewerSubmittedTaskModel task;

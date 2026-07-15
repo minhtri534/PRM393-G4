@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../core/constants/workflow_strings.dart';
-import '../core/utils/label_color_utils.dart';
-import '../models/annotator/annotator_models.dart';
+import '../../core/constants/workflow_strings.dart';
+import '../../core/utils/label_color_utils.dart';
+import '../../models/annotator/annotator_models.dart';
 
 class LabelChipRow extends StatelessWidget {
   final List<AnnotatorLabelModel> labels;

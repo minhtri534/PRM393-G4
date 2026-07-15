@@ -7,8 +7,8 @@ import '../../core/theme/app_theme.dart';
 import '../../providers/annotator_provider.dart';
 import '../../widgets/action_button.dart';
 import '../../widgets/bbox_labeling_canvas.dart';
-import '../../widgets/label_chip_row.dart';
-import '../../widgets/review_feedback_card.dart';
+import '../../widgets/annotator/label_chip_row.dart';
+import '../../widgets/annotator/review_feedback_card.dart';
 import '../../widgets/error_widget.dart' as error_widget;
 
 class LabelingScreen extends StatefulWidget {

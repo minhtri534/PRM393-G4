@@ -13,8 +13,8 @@ import '../../widgets/dlss_empty_state.dart';
 import '../../widgets/dlss_page_header.dart';
 import '../../widgets/error_widget.dart' as error_widget;
 import '../../widgets/loading_skeleton.dart';
-import '../../widgets/task_card.dart';
-import '../../widgets/task_workflow_tabs.dart';
+import '../../widgets/annotator/task_card.dart';
+import '../../widgets/annotator/task_workflow_tabs.dart';
 
 class AnnotatorProjectTasksScreen extends StatefulWidget {
   final MyProjectSummaryModel project;

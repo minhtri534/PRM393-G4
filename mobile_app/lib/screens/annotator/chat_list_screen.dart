@@ -5,7 +5,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/chat_provider.dart';
 import '../../routes/app_routes.dart';
-import '../../widgets/annotator_project_card.dart';
+import '../../widgets/annotator/annotator_project_card.dart';
 import '../../widgets/dlss_card.dart';
 import '../../widgets/dlss_page_header.dart';
 import '../../widgets/error_widget.dart' as error_widget;
