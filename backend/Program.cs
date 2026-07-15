@@ -13,15 +13,32 @@ builder.Services
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowFrontend", policy => {
-        // Allow localhost and machine IP for multi-machine testing
+        // Allow localhost + LAN IPs so phones can open Flutter web on the same Wi-Fi
         policy.SetIsOriginAllowed(origin => {
-            // Allow localhost and loopback
+            if (string.IsNullOrWhiteSpace(origin))
+                return false;
+
             if (origin.Contains("localhost", StringComparison.OrdinalIgnoreCase) ||
                 origin.Contains("127.0.0.1") ||
                 origin.Contains("0.0.0.0"))
                 return true;
-            
-            // Allow from config if specified
+
+            if (Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+            {
+                var host = uri.Host;
+                if (host.Contains("ngrok", StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                if (host.StartsWith("192.168.", StringComparison.Ordinal) ||
+                    host.StartsWith("10.", StringComparison.Ordinal) ||
+                    (host.StartsWith("172.", StringComparison.Ordinal) &&
+                     int.TryParse(host.Split('.')[1], out var second) &&
+                     second is >= 16 and <= 31))
+                {
+                    return true;
+                }
+            }
+
             var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
             return allowedOrigins?.Contains(origin) ?? false;
         })

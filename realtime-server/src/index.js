@@ -1,6 +1,7 @@
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { createServer } from 'http';
 import jwt from 'jsonwebtoken';
 import { Server } from 'socket.io';
@@ -10,6 +11,7 @@ dotenv.config();
 
 const port = Number(process.env.PORT || 5001);
 const apiBaseUrl = (process.env.API_URL || 'http://localhost:5000/api').replace(/\/$/, '');
+const backendOrigin = (process.env.BACKEND_URL || 'http://localhost:5000').replace(/\/$/, '');
 const jwtSigningKey = process.env.JWT_SIGNING_KEY || '';
 const jwtIssuer = process.env.JWT_ISSUER || 'DLSS';
 const jwtAudience = process.env.JWT_AUDIENCE || 'DLSS';
@@ -21,6 +23,16 @@ if (!jwtSigningKey || jwtSigningKey.length < 32) {
 const app = express();
 app.use(cors({ origin: true, credentials: true }));
 app.get('/health', (_req, res) => res.json({ ok: true }));
+
+// Single public URL (e.g. ngrok): proxy REST API to ASP.NET backend on the same host.
+app.use(
+  '/api',
+  createProxyMiddleware({
+    target: backendOrigin,
+    changeOrigin: true,
+    pathRewrite: (path) => `/api${path}`,
+  }),
+);
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {

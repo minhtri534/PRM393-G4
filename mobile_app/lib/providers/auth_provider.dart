@@ -63,7 +63,10 @@ class AuthProvider extends ChangeNotifier {
       _errorMessage = null;
       notifyListeners();
 
-      final request = LoginRequest(email: email, password: password);
+      final request = LoginRequest(
+        email: email.trim(),
+        password: password.trim(),
+      );
       final authResponse = await _authRepository.login(request);
 
       _accessToken = authResponse.accessToken;
