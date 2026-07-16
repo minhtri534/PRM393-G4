@@ -1,0 +1,6 @@
+version: "3"
+tunnels:
+  dlss-demo:
+    addr: 5001
+    proto: http
+    domain: spinach-subtext-moonstone.ngrok-free.dev

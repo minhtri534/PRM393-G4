@@ -30,6 +30,7 @@ services:
     environment:
       - PORT=5001
       - API_URL=http://backend:5000/api
+      - BACKEND_URL=http://backend:5000
       - JWT_SIGNING_KEY=DLSS_DEV_SIGNING_KEY_64CHARS_MIN__CHANGE_IN_PROD__2026_02_18
       - JWT_ISSUER=DLSS
       - JWT_AUDIENCE=DLSS

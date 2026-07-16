@@ -181,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     }
                                     final success = await authProvider.login(
                                       _emailController.text.trim(),
-                                      _passwordController.text,
+                                      _passwordController.text.trim(),
                                     );
                                     if (success && mounted) {
                                       await context

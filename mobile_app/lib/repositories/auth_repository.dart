@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../core/constants/app_constants.dart';
 import '../core/constants/environment.dart';
+import '../core/storage/app_storage.dart';
 import '../core/utils/logger.dart';
 import '../models/auth/auth_response.dart';
 import '../models/auth/user_profile.dart';
@@ -17,11 +17,13 @@ import 'dio_client.dart';
 
 class AuthRepository {
   final DioClient _dioClient;
-  final FlutterSecureStorage _secureStorage;
+  final AppStorage _storage;
 
-  AuthRepository({DioClient? dioClient, FlutterSecureStorage? secureStorage})
-    : _dioClient = dioClient ?? DioClient(),
-      _secureStorage = secureStorage ?? const FlutterSecureStorage();
+  AuthRepository({
+    DioClient? dioClient,
+    AppStorage? storage,
+  })  : _dioClient = dioClient ?? DioClient(),
+        _storage = storage ?? AppStorage.instance;
 
   /// Login with email and password
   Future<AuthResponse> login(LoginRequest request) async {
@@ -38,7 +40,8 @@ class AuthRepository {
 
       if (!serviceResponse.isSuccess) {
         throw ApiError(
-          message: serviceResponse.message ?? AppConstants.errorGeneric,
+          message: serviceResponse.message ??
+              AppConstants.errorGeneric,
           code: 'LOGIN_FAILED',
         );
       }
@@ -53,11 +56,11 @@ class AuthRepository {
 
       // Store tokens securely
       await _dioClient.setAuthToken(authResponse.accessToken);
-      await _secureStorage.write(
+      await _storage.write(
         key: AppConstants.refreshTokenKey,
         value: authResponse.refreshToken,
       );
-      await _secureStorage.write(
+      await _storage.write(
         key: AppConstants.userProfileKey,
         value: _encodeUserProfile(authResponse.user),
       );
@@ -141,11 +144,11 @@ class AuthRepository {
       }
 
       await _dioClient.setAuthToken(authResponse.accessToken);
-      await _secureStorage.write(
+      await _storage.write(
         key: AppConstants.refreshTokenKey,
         value: authResponse.refreshToken,
       );
-      await _secureStorage.write(
+      await _storage.write(
         key: AppConstants.userProfileKey,
         value: _encodeUserProfile(authResponse.user),
       );
@@ -201,26 +204,36 @@ class AuthRepository {
   /// Logout
   Future<void> logout() async {
     try {
-      final refreshToken = await _secureStorage.read(
+      final refreshToken = await _storage.read(
         key: AppConstants.refreshTokenKey,
       );
 
       await _dioClient.post(
         Environment.logoutEndpoint,
-        data: {'refreshToken': refreshToken},
+        data: {
+          'refreshToken': refreshToken,
+        },
       );
 
       await _dioClient.clearAuthToken();
 
-      await _secureStorage.delete(key: AppConstants.refreshTokenKey);
+      await _storage.delete(
+        key: AppConstants.refreshTokenKey,
+      );
 
-      await _secureStorage.delete(key: AppConstants.userProfileKey);
+      await _storage.delete(
+        key: AppConstants.userProfileKey,
+      );
     } catch (e) {
       await _dioClient.clearAuthToken();
 
-      await _secureStorage.delete(key: AppConstants.refreshTokenKey);
+      await _storage.delete(
+        key: AppConstants.refreshTokenKey,
+      );
 
-      await _secureStorage.delete(key: AppConstants.userProfileKey);
+      await _storage.delete(
+        key: AppConstants.userProfileKey,
+      );
     }
   }
 
@@ -231,10 +244,12 @@ class AuthRepository {
 
   /// Get stored user profile
   Future<UserProfile?> getStoredUserProfile() async {
-    final raw = await _secureStorage.read(key: AppConstants.userProfileKey);
+    final raw = await _storage.read(key: AppConstants.userProfileKey);
     if (raw == null || raw.isEmpty) return null;
     try {
-      return UserProfile.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+      return UserProfile.fromJson(
+        jsonDecode(raw) as Map<String, dynamic>,
+      );
     } catch (_) {
       return null;
     }

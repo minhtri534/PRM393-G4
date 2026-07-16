@@ -16,7 +16,11 @@ class AppConstants {
   static const String taskStatusSubmitted = 'Submitted';
   static const String taskStatusApproved = 'Approved';
   static const String taskStatusRejected = 'Rejected';
-
+  static const String taskStatusReturned = 'Returned';
+  static const String taskStatusRework = 'Rework';
+  static const String taskStatusCompleted = 'Completed';
+  static const String taskStatusCancelled = 'Cancelled';
+  
   // Error messages
   static const String errorNetworkConnection = 'Network connection error';
   static const String errorUnauthorized = 'Unauthorized access';

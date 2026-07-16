@@ -18,6 +18,11 @@ class Environment {
       return _apiBaseUrlOverride;
     }
     if (kIsWeb) {
+      // Phone opens http://192.168.x.x:8080 → call API on same host, not localhost.
+      final host = Uri.base.host;
+      if (host.isNotEmpty && host != 'localhost' && host != '127.0.0.1') {
+        return 'http://$host:5000/api';
+      }
       return 'http://localhost:5000/api';
     }
     return defaultTargetPlatform == TargetPlatform.android
@@ -39,6 +44,10 @@ class Environment {
     }
 
     if (kIsWeb) {
+      final host = Uri.base.host;
+      if (host.isNotEmpty && host != 'localhost' && host != '127.0.0.1') {
+        return 'http://$host:5001';
+      }
       return 'http://localhost:5001';
     }
     return defaultTargetPlatform == TargetPlatform.android

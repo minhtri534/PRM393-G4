@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/constants/workflow_strings.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/annotator_provider.dart';
 import '../../widgets/action_button.dart';
 import '../../widgets/bbox_labeling_canvas.dart';
-import '../../widgets/dlss_card.dart';
+import '../../widgets/annotator/label_chip_row.dart';
+import '../../widgets/annotator/review_feedback_card.dart';
 import '../../widgets/error_widget.dart' as error_widget;
 
 class LabelingScreen extends StatefulWidget {
@@ -57,7 +59,7 @@ class _LabelingScreenState extends State<LabelingScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          ok ? 'Draft saved' : provider.errorMessage ?? 'Save failed',
+          ok ? WorkflowStrings.annotatorDraftSaved : provider.errorMessage ?? 'Save failed',
         ),
       ),
     );
@@ -68,7 +70,7 @@ class _LabelingScreenState extends State<LabelingScreen> {
     if (!mounted) return;
     if (ok) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Task submitted successfully')),
+        const SnackBar(content: Text(WorkflowStrings.annotatorSubmitted)),
       );
       Navigator.of(context).pop(true);
     } else {
@@ -85,7 +87,7 @@ class _LabelingScreenState extends State<LabelingScreen> {
     return Scaffold(
       backgroundColor: AppTheme.surfaceSoftColor,
       appBar: AppBar(
-        title: const Text('Labeling'),
+        title: const Text(WorkflowStrings.annotatorLabelingTitle),
         actions: [
           if (editable)
             IconButton(
@@ -106,57 +108,19 @@ class _LabelingScreenState extends State<LabelingScreen> {
           if (provider.labelingState == AnnotatorLoadState.error) {
             return error_widget.ErrorWidget(
               message: provider.errorMessage ?? AppConstants.errorGeneric,
+              icon: Icons.error_outline,
               onRetry: () => provider.loadLabelingSession(widget.taskId),
             );
           }
 
-          final feedback = provider.reviewFeedback;
-          final labels = provider.taskLabels;
-
           return Column(
             children: [
-              if (feedback != null)
+              if (provider.reviewFeedback != null)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  child: DlssCard(
-                    padding: const EdgeInsets.all(14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.feedback_outlined,
-                              color: AppTheme.warningColor,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Review feedback',
-                              style: Theme.of(context).textTheme.titleSmall
-                                  ?.copyWith(fontWeight: FontWeight.w600),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Result: ${feedback.result} • Score: ${feedback.score}',
-                        ),
-                        if (feedback.comment?.isNotEmpty == true) ...[
-                          const SizedBox(height: 6),
-                          Text(feedback.comment!),
-                        ],
-                        if (feedback.errorCategories.isNotEmpty) ...[
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: feedback.errorCategories
-                                .map((e) => Chip(label: Text(e.errorName)))
-                                .toList(),
-                          ),
-                        ],
-                      ],
-                    ),
+                  child: ReviewFeedbackCard(
+                    feedback: provider.reviewFeedback!,
+                    compact: true,
                   ),
                 ),
               Expanded(
@@ -167,7 +131,7 @@ class _LabelingScreenState extends State<LabelingScreen> {
                     imageWidth: _imageWidth(provider),
                     imageHeight: _imageHeight(provider),
                     boxes: provider.labelingBoxes,
-                    labels: labels,
+                    labels: provider.taskLabels,
                     selectedLabelId: provider.selectedLabelId,
                     selectedBoxIndex: provider.selectedBoxIndex,
                     drawMode: _drawMode,
@@ -184,39 +148,16 @@ class _LabelingScreenState extends State<LabelingScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Labels',
+                      WorkflowStrings.annotatorLabels,
                       style: Theme.of(context).textTheme.labelLarge,
                     ),
                     const SizedBox(height: 8),
-                    if (labels.isEmpty)
-                      const Text('No labels configured for this project.')
-                    else
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: labels.map((label) {
-                            final selected =
-                                provider.selectedLabelId == label.id;
-                            final color = Color(
-                              int.parse(
-                                'FF${label.colorHex.replaceAll('#', '')}',
-                                radix: 16,
-                              ),
-                            );
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: ChoiceChip(
-                                label: Text(label.name),
-                                selected: selected,
-                                selectedColor: color.withValues(alpha: 0.2),
-                                onSelected: editable
-                                    ? (_) => provider.selectLabel(label.id)
-                                    : null,
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
+                    LabelChipRow(
+                      labels: provider.taskLabels,
+                      selectedLabelId: provider.selectedLabelId,
+                      editable: editable,
+                      onLabelSelected: provider.selectLabel,
+                    ),
                     const SizedBox(height: 12),
                     if (editable && provider.selectedBoxIndex != null)
                       Align(
@@ -224,7 +165,9 @@ class _LabelingScreenState extends State<LabelingScreen> {
                         child: TextButton.icon(
                           onPressed: provider.removeSelectedBox,
                           icon: const Icon(Icons.delete_outline),
-                          label: const Text('Delete selected box'),
+                          label: const Text(
+                            WorkflowStrings.annotatorDeleteSelectedBox,
+                          ),
                         ),
                       ),
                   ],
@@ -236,7 +179,9 @@ class _LabelingScreenState extends State<LabelingScreen> {
                   child: Column(
                     children: [
                       ActionButton(
-                        label: provider.isSaving ? 'Saving...' : 'Save Draft',
+                        label: provider.isSaving
+                            ? 'Saving...'
+                            : WorkflowStrings.annotatorSaveDraft,
                         variant: ActionButtonVariant.outline,
                         isLoading: provider.isSaving,
                         onPressed: provider.isSaving
@@ -245,7 +190,9 @@ class _LabelingScreenState extends State<LabelingScreen> {
                       ),
                       const SizedBox(height: 10),
                       ActionButton(
-                        label: provider.isSaving ? 'Submitting...' : 'Submit',
+                        label: provider.isSaving
+                            ? 'Submitting...'
+                            : WorkflowStrings.annotatorSubmit,
                         variant: ActionButtonVariant.gradient,
                         isLoading: provider.isSaving,
                         onPressed: provider.isSaving

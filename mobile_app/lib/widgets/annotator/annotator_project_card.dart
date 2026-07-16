@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../core/constants/app_constants.dart';
-import '../core/theme/app_theme.dart';
-import '../models/chat/chat_models.dart';
-import 'dlss_badge.dart';
-import 'dlss_card.dart';
+import '../../core/constants/app_constants.dart';
+import '../../core/theme/app_theme.dart';
+import '../../models/chat/chat_models.dart';
+import '../dlss_badge.dart';
+import '../dlss_card.dart';
 
 class AnnotatorProjectCard extends StatelessWidget {
   final MyProjectSummaryModel project;

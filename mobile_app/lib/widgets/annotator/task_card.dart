@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../core/constants/app_constants.dart';
-import '../core/theme/app_theme.dart';
-import '../models/annotator/annotator_models.dart';
-import 'dlss_badge.dart';
-import 'dlss_card.dart';
+import '../../core/constants/app_constants.dart';
+import '../../core/theme/app_theme.dart';
+import '../../models/annotator/annotator_models.dart';
+import '../dlss_badge.dart';
+import '../dlss_card.dart';
 
 class TaskCard extends StatelessWidget {
   final AnnotatorTaskModel task;
@@ -20,7 +20,7 @@ class TaskCard extends StatelessWidget {
 
   bool get _isDone =>
       task.status == AppConstants.taskStatusSubmitted ||
-      task.status == 'Completed' ||
+      task.status == AppConstants.taskStatusCompleted ||
       task.status == AppConstants.taskStatusApproved;
 
   @override

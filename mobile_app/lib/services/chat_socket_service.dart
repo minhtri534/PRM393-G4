@@ -1,29 +1,29 @@
 import 'dart:async';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 import '../core/constants/app_constants.dart';
 import '../core/constants/environment.dart';
+import '../core/storage/app_storage.dart';
 import '../core/utils/logger.dart';
 import '../models/chat/chat_models.dart';
 
 typedef ChatMessageHandler = void Function(ChatMessageModel message);
 
 class ChatSocketService {
-  final FlutterSecureStorage _secureStorage;
+  final AppStorage _storage;
   io.Socket? _socket;
   ChatMessageHandler? _onMessage;
   String? _connectedToken;
 
-  ChatSocketService({FlutterSecureStorage? secureStorage})
-    : _secureStorage = secureStorage ?? const FlutterSecureStorage();
+  ChatSocketService({AppStorage? storage})
+      : _storage = storage ?? AppStorage.instance;
 
   bool get isConnected => _socket?.connected ?? false;
 
   Future<void> connect({ChatMessageHandler? onMessage}) async {
     _onMessage = onMessage;
-    final token = await _secureStorage.read(key: AppConstants.tokenKey);
+    final token = await _storage.read(key: AppConstants.tokenKey);
     if (token == null || token.isEmpty) {
       throw StateError('Missing auth token');
     }
@@ -96,17 +96,13 @@ class ChatSocketService {
     if (socket == null || !socket.connected) return false;
 
     final completer = Completer<bool>();
-    socket.emitWithAck(
-      'join:project',
-      {'projectId': projectId},
-      ack: (data) {
-        if (data is Map && data['ok'] == true) {
-          if (!completer.isCompleted) completer.complete(true);
-        } else {
-          if (!completer.isCompleted) completer.complete(false);
-        }
-      },
-    );
+    socket.emitWithAck('join:project', {'projectId': projectId}, ack: (data) {
+      if (data is Map && data['ok'] == true) {
+        if (!completer.isCompleted) completer.complete(true);
+      } else {
+        if (!completer.isCompleted) completer.complete(false);
+      }
+    });
 
     return completer.future.timeout(
       const Duration(seconds: 8),
