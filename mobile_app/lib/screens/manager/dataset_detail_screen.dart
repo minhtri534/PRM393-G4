@@ -88,7 +88,7 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
           return Scaffold(
             backgroundColor: AppTheme.surfaceSoftColor,
             appBar: AppBar(elevation: 0, backgroundColor: Colors.transparent),
-            body: const Center(child: Text('Dataset not found')),
+            body: const Center(child: Text(AppConstants.managerDatasetDetailDatasetNotFound)),
           );
         }
 
@@ -106,7 +106,7 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
             children: [
               DlssPageHeader(
                 title: dataset.name,
-                subtitle: dataset.projectName ?? 'Dataset details',
+                subtitle: dataset.projectName ?? AppConstants.managerDatasetDetailDatasetDetailsSubtitle,
               ),
               const SizedBox(height: 16),
               DlssCard(
@@ -131,11 +131,11 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            dataset.projectName ?? 'Project',
+                            dataset.projectName ?? AppConstants.managerDatasetDetailDatasetProject,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           Text(
-                            '${dataset.totalItems ?? 0} items',
+                            AppConstants.managerDatasetDetailItem(dataset.totalItems ?? 0),
                             style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
@@ -143,7 +143,7 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                       ),
                     ),
                     DlssBadge(
-                      label: 'Active',
+                      label: AppConstants.managerDatasetDetailActive,
                       variant: DlssBadgeVariant.success,
                     ),
                   ],
@@ -156,7 +156,7 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Dataset settings',
+                      AppConstants.managerDatasetDetailSettings,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -164,11 +164,11 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                     const SizedBox(height: 16),
                     CustomTextField(
                       controller: _nameController,
-                      label: 'Dataset Name',
-                      hintText: 'Rename dataset',
+                      label: AppConstants.managerDatasetDetailName,
+                      hintText: AppConstants.managerDatasetDetailRename,
                     ),
                     ActionButton(
-                      label: 'Save Name',
+                      label: AppConstants.managerDatasetDetailSave,
                       variant: ActionButtonVariant.gradient,
                       isLoading: provider.isLoading,
                       onPressed: () => provider.updateDatasetName(
@@ -178,7 +178,7 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                     ),
                     const SizedBox(height: 12),
                     ActionButton(
-                      label: 'Add More Files',
+                      label: AppConstants.managerDatasetDetailAddFiles,
                       variant: ActionButtonVariant.outline,
                       onPressed: () => _addFiles(provider),
                     ),
@@ -187,7 +187,7 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
               ),
               const SizedBox(height: 24),
               ActionButton(
-                label: 'Delete Dataset',
+                label: AppConstants.managerDatasetDetailDelete,
                 variant: ActionButtonVariant.outline,
                 onPressed: () async {
                   final ok = await provider.deleteDataset(widget.datasetId);

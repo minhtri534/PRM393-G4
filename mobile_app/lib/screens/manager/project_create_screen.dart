@@ -33,7 +33,7 @@ class _ProjectCreateScreenState extends State<ProjectCreateScreen> {
     return Scaffold(
       backgroundColor: AppTheme.surfaceSoftColor,
       appBar: AppBar(
-        title: const Text('Create Project'),
+        title: const Text(AppConstants.managerProjectCreateCreateProjectBar),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
@@ -43,8 +43,8 @@ class _ProjectCreateScreenState extends State<ProjectCreateScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const DlssPageHeader(
-              title: 'New Project',
-              subtitle: 'Set up a data labeling project for your team',
+              title: AppConstants.managerProjectCreateNewProjectTitle,
+              subtitle: AppConstants.managerProjectCreateNewProjectSubtitle,
             ),
             const SizedBox(height: 16),
             DlssCard(
@@ -55,24 +55,24 @@ class _ProjectCreateScreenState extends State<ProjectCreateScreen> {
                   children: [
                     CustomTextField(
                       controller: _nameController,
-                      label: 'Project Name',
-                      hintText: 'Enter project name',
+                      label: AppConstants.managerProjectCreateProjectName,
+                      hintText: AppConstants.managerProjectCreateProjectNameHint,
                       prefixIcon: const Icon(Icons.folder_outlined),
                       validator: (v) => v == null || v.trim().isEmpty
-                          ? 'Name is required'
+                          ? AppConstants.managerProjectCreateProjectNameMissing
                           : null,
                     ),
                     const SizedBox(height: AppConstants.paddingLarge),
                     CustomTextField(
                       controller: _guidelineController,
-                      label: 'Guideline (optional)',
-                      hintText: 'Labeling instructions for annotators',
+                      label: AppConstants.managerProjectCreateGuideline,
+                      hintText: AppConstants.managerProjectCreateGuidelineHint,
                       prefixIcon: const Icon(Icons.description_outlined),
                     ),
                     const SizedBox(height: AppConstants.paddingLarge),
                     Consumer<ManagerProvider>(
                       builder: (context, provider, _) => ActionButton(
-                        label: 'Create Project',
+                        label: AppConstants.managerProjectCreateCreateProject,
                         variant: ActionButtonVariant.gradient,
                         isLoading: provider.isLoading,
                         onPressed: () async {

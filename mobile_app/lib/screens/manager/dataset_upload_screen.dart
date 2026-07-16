@@ -57,7 +57,7 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
 
     if (projectId == null || name.isEmpty || _files.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Select project, name, and files')),
+        const SnackBar(content: Text(AppConstants.managerDatasetUploadMissingInputError)),
       );
       return;
     }
@@ -95,7 +95,7 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
     if (multipartFiles.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not read selected files')),
+          const SnackBar(content: Text(AppConstants.managerDatasetUploadFileReadError)),
         );
       }
       return;
@@ -108,7 +108,7 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
 
     if (uploadOk && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Dataset uploaded successfully')),
+        const SnackBar(content: Text(AppConstants.managerDatasetUploadUploadSuccess)),
       );
       Navigator.pop(context);
     } else if (mounted && provider.errorMessage != null) {
@@ -123,7 +123,7 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
     return Scaffold(
       backgroundColor: AppTheme.surfaceSoftColor,
       appBar: AppBar(
-        title: const Text('Upload Dataset'),
+        title: const Text(AppConstants.managerDatasetUploadUploadDataset),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
@@ -136,8 +136,8 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const DlssPageHeader(
-                  title: 'Upload Dataset',
-                  subtitle: 'Add image files to a project dataset',
+                  title: AppConstants.managerDatasetUploadUploadDatasetSubtitle,
+                  subtitle: AppConstants.managerDatasetUploadProject,
                 ),
                 const SizedBox(height: 16),
                 DlssCard(
@@ -148,7 +148,7 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
                       DropdownButtonFormField<String>(
                         initialValue: _selectedProjectId,
                         decoration: InputDecoration(
-                          labelText: 'Project',
+                          labelText: AppConstants.managerDatasetUploadProject,
                           prefixIcon: const Icon(Icons.folder_outlined),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -168,8 +168,8 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
                       const SizedBox(height: AppConstants.paddingLarge),
                       CustomTextField(
                         controller: _nameController,
-                        label: 'Dataset Name',
-                        hintText: 'e.g. Street Images Batch 1',
+                        label: AppConstants.managerDatasetUploadName,
+                        hintText: AppConstants.managerDatasetUploadNameHint,
                         prefixIcon: const Icon(Icons.dataset_outlined),
                       ),
                       const SizedBox(height: AppConstants.paddingLarge),
@@ -194,15 +194,15 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
                             const SizedBox(height: 8),
                             Text(
                               _files.isEmpty
-                                  ? 'No files selected'
-                                  : '${_files.length} file(s) selected',
+                                  ? AppConstants.managerDatasetUploadNoFilesSelected
+                                  : AppConstants.managerDatasetUploadFilesSelected(_files.length),
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             const SizedBox(height: 12),
                             ActionButton(
                               label: _files.isEmpty
-                                  ? 'Select image files'
-                                  : 'Change selection',
+                                  ? AppConstants.managerDatasetUploadSelectFiles
+                                  : AppConstants.managerDatasetUploadChangeSelection,
                               variant: ActionButtonVariant.outline,
                               onPressed: _pickFiles,
                             ),
@@ -211,7 +211,7 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
                       ),
                       const SizedBox(height: AppConstants.paddingLarge),
                       ActionButton(
-                        label: 'Upload',
+                        label: AppConstants.managerDatasetUploadUpload,
                         variant: ActionButtonVariant.gradient,
                         isLoading: provider.isLoading,
                         onPressed: _upload,

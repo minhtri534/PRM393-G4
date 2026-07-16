@@ -64,7 +64,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
     return Scaffold(
       backgroundColor: AppTheme.surfaceSoftColor,
       appBar: AppBar(
-        title: const Text('Create Tasks'),
+        title: const Text(AppConstants.managerTaskCreateCreateTask),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
@@ -76,8 +76,8 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const DlssPageHeader(
-                  title: 'Assign Tasks',
-                  subtitle: 'Create labeling tasks for annotators',
+                  title: AppConstants.managerTaskCreateAssignTasks,
+                  subtitle: AppConstants.managerTaskCreateAssignTasksSubtitle,
                 ),
                 const SizedBox(height: 16),
                 DlssCard(
@@ -89,11 +89,11 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                         segments: const [
                           ButtonSegment(
                             value: false,
-                            label: Text('Bulk by Dataset'),
+                            label: Text(AppConstants.managerTaskCreateAssignBulk),
                           ),
                           ButtonSegment(
                             value: true,
-                            label: Text('Single Task'),
+                            label: Text(AppConstants.managerTaskCreateAssignSingle),
                           ),
                         ],
                         selected: {_singleTaskMode},
@@ -104,7 +104,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                       DropdownButtonFormField<String>(
                         initialValue: _projectId,
                         decoration: InputDecoration(
-                          labelText: 'Project',
+                          labelText: AppConstants.managerTaskCreateProject,
                           prefixIcon: const Icon(Icons.folder_outlined),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -125,7 +125,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                         DropdownButtonFormField<String>(
                           initialValue: _datasetId,
                           decoration: InputDecoration(
-                            labelText: 'Dataset',
+                            labelText: AppConstants.managerTaskCreateDataset,
                             prefixIcon: const Icon(Icons.dataset_outlined),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -136,7 +136,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                                 (DatasetModel d) => DropdownMenuItem(
                                   value: d.id,
                                   child: Text(
-                                    '${d.name} (${d.totalItems ?? 0} items)',
+                                    AppConstants.managerTaskCreateItems(d.name, d.totalItems ?? 0),
                                   ),
                                 ),
                               )
@@ -147,8 +147,8 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                         const SizedBox(height: 16),
                         CustomTextField(
                           controller: _dataItemIdController,
-                          label: 'Data Item ID',
-                          hintText: 'UUID of data item',
+                          label: AppConstants.managerTaskCreateIDLabel,
+                          hintText: AppConstants.managerTaskCreateIDHint,
                           prefixIcon: const Icon(Icons.image_outlined),
                         ),
                       ],
@@ -156,7 +156,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                       DropdownButtonFormField<String>(
                         initialValue: _annotatorId,
                         decoration: InputDecoration(
-                          labelText: 'Annotator',
+                          labelText: AppConstants.managerTaskCreateAnnotator,
                           prefixIcon: const Icon(Icons.person_outline),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -175,15 +175,15 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                       const SizedBox(height: 24),
                       ActionButton(
                         label: _singleTaskMode
-                            ? 'Create Task'
-                            : 'Bulk Create Tasks',
+                            ? AppConstants.managerTaskCreateSingleCreateTask
+                            : AppConstants.managerTaskCreateBulkCreateTask,
                         variant: ActionButtonVariant.gradient,
                         isLoading: provider.isLoading,
                         onPressed: () async {
                           if (_projectId == null || _annotatorId == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Select project and annotator'),
+                                content: Text(AppConstants.managerTaskCreateAssignMissingDataError),
                               ),
                             );
                             return;
@@ -196,7 +196,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                             if (dataItemId.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Enter data item ID'),
+                                  content: Text(AppConstants.managerTaskCreateAssignMissingIDError),
                                 ),
                               );
                               return;
@@ -209,7 +209,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                           } else {
                             if (_datasetId == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Select dataset')),
+                                const SnackBar(content: Text(AppConstants.managerTaskCreateSelectDataset)),
                               );
                               return;
                             }
@@ -222,7 +222,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
 
                           if (ok && context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Tasks created')),
+                              const SnackBar(content: Text(AppConstants.managerTaskCreateTaskCreateSuccess)),
                             );
                             Navigator.pop(context);
                           }

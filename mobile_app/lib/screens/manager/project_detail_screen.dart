@@ -574,7 +574,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
     try {
       final dir = await getTemporaryDirectory();
       final isZip = export.format.toUpperCase() == 'YOLO';
-      final fileName = 'dlss-export-${export.id}${isZip ? '.zip' : '.json'}';
+      final fileName = AppConstants.managerProjectDetailExport(export.id, isZip ? '.zip' : '.json');
       final file = File('${dir.path}/$fileName');
       await file.writeAsBytes(bytes, flush: true);
       await OpenFilex.open(file.path);

@@ -29,7 +29,7 @@ class ManagerShellScreen extends StatelessWidget {
           body: DatasetListScreen(),
         ),
         DlssNavDestination(
-          label: AppConstants.managerShellTabProjectsNewProject,
+          label: AppConstants.managerShellTabUsersNewUser,
           icon: Icons.people_outline,
           body: UserListScreen(),
         ),

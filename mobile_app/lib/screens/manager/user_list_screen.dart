@@ -38,19 +38,19 @@ class _UserListScreenState extends State<UserListScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete user'),
+        title: const Text(AppConstants.managerUserListDeleteUser),
         content: Text(
-          'Delete ${user.fullName} (${user.email})? This cannot be undone.',
+          AppConstants.managerUserListDeleteWarning(user.fullName, user.email),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: const Text(AppConstants.managerUserListCancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             style: TextButton.styleFrom(foregroundColor: AppTheme.errorColor),
-            child: const Text('Delete'),
+            child: const Text(AppConstants.managerUserListDelete),
           ),
         ],
       ),
@@ -65,7 +65,7 @@ class _UserListScreenState extends State<UserListScreen> {
     if (ok) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Deleted ${user.email}')));
+      ).showSnackBar(SnackBar(content: Text(AppConstants.managerUserListDeleteConfirm(user.email))));
     } else if (provider.errorMessage != null) {
       ScaffoldMessenger.of(
         context,
@@ -85,15 +85,15 @@ class _UserListScreenState extends State<UserListScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const DlssPageHeader(
-                title: 'User Management',
-                subtitle: 'Create and remove team accounts',
+                title: AppConstants.managerUserListUserManagement,
+                subtitle: AppConstants.managerUserListUserManagementSubtitle,
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: _searchController,
                 onChanged: (_) => setState(() {}),
                 decoration: InputDecoration(
-                  hintText: 'Search by name, email, or role',
+                  hintText: AppConstants.managerUserListSearchHint,
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -118,7 +118,7 @@ class _UserListScreenState extends State<UserListScreen> {
 
     if (provider.state == ManagerLoadState.error && provider.users.isEmpty) {
       return error_widget.ErrorWidget(
-        message: provider.errorMessage ?? 'Failed to load users',
+        message: provider.errorMessage ?? AppConstants.managerUserListLoadUsersError,
         onRetry: provider.fetchUsers,
       );
     }
@@ -127,8 +127,8 @@ class _UserListScreenState extends State<UserListScreen> {
       return Center(
         child: Text(
           provider.users.isEmpty
-              ? 'No users yet'
-              : 'No users match your search',
+              ? AppConstants.managerUserListNoExistingUsers
+              : AppConstants.managerUserListNoUsersFound,
           style: TextStyle(color: AppTheme.textSecondaryColor),
         ),
       );
@@ -193,7 +193,7 @@ class _UserListTile extends StatelessWidget {
                 child: Text(
                   user.fullName.isNotEmpty
                       ? user.fullName[0].toUpperCase()
-                      : '?',
+                      : AppConstants.managerUserListMissingName,
                   style: const TextStyle(
                     color: AppTheme.primaryColor,
                     fontWeight: FontWeight.w600,
@@ -220,7 +220,7 @@ class _UserListTile extends StatelessWidget {
                       runSpacing: 4,
                       children: [
                         _Badge(
-                          label: user.roleName ?? 'Unknown role',
+                          label: user.roleName ?? AppConstants.managerUserListUnknownRole,
                           color: AppTheme.primaryColor,
                         ),
                       ],
@@ -229,7 +229,7 @@ class _UserListTile extends StatelessWidget {
                 ),
               ),
               IconButton(
-                tooltip: 'Delete user',
+                tooltip: AppConstants.managerUserListDeleteUser,
                 onPressed: onDelete,
                 icon: const Icon(
                   Icons.delete_outline,

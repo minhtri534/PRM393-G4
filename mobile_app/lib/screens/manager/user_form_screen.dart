@@ -30,7 +30,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
   final _passwordController = TextEditingController();
   final _phoneController = TextEditingController();
   final _roleController = TextEditingController();
-  final _statusController = TextEditingController(text: 'Active');
+  final _statusController = TextEditingController(text: AppConstants.managerUserFormStatusActive);
 
   String? _selectedRoleId;
   bool _initialized = false;
@@ -51,9 +51,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
       if (user != null && mounted) {
         _fullNameController.text = user.fullName;
         _emailController.text = user.email;
-        _phoneController.text = user.phoneNumber ?? '';
-        _roleController.text = user.roleName ?? 'Unknown role';
-        _statusController.text = 'Active';
+        _phoneController.text = user.phoneNumber ?? AppConstants.managerUserFormNoPhone;
+        _roleController.text = user.roleName ?? AppConstants.managerUserFormUnknownRole;
+        _statusController.text = AppConstants.managerUserFormStatusActive;
         _selectedRoleId = user.roleId;
         _initialized = true;
         setState(() {});
@@ -87,7 +87,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
     if (roleId == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Please select a role')));
+      ).showSnackBar(const SnackBar(content: Text(AppConstants.managerUserFormMissingRoleAlert)));
       return;
     }
 
@@ -117,7 +117,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
     return Scaffold(
       backgroundColor: AppTheme.surfaceSoftColor,
       appBar: AppBar(
-        title: Text(widget.isEditing ? 'User Details' : 'Create User'),
+        title: Text(widget.isEditing ? AppConstants.managerUserFormUserDetails : AppConstants.managerUserFormCreateUser),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
@@ -134,7 +134,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
               provider.selectedUser == null &&
               provider.state == ManagerLoadState.error) {
             return Center(
-              child: Text(provider.errorMessage ?? 'User not found'),
+              child: Text(provider.errorMessage ?? AppConstants.managerUserFormUserNotFound),
             );
           }
 
@@ -146,10 +146,10 @@ class _UserFormScreenState extends State<UserFormScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 DlssPageHeader(
-                  title: widget.isEditing ? 'User Details' : 'New User',
+                  title: widget.isEditing ? AppConstants.managerUserFormUserDetails : AppConstants.managerUserFormCreateUser,
                   subtitle: widget.isEditing
-                      ? 'View account information (read-only)'
-                      : 'Create an Annotator or Reviewer account',
+                      ? AppConstants.managerUserFormViewAccount
+                      : AppConstants.managerUserFormCreateAccount,
                 ),
                 const SizedBox(height: 16),
                 DlssCard(
@@ -160,21 +160,21 @@ class _UserFormScreenState extends State<UserFormScreen> {
                       children: [
                         CustomTextField(
                           controller: _fullNameController,
-                          label: 'Full Name',
-                          hintText: 'Enter full name',
+                          label: AppConstants.managerUserFormName,
+                          hintText: AppConstants.managerUserFormNameHint,
                           prefixIcon: const Icon(Icons.person_outline),
                           readOnly: widget.isEditing,
                           validator: widget.isEditing
                               ? null
                               : (v) => v == null || v.trim().isEmpty
-                                    ? 'Name is required'
+                                    ? AppConstants.managerUserFormMissingName
                                     : null,
                         ),
                         const SizedBox(height: 16),
                         CustomTextField(
                           controller: _emailController,
-                          label: 'Email',
-                          hintText: 'user@example.com',
+                          label: AppConstants.managerUserFormEmail,
+                          hintText: AppConstants.managerUserFormEmailHint,
                           keyboardType: TextInputType.emailAddress,
                           prefixIcon: const Icon(Icons.mail_outline),
                           readOnly: widget.isEditing,
@@ -184,16 +184,16 @@ class _UserFormScreenState extends State<UserFormScreen> {
                           const SizedBox(height: 16),
                           CustomTextField(
                             controller: _passwordController,
-                            label: 'Password',
-                            hintText: 'At least 8 characters',
+                            label: AppConstants.managerUserFormPassword,
+                            hintText: AppConstants.managerUserFormPasswordHint,
                             obscureText: true,
                             prefixIcon: const Icon(Icons.lock_outline),
                             validator: (v) {
                               if (v == null || v.isEmpty) {
-                                return 'Password is required';
+                                return AppConstants.managerUserFormMissingPassword;
                               }
                               if (v.length < 8) {
-                                return 'Password must be at least 8 characters';
+                                return AppConstants.managerUserFormInvalidPassword;
                               }
                               return null;
                             },
@@ -202,8 +202,8 @@ class _UserFormScreenState extends State<UserFormScreen> {
                         const SizedBox(height: 16),
                         CustomTextField(
                           controller: _phoneController,
-                          label: 'Phone (optional)',
-                          hintText: '+84 ...',
+                          label: AppConstants.managerUserFormPhone,
+                          hintText: AppConstants.managerUserFormPhoneHint,
                           keyboardType: TextInputType.phone,
                           prefixIcon: const Icon(Icons.phone_outlined),
                           readOnly: widget.isEditing,
@@ -212,8 +212,8 @@ class _UserFormScreenState extends State<UserFormScreen> {
                         if (widget.isEditing)
                           CustomTextField(
                             controller: _roleController,
-                            label: 'Role',
-                            hintText: 'Role',
+                            label: AppConstants.managerUserFormRole,
+                            hintText: AppConstants.managerUserFormRoleHint,
                             prefixIcon: const Icon(Icons.badge_outlined),
                             readOnly: true,
                           )
@@ -221,7 +221,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                           DropdownButtonFormField<String>(
                             initialValue: _selectedRoleId,
                             decoration: InputDecoration(
-                              labelText: 'Role',
+                              labelText: AppConstants.managerUserFormRole,
                               prefixIcon: const Icon(Icons.badge_outlined),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -238,14 +238,14 @@ class _UserFormScreenState extends State<UserFormScreen> {
                             onChanged: (value) =>
                                 setState(() => _selectedRoleId = value),
                             validator: (value) =>
-                                value == null ? 'Role is required' : null,
+                                value == null ? AppConstants.managerUserFormMissingRole : null,
                           ),
                         if (widget.isEditing) ...[
                           const SizedBox(height: 16),
                           CustomTextField(
                             controller: _statusController,
-                            label: 'Status',
-                            hintText: 'Active',
+                            label: AppConstants.managerUserFormStatus,
+                            hintText: AppConstants.managerUserFormStatusActive,
                             prefixIcon: const Icon(Icons.info_outline),
                             readOnly: true,
                           ),
@@ -253,7 +253,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                         if (!widget.isEditing) ...[
                           const SizedBox(height: 24),
                           ActionButton(
-                            label: 'Create User',
+                            label: AppConstants.managerUserFormCreateUser,
                             variant: ActionButtonVariant.gradient,
                             isLoading: provider.isLoading,
                             onPressed: _submit,

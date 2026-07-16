@@ -48,14 +48,14 @@ class _DatasetListScreenState extends State<DatasetListScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const DlssPageHeader(
-                title: 'Datasets',
-                subtitle: 'Browse and manage uploaded datasets',
+                title: AppConstants.managerDatasetListDatasetsTitle,
+                subtitle: AppConstants.managerDatasetListDatasetsSubtitle,
               ),
               const SizedBox(height: 16),
               TextField(
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.search),
-                  hintText: 'Search datasets...',
+                  hintText: AppConstants.managerDatasetListSearch,
                   filled: true,
                   fillColor: Colors.white.withValues(alpha: 0.8),
                   border: OutlineInputBorder(
@@ -82,7 +82,7 @@ class _DatasetListScreenState extends State<DatasetListScreen> {
     if (provider.state == ManagerLoadState.error &&
         provider.allDatasets.isEmpty) {
       return error_widget.ErrorWidget(
-        message: provider.errorMessage ?? 'Failed to load datasets',
+        message: provider.errorMessage ?? AppConstants.managerDatasetListLoadError,
         onRetry: provider.fetchAllDatasets,
       );
     }
@@ -90,7 +90,7 @@ class _DatasetListScreenState extends State<DatasetListScreen> {
     if (datasets.isEmpty) {
       return Center(
         child: Text(
-          'No datasets found',
+          AppConstants.managerDatasetListNoDatasets,
           style: TextStyle(color: AppTheme.textSecondaryColor),
         ),
       );
