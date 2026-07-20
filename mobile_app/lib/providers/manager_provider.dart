@@ -522,25 +522,6 @@ class ManagerProvider extends ChangeNotifier {
     });
   }
 
-  Future<bool> changeProjectStatus({
-    required String projectId,
-    required String name,
-    String? guideline,
-    required int status,
-  }) async {
-    return _runAction(() async {
-      _selectedProject = await _repository.changeProjectStatus(
-        projectId,
-        name: name,
-        guideline: guideline,
-        status: status,
-      );
-      _projects = _projects
-          .map((p) => p.id == projectId ? _selectedProject! : p)
-          .toList();
-    });
-  }
-
   Future<bool> updateLabel(String labelId, {required String name}) async {
     LabelModel? existing;
     for (final label in _labels) {
