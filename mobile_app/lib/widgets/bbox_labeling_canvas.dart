@@ -82,10 +82,41 @@ class _BboxLabelingCanvasState extends State<BboxLabelingCanvas> {
     return Offset(x, y);
   }
 
+  Rect _boxCanvasRect(LabelingBox box, Rect imageRect) {
+    final left = imageRect.left + (box.x / widget.imageWidth) * imageRect.width;
+    final top = imageRect.top + (box.y / widget.imageHeight) * imageRect.height;
+    final width = (box.width / widget.imageWidth) * imageRect.width;
+    final height = (box.height / widget.imageHeight) * imageRect.height;
+    return Rect.fromLTWH(left, top, width, height);
+  }
+
+  /// Hit-test from front-most box so overlapping labels remain selectable.
+  int? _hitTestBox(Offset localPosition, Rect imageRect) {
+    for (var i = widget.boxes.length - 1; i >= 0; i--) {
+      if (_boxCanvasRect(widget.boxes[i], imageRect).contains(localPosition)) {
+        return i;
+      }
+    }
+    return null;
+  }
+
   void _handlePanStart(DragStartDetails details, Rect imageRect) {
     if (widget.readOnly || !widget.drawMode || widget.selectedLabelId == null) {
       return;
     }
+
+    // Touching an existing box selects it (so old labels can be deleted)
+    // instead of starting a new draw gesture.
+    final hitIndex = _hitTestBox(details.localPosition, imageRect);
+    if (hitIndex != null) {
+      widget.onBoxSelected(hitIndex);
+      setState(() {
+        _startPoint = null;
+        _previewRect = null;
+      });
+      return;
+    }
+
     final point = _toImagePoint(details.localPosition, imageRect);
     if (point == null) return;
     setState(() {
@@ -140,21 +171,19 @@ class _BboxLabelingCanvasState extends State<BboxLabelingCanvas> {
   }
 
   void _handleTap(TapUpDetails details, Rect imageRect) {
-    if (widget.drawMode) return;
+    if (widget.readOnly) return;
 
-    for (var i = widget.boxes.length - 1; i >= 0; i--) {
-      final box = widget.boxes[i];
-      final left = imageRect.left + (box.x / widget.imageWidth) * imageRect.width;
-      final top = imageRect.top + (box.y / widget.imageHeight) * imageRect.height;
-      final width = (box.width / widget.imageWidth) * imageRect.width;
-      final height = (box.height / widget.imageHeight) * imageRect.height;
-      final rect = Rect.fromLTWH(left, top, width, height);
-      if (rect.contains(details.localPosition)) {
-        widget.onBoxSelected(i);
-        return;
-      }
+    final hitIndex = _hitTestBox(details.localPosition, imageRect);
+    if (hitIndex != null) {
+      widget.onBoxSelected(hitIndex);
+      return;
     }
-    widget.onBoxSelected(-1);
+
+    // Only clear selection on empty taps in select mode so draw mode
+    // does not deselect after creating a box.
+    if (!widget.drawMode) {
+      widget.onBoxSelected(-1);
+    }
   }
 
   @override
@@ -206,10 +235,20 @@ class _BboxLabelingCanvasState extends State<BboxLabelingCanvas> {
                 Positioned.fill(
                   child: GestureDetector(
                     behavior: HitTestBehavior.translucent,
-                    onPanStart: (d) => _handlePanStart(d, imageRect),
-                    onPanUpdate: (d) => _handlePanUpdate(d, imageRect),
-                    onPanEnd: (_) => _handlePanEnd(),
-                    onTapUp: (d) => _handleTap(d, imageRect),
+                    // Pan only in draw mode — otherwise pan wins over tap on
+                    // touch devices and existing boxes cannot be selected.
+                    onPanStart: widget.drawMode && !widget.readOnly
+                        ? (d) => _handlePanStart(d, imageRect)
+                        : null,
+                    onPanUpdate: widget.drawMode && !widget.readOnly
+                        ? (d) => _handlePanUpdate(d, imageRect)
+                        : null,
+                    onPanEnd: widget.drawMode && !widget.readOnly
+                        ? (_) => _handlePanEnd()
+                        : null,
+                    onTapUp: widget.readOnly
+                        ? null
+                        : (d) => _handleTap(d, imageRect),
                   ),
                 ),
               ],

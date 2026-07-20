@@ -1,0 +1,81 @@
+{
+  "projectId": "6a587c93bc4b20e0509784c9",
+  "generatedAt": "2026-07-16T07:28:09.5458434Z",
+  "filters": {},
+  "labels": [
+    {
+      "Id": "6a58872019dc6852c39784e0",
+      "Name": "cat",
+      "YoloClassId": 0,
+      "CategoryId": null,
+      "AnnotationTypeId": null
+    },
+    {
+      "Id": "6a5887239e4264cdee9784e2",
+      "Name": "zaza",
+      "YoloClassId": 1,
+      "CategoryId": null,
+      "AnnotationTypeId": null
+    },
+    {
+      "Id": "6a588726c2305c455e9784e4",
+      "Name": "hand",
+      "YoloClassId": 2,
+      "CategoryId": null,
+      "AnnotationTypeId": null
+    }
+  ],
+  "tasks": [
+    {
+      "Id": "6a588685619768b1739784d8",
+      "DataItemId": "6a58867485257dac429784d6",
+      "AnnotatorId": "6a2a2f5f0ccd1dcf37d700e6",
+      "Status": "Completed",
+      "AssignedAt": "2026-07-16T07:22:38.6123442",
+      "CompletedAt": "2026-07-16T14:27:35.3960324"
+    }
+  ],
+  "reviews": [
+    {
+      "Id": "6a5887e7c426f521bd9784ec",
+      "AnnotationSetId": "6a58874d8824c61b6d9784e6",
+      "ReviewerId": "6a2a2f5ec5896e99e2d700e5",
+      "Result": "Approved",
+      "Score": 100,
+      "Comment": "awesome",
+      "ReviewedAt": "2026-07-16T14:27:35.3881745"
+    }
+  ],
+  "annotations": [
+    {
+      "Id": "6a58874d40d48293339784e8",
+      "AnnotationSetId": "6a58874d8824c61b6d9784e6",
+      "LabelId": "6a5887239e4264cdee9784e2",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:19,\u0022y\u0022:523,\u0022width\u0022:320,\u0022height\u0022:300}",
+      "Version": 1,
+      "CreatedAt": "2026-07-16T14:25:01.7682954",
+      "UpdatedAt": "2026-07-16T14:25:01.7682954"
+    },
+    {
+      "Id": "6a58874d79e6d8566c9784e7",
+      "AnnotationSetId": "6a58874d8824c61b6d9784e6",
+      "LabelId": "6a58872019dc6852c39784e0",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:300,\u0022y\u0022:46,\u0022width\u0022:434,\u0022height\u0022:488}",
+      "Version": 1,
+      "CreatedAt": "2026-07-16T14:25:01.7682954",
+      "UpdatedAt": "2026-07-16T14:25:01.7682954"
+    },
+    {
+      "Id": "6a58874dab0d87473a9784e9",
+      "AnnotationSetId": "6a58874d8824c61b6d9784e6",
+      "LabelId": "6a588726c2305c455e9784e4",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:36,\u0022y\u0022:138,\u0022width\u0022:377,\u0022height\u0022:251}",
+      "Version": 1,
+      "CreatedAt": "2026-07-16T14:25:01.7682954",
+      "UpdatedAt": "2026-07-16T14:25:01.7682954"
+    }
+  ]
+}
