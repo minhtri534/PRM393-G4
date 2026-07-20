@@ -174,10 +174,10 @@ public sealed class UsersService(AppDbContext dbContext, IPasswordHasher passwor
             return ServiceResponse<UserResponse>.Failure("Invalid role", ["Role not found"]);
         }
 
-        if (!actor.IsAdmin && IsPrivilegedRole(role.Name))
+        /*if (!actor.IsAdmin && IsPrivilegedRole(role.Name))
         {
             return ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["Managers can only assign Annotator or Reviewer roles"]);
-        }
+        }*/
 
         user.FullName = request.FullName.Trim();
         user.PhoneNumber = request.PhoneNumber;

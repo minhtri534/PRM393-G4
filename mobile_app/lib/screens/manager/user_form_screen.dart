@@ -273,8 +273,8 @@ class _UserFormScreenState extends State<UserFormScreen> {
                           const SizedBox(height: 24),
                           ActionButton(
                             label: widget.isEditing
-                                ? AppConstants.managerUserFormCreateUser
-                                : AppConstants.managerUserFormUpdateUser,
+                                ? AppConstants.managerUserFormUpdateUser
+                                : AppConstants.managerUserFormCreateUser,
                             variant: ActionButtonVariant.gradient,
                             isLoading: provider.isLoading,
                             onPressed: _submit,
