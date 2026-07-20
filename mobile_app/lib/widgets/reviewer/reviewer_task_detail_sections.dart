@@ -42,8 +42,9 @@ class ReviewerValidationChips extends StatelessWidget {
             label: consistency.isConsistent
                 ? 'Labels consistent'
                 : 'Label issues',
-            color:
-                consistency.isConsistent ? AppTheme.successColor : Colors.orange,
+            color: consistency.isConsistent
+                ? AppTheme.successColor
+                : Colors.orange,
           ),
       ],
     );
@@ -137,7 +138,9 @@ class ReviewerAnnotationPreview extends StatelessWidget {
       child: SizedBox(
         height: 360,
         child: provider.taskImageBytes == null
-            ? const Center(child: Text(WorkflowStrings.reviewerImageUnavailable))
+            ? const Center(
+                child: Text(WorkflowStrings.reviewerImageUnavailable),
+              )
             : BboxLabelingCanvas(
                 imageBytes: provider.taskImageBytes,
                 imageWidth: provider.imageWidth,

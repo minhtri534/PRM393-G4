@@ -11,11 +11,7 @@ class ReviewerTaskCard extends StatelessWidget {
   final ReviewerSubmittedTaskModel task;
   final VoidCallback onTap;
 
-  const ReviewerTaskCard({
-    super.key,
-    required this.task,
-    required this.onTap,
-  });
+  const ReviewerTaskCard({super.key, required this.task, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +40,8 @@ class ReviewerTaskCard extends StatelessWidget {
                 Text(
                   task.displayTitle,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -56,9 +52,9 @@ class ReviewerTaskCard extends StatelessWidget {
                 Text(
                   'Submitted: ${task.submittedAt.toLocal().toString().split('.').first}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.textHintColor,
-                        fontSize: 11,
-                      ),
+                    color: AppTheme.textHintColor,
+                    fontSize: 11,
+                  ),
                 ),
               ],
             ),

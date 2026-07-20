@@ -53,8 +53,8 @@ class AnnotatorTaskDetailContent extends StatelessWidget {
                   Text(
                     WorkflowStrings.annotatorTaskDescription,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -84,9 +84,9 @@ class AnnotatorTaskDetailContent extends StatelessWidget {
             children: [
               Text(
                 WorkflowStrings.annotatorGuidelines,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
               Container(
@@ -102,9 +102,9 @@ class AnnotatorTaskDetailContent extends StatelessWidget {
                       ? provider.guideline!
                       : WorkflowStrings.annotatorNoGuideline,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: const Color(0xFF1E3A8A),
-                        fontStyle: FontStyle.italic,
-                      ),
+                    color: const Color(0xFF1E3A8A),
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
               ),
             ],
@@ -117,9 +117,9 @@ class AnnotatorTaskDetailContent extends StatelessWidget {
             children: [
               Text(
                 WorkflowStrings.annotatorLabels,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
               LabelChipRow(labels: provider.taskLabels),
@@ -134,9 +134,9 @@ class AnnotatorTaskDetailContent extends StatelessWidget {
               Text(
                 WorkflowStrings.annotatorStatus,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: AppTheme.textHintColor,
-                      letterSpacing: 1.2,
-                    ),
+                  color: AppTheme.textHintColor,
+                  letterSpacing: 1.2,
+                ),
               ),
               const SizedBox(height: 8),
               DlssBadge.forTaskStatus(task.status),
@@ -189,7 +189,8 @@ class AnnotatorTaskActionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final canLabel = annotatorTaskCanLabel(task.status);
     final isAssigned = task.status == AppConstants.taskStatusAssigned;
-    final isSubmitted = task.status == AppConstants.taskStatusSubmitted ||
+    final isSubmitted =
+        task.status == AppConstants.taskStatusSubmitted ||
         task.status == AppConstants.taskStatusCompleted ||
         task.status == AppConstants.taskStatusApproved;
 

@@ -56,7 +56,8 @@ class _ProjectCreateScreenState extends State<ProjectCreateScreen> {
                     CustomTextField(
                       controller: _nameController,
                       label: AppConstants.managerProjectCreateProjectName,
-                      hintText: AppConstants.managerProjectCreateProjectNameHint,
+                      hintText:
+                          AppConstants.managerProjectCreateProjectNameHint,
                       prefixIcon: const Icon(Icons.folder_outlined),
                       validator: (v) => v == null || v.trim().isEmpty
                           ? AppConstants.managerProjectCreateProjectNameMissing

@@ -20,7 +20,7 @@ class AppConstants {
   static const String taskStatusRework = 'Rework';
   static const String taskStatusCompleted = 'Completed';
   static const String taskStatusCancelled = 'Cancelled';
-  
+
   // Error messages
   static const String errorNetworkConnection = 'Network connection error';
   static const String errorUnauthorized = 'Unauthorized access';
@@ -54,10 +54,13 @@ class AppConstants {
   static const String managerShellTabUsersNewUser = 'New User';
   //// Project List Screen
   static const String managerProjectListTitle = 'Project Management';
-  static const String managerProjectListSubtitle = 'View and manage data labeling projects';
-  static const String managerProjectListProjectLoadError = 'Failed to load projects';
+  static const String managerProjectListSubtitle =
+      'View and manage data labeling projects';
+  static const String managerProjectListProjectLoadError =
+      'Failed to load projects';
   static const String managerProjectListNoProjects = 'No projects yet';
-  static const String managerProjectListAlertProjectArchived = 'Project archived';
+  static const String managerProjectListAlertProjectArchived =
+      'Project archived';
   //// Project Detail Screen
   static const String managerProjectDetailTabOverview = 'Overview';
   static const String managerProjectDetailTabData = 'Data';
@@ -65,17 +68,23 @@ class AppConstants {
   static const String managerProjectDetailTabMonitor = 'Monitor';
   static const String managerProjectDetailTabExports = 'Exports';
   static const String managerProjectDetailTabSettings = 'Settings';
-  static const String managerProjectDetailErrorProjectNotFound = 'Project not found';
+  static const String managerProjectDetailErrorProjectNotFound =
+      'Project not found';
   static const String managerProjectDetailProjectChat = 'Project chat';
   ////// Overview Tab
   static const String managerProjectDetailOverviewGuidelines = 'Guideline';
-  static const String managerProjectDetailOverviewProjectGuidelines = 'Project Guideline';
-  static const String managerProjectDetailOverviewGuidelinesHint = 'Instructions for annotators';
-  static const String managerProjectDetailOverviewSaveGuideline = 'Save Guideline';
+  static const String managerProjectDetailOverviewProjectGuidelines =
+      'Project Guideline';
+  static const String managerProjectDetailOverviewGuidelinesHint =
+      'Instructions for annotators';
+  static const String managerProjectDetailOverviewSaveGuideline =
+      'Save Guideline';
   static const String managerProjectDetailOverviewTeamMembers = 'Team Members';
   static const String managerProjectDetailOverviewRemove = 'Remove';
-  static const String managerProjectDetailOverviewSearch = 'Search user to assign';
-  static const String managerProjectDetailOverviewSearchHint = 'Type name or email';
+  static const String managerProjectDetailOverviewSearch =
+      'Search user to assign';
+  static const String managerProjectDetailOverviewSearchHint =
+      'Type name or email';
   static const String managerProjectDetailOverviewAssign = 'Assign';
   ////// Data Tab
   static const String managerProjectDetailDataDataSet = 'Datasets';
@@ -99,7 +108,8 @@ class AppConstants {
   static const String managerProjectDetailTasksRework = 'Rework';
   static const String managerProjectDetailTasksTaskHistory = 'Task History';
   static const String managerProjectDetailTasksNoHistory = 'No history';
-  static const String managerProjectDetailTasksRequestRelabel = 'Request Relabel';
+  static const String managerProjectDetailTasksRequestRelabel =
+      'Request Relabel';
   static const String managerProjectDetailTasksRelabelReason = 'Reason';
   static const String managerProjectDetailTasksRelabelCancel = 'Cancel';
   static const String managerProjectDetailTasksRelabelSubmit = 'Submit';
@@ -112,27 +122,41 @@ class AppConstants {
   static const String managerProjectDetailTasksActionReassign = 'Reassign';
   ////// Monitoring Tab
   static const String managerProjectDetailMonitorCompletion = 'Completion';
-  static const String managerProjectDetailMonitorTasksCompleted = 'tasks completed';
+  static const String managerProjectDetailMonitorTasksCompleted =
+      'tasks completed';
   static const String managerProjectDetailMonitorReviewStats = 'Review Stats';
   static const String managerProjectDetailMonitorApproved = 'Approved';
   static const String managerProjectDetailMonitorRejected = 'Rejected';
-  static const String managerProjectDetailMonitorAnnotatorPerformance = 'Annotator Performance';
+  static const String managerProjectDetailMonitorAnnotatorPerformance =
+      'Annotator Performance';
   static const String managerProjectDetailMonitorAssigned = 'Assigned';
   static const String managerProjectDetailMonitorSubmitted = 'Submitted';
   static const String managerProjectDetailMonitorDone = 'Done';
   ////// Export Tab
-  static const String managerProjectDetailExportWebDownloadWarning = 'Download is not supported on web.';
-  static String managerProjectDetailExport(String id, String extension) => 'dlss-export-$id$extension';
-  static String managerProjectDetailExportOpenedExport(String fileType) => 'Opened $fileType export';
-  static const String managerProjectDetailExportOpenError = 'Cannot open export';
+  static const String managerProjectDetailExportWebDownloadWarning =
+      'Download is not supported on web.';
+  static String managerProjectDetailExport(String id, String extension) =>
+      'dlss-export-$id$extension';
+  static String managerProjectDetailExportOpenedExport(String fileType) =>
+      'Opened $fileType export';
+  static const String managerProjectDetailExportOpenError =
+      'Cannot open export';
   static const String managerProjectDetailExportReady = 'Ready to export';
   static const String managerProjectDetailExportNotReady = 'Not ready';
-  static const String managerProjectDetailExportAllReviewed = 'All submitted annotation sets have been reviewed.';
-  static String managerProjectDetailExportSubmittedReviewedCount(int submitted, int reviewed) => 'Submitted: $submitted • Reviewed: $reviewed. ';
-  static const String managerProjectDetailExportExportWarning = 'Export still works, but annotations/reviews may be empty until tasks are reviewed.';
-  static const String managerProjectDetailExportInfo = 'Export project labeling data as a JSON file (labels, tasks, approved annotations, reviews).';
-  static const String managerProjectDetailExportCreateExport = 'Create JSON Export';
-  static const String managerProjectDetailExportExportCreated = 'Export created. Tap download to open the JSON file.';
+  static const String managerProjectDetailExportAllReviewed =
+      'All submitted annotation sets have been reviewed.';
+  static String managerProjectDetailExportSubmittedReviewedCount(
+    int submitted,
+    int reviewed,
+  ) => 'Submitted: $submitted • Reviewed: $reviewed. ';
+  static const String managerProjectDetailExportExportWarning =
+      'Export still works, but annotations/reviews may be empty until tasks are reviewed.';
+  static const String managerProjectDetailExportInfo =
+      'Export project labeling data as a JSON file (labels, tasks, approved annotations, reviews).';
+  static const String managerProjectDetailExportCreateExport =
+      'Create JSON Export';
+  static const String managerProjectDetailExportExportCreated =
+      'Export created. Tap download to open the JSON file.';
   static const String managerProjectDetailExportHistory = 'Export History';
   static const String managerProjectDetailExportNoExports = 'No exports yet';
   static const String managerProjectDetailExportDownload = 'Download JSON';
@@ -144,32 +168,42 @@ class AppConstants {
   static const String managerProjectDetailSettingsStatusPaused = 'Paused';
   static const String managerProjectDetailSettingsStatusArchived = 'Archived';
   static const String managerProjectDetailSettingsSave = 'Save Project';
-  static const String managerProjectDetailSettingsDeleteProject = 'Delete Project';
-  static const String managerProjectDetailSettingsDeleteConfirm = 'Delete Project?';
-  static const String managerProjectDetailSettingsDeleteWarning = 'This action cannot be undone.';
+  static const String managerProjectDetailSettingsDeleteProject =
+      'Delete Project';
+  static const String managerProjectDetailSettingsDeleteConfirm =
+      'Delete Project?';
+  static const String managerProjectDetailSettingsDeleteWarning =
+      'This action cannot be undone.';
   static const String managerProjectDetailSettingsDeleteCancel = 'Cancel';
   static const String managerProjectDetailSettingsDelete = 'Delete';
   //// Project Create Screen
   static const String managerProjectCreateCreateProjectBar = 'Create Project';
   static const String managerProjectCreateNewProjectTitle = 'New Project';
-  static const String managerProjectCreateNewProjectSubtitle = 'Set up a data labeling project for your team';
+  static const String managerProjectCreateNewProjectSubtitle =
+      'Set up a data labeling project for your team';
   static const String managerProjectCreateProjectName = 'Project Name';
-  static const String managerProjectCreateProjectNameHint = 'Enter project name';
-  static const String managerProjectCreateProjectNameMissing = 'Name is required';
+  static const String managerProjectCreateProjectNameHint =
+      'Enter project name';
+  static const String managerProjectCreateProjectNameMissing =
+      'Name is required';
   static const String managerProjectCreateGuideline = 'Guideline (optional)';
-  static const String managerProjectCreateGuidelineHint = 'Labeling instructions for annotators';
+  static const String managerProjectCreateGuidelineHint =
+      'Labeling instructions for annotators';
   static const String managerProjectCreateCreateProject = 'Create Project';
   //// Dataset List Screen
   static const String managerDatasetListDatasetsTitle = 'Datasets';
-  static const String managerDatasetListDatasetsSubtitle = 'Browse and manage uploaded datasets';
+  static const String managerDatasetListDatasetsSubtitle =
+      'Browse and manage uploaded datasets';
   static const String managerDatasetListSearch = 'Search datasets...';
   static const String managerDatasetListLoadError = 'Failed to load datasets';
   static const String managerDatasetListNoDatasets = 'No datasets found';
   //// Dataset Detail Screen
   static const String managerDatasetDetailDatasetNotFound = 'Dataset not found';
-  static const String managerDatasetDetailDatasetDetailsSubtitle = 'Dataset details';
+  static const String managerDatasetDetailDatasetDetailsSubtitle =
+      'Dataset details';
   static const String managerDatasetDetailDatasetProject = 'Project';
-  static String managerDatasetDetailItem(int numberOfItems) => '$numberOfItems items' ;
+  static String managerDatasetDetailItem(int numberOfItems) =>
+      '$numberOfItems items';
   static const String managerDatasetDetailActive = 'Active';
   static const String managerDatasetDetailSettings = 'Dataset settings';
   static const String managerDatasetDetailName = 'Dataset Name';
@@ -178,49 +212,63 @@ class AppConstants {
   static const String managerDatasetDetailAddFiles = 'Add More Files';
   static const String managerDatasetDetailDelete = 'Delete Dataset';
   //// Dataset Upload Screen
-  static const String managerDatasetUploadMissingInputError = 'Select project, name, and files';
-  static const String managerDatasetUploadFileReadError = 'Could not read selected files';
-  static const String managerDatasetUploadUploadSuccess = 'Dataset uploaded successfully';
+  static const String managerDatasetUploadMissingInputError =
+      'Select project, name, and files';
+  static const String managerDatasetUploadFileReadError =
+      'Could not read selected files';
+  static const String managerDatasetUploadUploadSuccess =
+      'Dataset uploaded successfully';
   static const String managerDatasetUploadUploadDataset = 'Upload Dataset';
-  static const String managerDatasetUploadUploadDatasetSubtitle = 'Add image files to a project dataset';
+  static const String managerDatasetUploadUploadDatasetSubtitle =
+      'Add image files to a project dataset';
   static const String managerDatasetUploadProject = 'Project';
   static const String managerDatasetUploadName = 'Dataset Name';
-  static const String managerDatasetUploadNameHint = 'e.g. Street Images Batch 1';
+  static const String managerDatasetUploadNameHint =
+      'e.g. Street Images Batch 1';
   static const String managerDatasetUploadNoFilesSelected = 'No files selected';
-  static String managerDatasetUploadFilesSelected(int numberOfFiles) => '$numberOfFiles files(s) selected';
+  static String managerDatasetUploadFilesSelected(int numberOfFiles) =>
+      '$numberOfFiles files(s) selected';
   static const String managerDatasetUploadSelectFiles = 'Select image files';
   static const String managerDatasetUploadChangeSelection = 'Change selection';
   static const String managerDatasetUploadUpload = 'Upload';
   //// Task Create Screen
   static const String managerTaskCreateCreateTask = 'Create Tasks';
   static const String managerTaskCreateAssignTasks = 'Assign Tasks';
-  static const String managerTaskCreateAssignTasksSubtitle = 'Create labeling tasks for annotators';
+  static const String managerTaskCreateAssignTasksSubtitle =
+      'Create labeling tasks for annotators';
   static const String managerTaskCreateAssignBulk = 'Bulk by Dataset';
   static const String managerTaskCreateAssignSingle = 'Single Task';
   static const String managerTaskCreateProject = 'Project';
   static const String managerTaskCreateDataset = 'Dataset';
-  static String managerTaskCreateItems(String id, int total) => '$id ($total items)' ;
+  static String managerTaskCreateItems(String id, int total) =>
+      '$id ($total items)';
   static const String managerTaskCreateIDLabel = 'Data Item ID';
   static const String managerTaskCreateIDHint = 'UUID of data item';
   static const String managerTaskCreateAnnotator = 'Annotator';
   static const String managerTaskCreateSingleCreateTask = 'Create Task';
   static const String managerTaskCreateBulkCreateTask = 'Bulk Create Tasks';
-  static const String managerTaskCreateAssignMissingDataError = 'Select project and annotator';
-  static const String managerTaskCreateAssignMissingIDError = 'Enter data item ID';
+  static const String managerTaskCreateAssignMissingDataError =
+      'Select project and annotator';
+  static const String managerTaskCreateAssignMissingIDError =
+      'Enter data item ID';
   static const String managerTaskCreateSelectDataset = 'Select dataset';
   static const String managerTaskCreateTaskCreateSuccess = 'Tasks created';
   //// User List Screen
   static const String managerUserListDeleteUser = 'Delete user';
-  static String managerUserListDeleteWarning(String fullName, String email) => 'Delete $fullName ($email)? This cannot be undone.';
+  static String managerUserListDeleteWarning(String fullName, String email) =>
+      'Delete $fullName ($email)? This cannot be undone.';
   static const String managerUserListCancel = 'Cancel';
   static const String managerUserListDelete = 'Delete';
   static String managerUserListDeleteConfirm(String email) => 'Deleted $email';
   static const String managerUserListUserManagement = 'User Management';
-  static const String managerUserListUserManagementSubtitle = 'Create and remove team accounts';
-  static const String managerUserListSearchHint = 'Search by name, email, or role';
+  static const String managerUserListUserManagementSubtitle =
+      'Create and remove team accounts';
+  static const String managerUserListSearchHint =
+      'Search by name, email, or role';
   static const String managerUserListLoadUsersError = 'Failed to load users';
   static const String managerUserListNoExistingUsers = 'No users yet';
-  static const String managerUserListNoUsersFound = 'No users match your search';
+  static const String managerUserListNoUsersFound =
+      'No users match your search';
   static const String managerUserListUnknownRole = 'Unknown role';
   static const String managerUserListMissingName = '?';
   //// User Form Screen
@@ -231,9 +279,12 @@ class AppConstants {
   static const String managerUserFormMissingRoleAlert = 'Please select a role';
   static const String managerUserFormUserDetails = 'User Details';
   static const String managerUserFormCreateUser = 'Create User';
+  static const String managerUserFormUpdateUser = 'Update User';
   static const String managerUserFormUserNotFound = 'User not found';
-  static const String managerUserFormViewAccount = 'View account information (read-only)';
-  static const String managerUserFormCreateAccount = 'Create an Annotator or Reviewer account';
+  static const String managerUserFormViewAccount =
+      'View account information (read-only)';
+  static const String managerUserFormCreateAccount =
+      'Create an Annotator or Reviewer account';
   static const String managerUserFormName = 'Full Name';
   static const String managerUserFormNameHint = 'Enter full name';
   static const String managerUserFormMissingName = 'Name is required';
@@ -242,7 +293,8 @@ class AppConstants {
   static const String managerUserFormPassword = 'Password';
   static const String managerUserFormPasswordHint = 'At least 8 characters';
   static const String managerUserFormMissingPassword = 'Password is required';
-  static const String managerUserFormInvalidPassword = 'Password must be at least 8 characters';
+  static const String managerUserFormInvalidPassword =
+      'Password must be at least 8 characters';
   static const String managerUserFormPhone = 'Phone (optional)';
   static const String managerUserFormPhoneHint = '+84 ...';
   static const String managerUserFormRole = 'Role';

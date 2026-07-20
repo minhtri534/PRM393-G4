@@ -63,9 +63,11 @@ class _UserListScreenState extends State<UserListScreen> {
     if (!mounted) return;
 
     if (ok) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(AppConstants.managerUserListDeleteConfirm(user.email))));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppConstants.managerUserListDeleteConfirm(user.email)),
+        ),
+      );
     } else if (provider.errorMessage != null) {
       ScaffoldMessenger.of(
         context,
@@ -118,7 +120,8 @@ class _UserListScreenState extends State<UserListScreen> {
 
     if (provider.state == ManagerLoadState.error && provider.users.isEmpty) {
       return error_widget.ErrorWidget(
-        message: provider.errorMessage ?? AppConstants.managerUserListLoadUsersError,
+        message:
+            provider.errorMessage ?? AppConstants.managerUserListLoadUsersError,
         onRetry: provider.fetchUsers,
       );
     }
@@ -220,7 +223,9 @@ class _UserListTile extends StatelessWidget {
                       runSpacing: 4,
                       children: [
                         _Badge(
-                          label: user.roleName ?? AppConstants.managerUserListUnknownRole,
+                          label:
+                              user.roleName ??
+                              AppConstants.managerUserListUnknownRole,
                           color: AppTheme.primaryColor,
                         ),
                       ],

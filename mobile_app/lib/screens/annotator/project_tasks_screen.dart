@@ -34,7 +34,9 @@ class _AnnotatorProjectTasksScreenState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AnnotatorProvider>().fetchTasks(projectId: widget.project.id);
+      context.read<AnnotatorProvider>().fetchTasks(
+        projectId: widget.project.id,
+      );
     });
   }
 
@@ -46,10 +48,9 @@ class _AnnotatorProjectTasksScreenState
         actions: [
           IconButton(
             tooltip: 'Project chat',
-            onPressed: () => Navigator.of(context).pushNamed(
-              AppRoutes.annotatorChatRoom,
-              arguments: widget.project,
-            ),
+            onPressed: () => Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.annotatorChatRoom, arguments: widget.project),
             icon: const Icon(Icons.chat_bubble_outline),
           ),
         ],
@@ -154,10 +155,9 @@ class _ProjectTaskListBody extends StatelessWidget {
           final task = filteredTasks[index];
           return TaskCard(
             task: task,
-            onTap: () => Navigator.of(context).pushNamed(
-              AppRoutes.annotatorTaskDetail,
-              arguments: task.id,
-            ),
+            onTap: () => Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.annotatorTaskDetail, arguments: task.id),
             onStart: () => _startLabeling(context, task),
           );
         },

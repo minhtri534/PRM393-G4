@@ -44,10 +44,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
     final navigator = Navigator.of(context);
     final result = await navigator.pushNamed(
       AppRoutes.annotatorLabeling,
-      arguments: {
-        'taskId': widget.taskId,
-        'readOnly': readOnly,
-      },
+      arguments: {'taskId': widget.taskId, 'readOnly': readOnly},
     );
     if (!mounted) return;
 
@@ -111,7 +108,9 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
     messenger.showSnackBar(
       SnackBar(
         content: Text(
-          ok ? WorkflowStrings.annotatorTaskRejected : provider.errorMessage ?? 'Failed',
+          ok
+              ? WorkflowStrings.annotatorTaskRejected
+              : provider.errorMessage ?? 'Failed',
         ),
       ),
     );
@@ -186,7 +185,8 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
           final imageName = provider.taskItems.isNotEmpty
               ? provider.taskItems.first.fileName
               : TaskDisplayUtils.fileNameFromObjectKey(task.dataItemObjectKey);
-          final showActions = task.status == AppConstants.taskStatusAssigned ||
+          final showActions =
+              task.status == AppConstants.taskStatusAssigned ||
               annotatorTaskCanLabel(task.status) ||
               task.status == AppConstants.taskStatusSubmitted ||
               task.status == AppConstants.taskStatusCompleted;

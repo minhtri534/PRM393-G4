@@ -82,7 +82,8 @@ class _DatasetListScreenState extends State<DatasetListScreen> {
     if (provider.state == ManagerLoadState.error &&
         provider.allDatasets.isEmpty) {
       return error_widget.ErrorWidget(
-        message: provider.errorMessage ?? AppConstants.managerDatasetListLoadError,
+        message:
+            provider.errorMessage ?? AppConstants.managerDatasetListLoadError,
         onRetry: provider.fetchAllDatasets,
       );
     }

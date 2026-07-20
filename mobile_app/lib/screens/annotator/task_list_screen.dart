@@ -129,10 +129,9 @@ class _TaskListBody extends StatelessWidget {
           final task = filteredTasks[index];
           return TaskCard(
             task: task,
-            onTap: () => Navigator.of(context).pushNamed(
-              AppRoutes.annotatorTaskDetail,
-              arguments: task.id,
-            ),
+            onTap: () => Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.annotatorTaskDetail, arguments: task.id),
             onStart: () => _startLabeling(context, task),
           );
         },

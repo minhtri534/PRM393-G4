@@ -57,7 +57,9 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
 
     if (projectId == null || name.isEmpty || _files.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppConstants.managerDatasetUploadMissingInputError)),
+        const SnackBar(
+          content: Text(AppConstants.managerDatasetUploadMissingInputError),
+        ),
       );
       return;
     }
@@ -95,7 +97,9 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
     if (multipartFiles.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(AppConstants.managerDatasetUploadFileReadError)),
+          const SnackBar(
+            content: Text(AppConstants.managerDatasetUploadFileReadError),
+          ),
         );
       }
       return;
@@ -108,7 +112,9 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
 
     if (uploadOk && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppConstants.managerDatasetUploadUploadSuccess)),
+        const SnackBar(
+          content: Text(AppConstants.managerDatasetUploadUploadSuccess),
+        ),
       );
       Navigator.pop(context);
     } else if (mounted && provider.errorMessage != null) {
@@ -194,15 +200,19 @@ class _DatasetUploadScreenState extends State<DatasetUploadScreen> {
                             const SizedBox(height: 8),
                             Text(
                               _files.isEmpty
-                                  ? AppConstants.managerDatasetUploadNoFilesSelected
-                                  : AppConstants.managerDatasetUploadFilesSelected(_files.length),
+                                  ? AppConstants
+                                        .managerDatasetUploadNoFilesSelected
+                                  : AppConstants.managerDatasetUploadFilesSelected(
+                                      _files.length,
+                                    ),
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             const SizedBox(height: 12),
                             ActionButton(
                               label: _files.isEmpty
                                   ? AppConstants.managerDatasetUploadSelectFiles
-                                  : AppConstants.managerDatasetUploadChangeSelection,
+                                  : AppConstants
+                                        .managerDatasetUploadChangeSelection,
                               variant: ActionButtonVariant.outline,
                               onPressed: _pickFiles,
                             ),

@@ -25,8 +25,8 @@ class DlssEmptyState extends StatelessWidget {
           Text(
             message,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondaryColor,
-                ),
+              color: AppTheme.textSecondaryColor,
+            ),
           ),
           if (hint != null) ...[
             const SizedBox(height: 6),

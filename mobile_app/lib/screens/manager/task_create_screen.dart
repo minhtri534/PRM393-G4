@@ -89,11 +89,15 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                         segments: const [
                           ButtonSegment(
                             value: false,
-                            label: Text(AppConstants.managerTaskCreateAssignBulk),
+                            label: Text(
+                              AppConstants.managerTaskCreateAssignBulk,
+                            ),
                           ),
                           ButtonSegment(
                             value: true,
-                            label: Text(AppConstants.managerTaskCreateAssignSingle),
+                            label: Text(
+                              AppConstants.managerTaskCreateAssignSingle,
+                            ),
                           ),
                         ],
                         selected: {_singleTaskMode},
@@ -136,7 +140,10 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                                 (DatasetModel d) => DropdownMenuItem(
                                   value: d.id,
                                   child: Text(
-                                    AppConstants.managerTaskCreateItems(d.name, d.totalItems ?? 0),
+                                    AppConstants.managerTaskCreateItems(
+                                      d.name,
+                                      d.totalItems ?? 0,
+                                    ),
                                   ),
                                 ),
                               )
@@ -183,7 +190,10 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                           if (_projectId == null || _annotatorId == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text(AppConstants.managerTaskCreateAssignMissingDataError),
+                                content: Text(
+                                  AppConstants
+                                      .managerTaskCreateAssignMissingDataError,
+                                ),
                               ),
                             );
                             return;
@@ -196,7 +206,10 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                             if (dataItemId.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text(AppConstants.managerTaskCreateAssignMissingIDError),
+                                  content: Text(
+                                    AppConstants
+                                        .managerTaskCreateAssignMissingIDError,
+                                  ),
                                 ),
                               );
                               return;
@@ -209,7 +222,11 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                           } else {
                             if (_datasetId == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text(AppConstants.managerTaskCreateSelectDataset)),
+                                const SnackBar(
+                                  content: Text(
+                                    AppConstants.managerTaskCreateSelectDataset,
+                                  ),
+                                ),
                               );
                               return;
                             }
@@ -222,7 +239,12 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
 
                           if (ok && context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text(AppConstants.managerTaskCreateTaskCreateSuccess)),
+                              const SnackBar(
+                                content: Text(
+                                  AppConstants
+                                      .managerTaskCreateTaskCreateSuccess,
+                                ),
+                              ),
                             );
                             Navigator.pop(context);
                           }

@@ -19,11 +19,9 @@ class AuthRepository {
   final DioClient _dioClient;
   final AppStorage _storage;
 
-  AuthRepository({
-    DioClient? dioClient,
-    AppStorage? storage,
-  })  : _dioClient = dioClient ?? DioClient(),
-        _storage = storage ?? AppStorage.instance;
+  AuthRepository({DioClient? dioClient, AppStorage? storage})
+    : _dioClient = dioClient ?? DioClient(),
+      _storage = storage ?? AppStorage.instance;
 
   /// Login with email and password
   Future<AuthResponse> login(LoginRequest request) async {
@@ -40,8 +38,7 @@ class AuthRepository {
 
       if (!serviceResponse.isSuccess) {
         throw ApiError(
-          message: serviceResponse.message ??
-              AppConstants.errorGeneric,
+          message: serviceResponse.message ?? AppConstants.errorGeneric,
           code: 'LOGIN_FAILED',
         );
       }
@@ -210,30 +207,20 @@ class AuthRepository {
 
       await _dioClient.post(
         Environment.logoutEndpoint,
-        data: {
-          'refreshToken': refreshToken,
-        },
+        data: {'refreshToken': refreshToken},
       );
 
       await _dioClient.clearAuthToken();
 
-      await _storage.delete(
-        key: AppConstants.refreshTokenKey,
-      );
+      await _storage.delete(key: AppConstants.refreshTokenKey);
 
-      await _storage.delete(
-        key: AppConstants.userProfileKey,
-      );
+      await _storage.delete(key: AppConstants.userProfileKey);
     } catch (e) {
       await _dioClient.clearAuthToken();
 
-      await _storage.delete(
-        key: AppConstants.refreshTokenKey,
-      );
+      await _storage.delete(key: AppConstants.refreshTokenKey);
 
-      await _storage.delete(
-        key: AppConstants.userProfileKey,
-      );
+      await _storage.delete(key: AppConstants.userProfileKey);
     }
   }
 
@@ -247,9 +234,7 @@ class AuthRepository {
     final raw = await _storage.read(key: AppConstants.userProfileKey);
     if (raw == null || raw.isEmpty) return null;
     try {
-      return UserProfile.fromJson(
-        jsonDecode(raw) as Map<String, dynamic>,
-      );
+      return UserProfile.fromJson(jsonDecode(raw) as Map<String, dynamic>);
     } catch (_) {
       return null;
     }

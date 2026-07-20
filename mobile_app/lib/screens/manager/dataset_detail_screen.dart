@@ -88,7 +88,9 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
           return Scaffold(
             backgroundColor: AppTheme.surfaceSoftColor,
             appBar: AppBar(elevation: 0, backgroundColor: Colors.transparent),
-            body: const Center(child: Text(AppConstants.managerDatasetDetailDatasetNotFound)),
+            body: const Center(
+              child: Text(AppConstants.managerDatasetDetailDatasetNotFound),
+            ),
           );
         }
 
@@ -106,7 +108,9 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
             children: [
               DlssPageHeader(
                 title: dataset.name,
-                subtitle: dataset.projectName ?? AppConstants.managerDatasetDetailDatasetDetailsSubtitle,
+                subtitle:
+                    dataset.projectName ??
+                    AppConstants.managerDatasetDetailDatasetDetailsSubtitle,
               ),
               const SizedBox(height: 16),
               DlssCard(
@@ -131,11 +135,14 @@ class _DatasetDetailScreenState extends State<DatasetDetailScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            dataset.projectName ?? AppConstants.managerDatasetDetailDatasetProject,
+                            dataset.projectName ??
+                                AppConstants.managerDatasetDetailDatasetProject,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           Text(
-                            AppConstants.managerDatasetDetailItem(dataset.totalItems ?? 0),
+                            AppConstants.managerDatasetDetailItem(
+                              dataset.totalItems ?? 0,
+                            ),
                             style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),

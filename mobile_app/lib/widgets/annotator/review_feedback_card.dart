@@ -18,12 +18,12 @@ class ReviewFeedbackCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final titleStyle = compact
-        ? Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            )
-        : Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            );
+        ? Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)
+        : Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold);
 
     return DlssCard(
       padding: compact ? const EdgeInsets.all(14) : null,
@@ -34,10 +34,7 @@ class ReviewFeedbackCard extends StatelessWidget {
             children: [
               const Icon(Icons.feedback_outlined, color: AppTheme.warningColor),
               const SizedBox(width: 8),
-              Text(
-                WorkflowStrings.annotatorReviewFeedback,
-                style: titleStyle,
-              ),
+              Text(WorkflowStrings.annotatorReviewFeedback, style: titleStyle),
             ],
           ),
           SizedBox(height: compact ? 8 : 12),

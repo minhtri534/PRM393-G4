@@ -59,7 +59,9 @@ class _LabelingScreenState extends State<LabelingScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          ok ? WorkflowStrings.annotatorDraftSaved : provider.errorMessage ?? 'Save failed',
+          ok
+              ? WorkflowStrings.annotatorDraftSaved
+              : provider.errorMessage ?? 'Save failed',
         ),
       ),
     );

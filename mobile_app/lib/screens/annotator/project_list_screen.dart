@@ -20,7 +20,8 @@ class AnnotatorProjectListScreen extends StatefulWidget {
       _AnnotatorProjectListScreenState();
 }
 
-class _AnnotatorProjectListScreenState extends State<AnnotatorProjectListScreen> {
+class _AnnotatorProjectListScreenState
+    extends State<AnnotatorProjectListScreen> {
   @override
   void initState() {
     super.initState();
@@ -90,10 +91,9 @@ class _AnnotatorProjectListScreenState extends State<AnnotatorProjectListScreen>
           final project = provider.projects[index];
           return AnnotatorProjectCard(
             project: project,
-            onTap: () => Navigator.of(context).pushNamed(
-              AppRoutes.annotatorProjectTasks,
-              arguments: project,
-            ),
+            onTap: () => Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.annotatorProjectTasks, arguments: project),
           );
         },
       ),

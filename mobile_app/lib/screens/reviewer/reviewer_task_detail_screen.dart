@@ -146,9 +146,7 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                             children: [
                               Text(
                                 WorkflowStrings.reviewerProjectGuideline,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleSmall
+                                style: Theme.of(context).textTheme.titleSmall
                                     ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
@@ -165,9 +163,7 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                           children: [
                             Text(
                               '${WorkflowStrings.reviewerAnnotations} (${data.annotations.length})',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall
+                              style: Theme.of(context).textTheme.titleSmall
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 8),
@@ -192,9 +188,7 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                             children: [
                               Text(
                                 WorkflowStrings.reviewerErrorTypes,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleSmall
+                                style: Theme.of(context).textTheme.titleSmall
                                     ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
@@ -202,8 +196,8 @@ class _ReviewerTaskDetailScreenState extends State<ReviewerTaskDetailScreen> {
                                 spacing: 8,
                                 runSpacing: 8,
                                 children: provider.errorTypes.map((type) {
-                                  final selected =
-                                      _selectedErrorTypeIds.contains(type.id);
+                                  final selected = _selectedErrorTypeIds
+                                      .contains(type.id);
                                   return FilterChip(
                                     label: Text(type.name),
                                     selected: selected,

@@ -11,6 +11,8 @@ class RoleModel {
 
   bool get isAssignableByManager {
     final normalized = name.toLowerCase();
-    return normalized == 'annotator' || normalized == 'reviewer';
+    return normalized == 'annotator' ||
+        normalized == 'reviewer' ||
+        normalized == 'manager';
   }
 }

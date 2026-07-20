@@ -8,7 +8,8 @@ import '../../models/common/api_error.dart';
 /// HTTP client using Dio for all API communications.
 /// Singleton so auth token is shared across repositories (important on Flutter web).
 class DioClient {
-  DioClient._({AppStorage? storage}) : _storage = storage ?? AppStorage.instance {
+  DioClient._({AppStorage? storage})
+    : _storage = storage ?? AppStorage.instance {
     _initializeDio();
   }
 
@@ -57,15 +58,14 @@ class DioClient {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    Logger.debug(
-      '🔗 Request: ${options.method} ${options.uri}',
-    );
+    Logger.debug('🔗 Request: ${options.method} ${options.uri}');
 
     if (options.data is FormData) {
       options.headers.remove('Content-Type');
     }
 
-    final token = _cachedToken ?? await _storage.read(key: AppConstants.tokenKey);
+    final token =
+        _cachedToken ?? await _storage.read(key: AppConstants.tokenKey);
     if (token != null && token.isNotEmpty) {
       _cachedToken = token;
       options.headers['Authorization'] = 'Bearer $token';
@@ -223,12 +223,14 @@ class DioClient {
 
       switch (statusCode) {
         case 400:
-          message = serverMessage ??
+          message =
+              serverMessage ??
               serverErrors?.first ??
               'Invalid request. Please check your input.';
           break;
         case 401:
-          message = serverMessage ??
+          message =
+              serverMessage ??
               serverErrors?.first ??
               AppConstants.errorUnauthorized;
           break;
@@ -251,11 +253,7 @@ class DioClient {
       code = 'NETWORK_ERROR';
     }
 
-    return ApiError(
-      message: message,
-      code: code,
-      originalError: error,
-    );
+    return ApiError(message: message, code: code, originalError: error);
   }
 
   Future<void> setAuthToken(String token) async {

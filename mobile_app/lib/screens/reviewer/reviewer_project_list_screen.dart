@@ -93,10 +93,9 @@ class _ReviewerProjectListScreenState extends State<ReviewerProjectListScreen> {
             showDoneStat: false,
             todoBadgeLabel: '${project.todoTaskCount} pending',
             primaryStatLabel: '${project.todoTaskCount} pending review',
-            onTap: () => Navigator.of(context).pushNamed(
-              AppRoutes.reviewerProjectTasks,
-              arguments: project,
-            ),
+            onTap: () => Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.reviewerProjectTasks, arguments: project),
           );
         },
       ),

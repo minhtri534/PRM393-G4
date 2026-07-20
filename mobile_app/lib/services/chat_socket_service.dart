@@ -17,7 +17,7 @@ class ChatSocketService {
   String? _connectedToken;
 
   ChatSocketService({AppStorage? storage})
-      : _storage = storage ?? AppStorage.instance;
+    : _storage = storage ?? AppStorage.instance;
 
   bool get isConnected => _socket?.connected ?? false;
 
@@ -96,13 +96,17 @@ class ChatSocketService {
     if (socket == null || !socket.connected) return false;
 
     final completer = Completer<bool>();
-    socket.emitWithAck('join:project', {'projectId': projectId}, ack: (data) {
-      if (data is Map && data['ok'] == true) {
-        if (!completer.isCompleted) completer.complete(true);
-      } else {
-        if (!completer.isCompleted) completer.complete(false);
-      }
-    });
+    socket.emitWithAck(
+      'join:project',
+      {'projectId': projectId},
+      ack: (data) {
+        if (data is Map && data['ok'] == true) {
+          if (!completer.isCompleted) completer.complete(true);
+        } else {
+          if (!completer.isCompleted) completer.complete(false);
+        }
+      },
+    );
 
     return completer.future.timeout(
       const Duration(seconds: 8),

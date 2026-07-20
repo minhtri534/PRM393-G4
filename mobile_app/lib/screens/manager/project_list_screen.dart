@@ -55,7 +55,9 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
 
     if (provider.state == ManagerLoadState.error && provider.projects.isEmpty) {
       return error_widget.ErrorWidget(
-        message: provider.errorMessage ?? AppConstants.managerProjectListProjectLoadError,
+        message:
+            provider.errorMessage ??
+            AppConstants.managerProjectListProjectLoadError,
         onRetry: provider.fetchProjects,
       );
     }
@@ -89,7 +91,11 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                     final ok = await provider.archiveProject(project.id);
                     if (ok && context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text(AppConstants.managerProjectListAlertProjectArchived)),
+                        const SnackBar(
+                          content: Text(
+                            AppConstants.managerProjectListAlertProjectArchived,
+                          ),
+                        ),
                       );
                     }
                   },

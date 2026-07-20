@@ -23,14 +23,15 @@ class ReviewerProjectTasksScreen extends StatefulWidget {
       _ReviewerProjectTasksScreenState();
 }
 
-class _ReviewerProjectTasksScreenState extends State<ReviewerProjectTasksScreen> {
+class _ReviewerProjectTasksScreenState
+    extends State<ReviewerProjectTasksScreen> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context
-          .read<ReviewerProvider>()
-          .fetchSubmittedTasks(projectId: widget.project.id);
+      context.read<ReviewerProvider>().fetchSubmittedTasks(
+        projectId: widget.project.id,
+      );
     });
   }
 
@@ -42,10 +43,9 @@ class _ReviewerProjectTasksScreenState extends State<ReviewerProjectTasksScreen>
         actions: [
           IconButton(
             tooltip: 'Project chat',
-            onPressed: () => Navigator.of(context).pushNamed(
-              AppRoutes.reviewerChatRoom,
-              arguments: widget.project,
-            ),
+            onPressed: () => Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.reviewerChatRoom, arguments: widget.project),
             icon: const Icon(Icons.chat_bubble_outline),
           ),
         ],
@@ -88,10 +88,7 @@ class _TaskListBody extends StatelessWidget {
   final ReviewerProvider provider;
   final String projectId;
 
-  const _TaskListBody({
-    required this.provider,
-    required this.projectId,
-  });
+  const _TaskListBody({required this.provider, required this.projectId});
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +96,8 @@ class _TaskListBody extends StatelessWidget {
       return const LoadingSkeleton(itemCount: 4);
     }
 
-    if (provider.listState == ReviewerLoadState.error && provider.tasks.isEmpty) {
+    if (provider.listState == ReviewerLoadState.error &&
+        provider.tasks.isEmpty) {
       return error_widget.ErrorWidget(
         message: provider.errorMessage ?? AppConstants.errorGeneric,
         icon: Icons.error_outline,
@@ -132,12 +130,13 @@ class _TaskListBody extends StatelessWidget {
   }
 
   Future<void> _openTaskDetail(BuildContext context, String taskId) async {
-    final result = await Navigator.of(context).pushNamed(
-      AppRoutes.reviewerTaskDetail,
-      arguments: taskId,
-    );
+    final result = await Navigator.of(
+      context,
+    ).pushNamed(AppRoutes.reviewerTaskDetail, arguments: taskId);
     if (result == true && context.mounted) {
-      context.read<ReviewerProvider>().fetchSubmittedTasks(projectId: projectId);
+      context.read<ReviewerProvider>().fetchSubmittedTasks(
+        projectId: projectId,
+      );
     }
   }
 }
