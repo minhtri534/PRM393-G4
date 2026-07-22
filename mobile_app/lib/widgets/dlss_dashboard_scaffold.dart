@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../core/constants/app_constants.dart';
 import '../core/theme/app_theme.dart';
 import '../providers/auth_provider.dart';
 import '../routes/app_routes.dart';
@@ -107,63 +108,70 @@ class _DlssDashboardScaffoldState extends State<DlssDashboardScaffold> {
                     colors: [AppTheme.primaryColor, AppTheme.tertiaryColor],
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(12),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.of(context).pushNamed(AppRoutes.profile);
+                  },
+                  borderRadius: BorderRadius.circular(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(widget.roleIcon, color: Colors.white),
                           ),
-                          child: Icon(widget.roleIcon, color: Colors.white),
+                          const SizedBox(width: 12),
+                          Text(
+                            'DLSS',
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      CircleAvatar(
+                        radius: 18,
+                        backgroundColor: Colors.white,
+                        child: Text(
+                          initial,
+                          style: const TextStyle(
+                            color: AppTheme.primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        const SizedBox(width: 12),
-                        Text(
-                          'DLSS',
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    CircleAvatar(
-                      radius: 18,
-                      backgroundColor: Colors.white,
-                      child: Text(
-                        initial,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        fullName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          color: AppTheme.primaryColor,
-                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      fullName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
+                      Text(
+                        '$email • ${widget.roleTitle}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.8),
+                          fontSize: 12,
+                        ),
                       ),
-                    ),
-                    Text(
-                      '$email • ${widget.roleTitle}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.8),
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               Expanded(
@@ -190,6 +198,20 @@ class _DlssDashboardScaffoldState extends State<DlssDashboardScaffold> {
                           Navigator.pop(context);
                         },
                       ),
+                    ListTile(
+                      leading: const Icon(
+                        Icons.person_outline,
+                        color: AppTheme.textHintColor,
+                      ),
+                      title: const Text(AppConstants.profileNavLabel),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.of(context).pushNamed(AppRoutes.profile);
+                      },
+                    ),
                   ],
                 ),
               ),

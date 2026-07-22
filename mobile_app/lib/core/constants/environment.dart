@@ -91,6 +91,9 @@ class Environment {
   static const String logoutEndpoint = '/auth/logout';
   static const String refreshTokenEndpoint = '/auth/refresh-token';
 
+  // Self profile endpoints (any authenticated role)
+  static const String meEndpoint = '/users/me';
+
   // Full endpoint builders
   static String getFullUrl(String endpoint) => '$baseUrl$endpoint';
 }

@@ -68,6 +68,27 @@ public sealed class UsersService(AppDbContext dbContext, IPasswordHasher passwor
         return ServiceResponse<UserResponse>.Success(MapUserResponse(user), "OK");
     }
 
+    public async Task<ServiceResponse<UserResponse>> GetMeAsync(string userId)
+    {
+        var id = (userId ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["User id is required"]);
+        }
+
+        var user = await dbContext.Users
+            .AsNoTracking()
+            .Include(x => x.Role)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (user is null)
+        {
+            return ServiceResponse<UserResponse>.Failure(ErrorMessages.NotFound, ["User not found"]);
+        }
+
+        return ServiceResponse<UserResponse>.Success(MapUserResponse(user), "OK");
+    }
+
     public async Task<ServiceResponse<UserResponse>> CreateAsync(string actorUserId, CreateUserRequest request)
     {
         var actor = await GetActorAsync(actorUserId);
@@ -213,6 +234,45 @@ public sealed class UsersService(AppDbContext dbContext, IPasswordHasher passwor
             "Updated");
     }
 
+    public async Task<ServiceResponse<UserResponse>> UpdateMeAsync(string userId, UpdateOwnProfileRequest request)
+    {
+        var id = (userId ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["User id is required"]);
+        }
+
+        var user = await dbContext.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.Id == id);
+        if (user is null)
+        {
+            return ServiceResponse<UserResponse>.Failure(ErrorMessages.NotFound, ["User not found"]);
+        }
+
+        var normalizedEmail = NormalizeEmail(request.Email);
+        if (!string.Equals(user.Email, normalizedEmail, StringComparison.Ordinal))
+        {
+            var emailExists = await dbContext.Users.AsNoTracking()
+                .AnyAsync(x => x.Email == normalizedEmail && x.Id != user.Id);
+            if (emailExists)
+            {
+                return ServiceResponse<UserResponse>.Failure("Email already exists", ["Email is already registered"]);
+            }
+
+            user.Email = normalizedEmail;
+        }
+
+        user.FullName = request.FullName.Trim();
+        user.PhoneNumber = string.IsNullOrWhiteSpace(request.PhoneNumber) ? null : request.PhoneNumber.Trim();
+        user.IdentifyNumber = string.IsNullOrWhiteSpace(request.IdentifyNumber) ? null : request.IdentifyNumber.Trim();
+        user.Gender = string.IsNullOrWhiteSpace(request.Gender) ? null : request.Gender.Trim();
+        user.Address = string.IsNullOrWhiteSpace(request.Address) ? null : request.Address.Trim();
+        user.DateOfBirth = request.DateOfBirth;
+
+        await dbContext.SaveChangesAsync();
+
+        return ServiceResponse<UserResponse>.Success(MapUserResponse(user), "Updated");
+    }
+
     public async Task<ServiceResponse<bool>> DeleteAsync(string actorUserId, string userId)
     {
         var actor = await GetActorAsync(actorUserId);
@@ -246,6 +306,48 @@ public sealed class UsersService(AppDbContext dbContext, IPasswordHasher passwor
 
         dbContext.Users.Remove(user);
         await dbContext.SaveChangesAsync();
+
+        return ServiceResponse<bool>.Success(true, "Deleted");
+    }
+
+    public async Task<ServiceResponse<bool>> DeleteMeAsync(string userId)
+    {
+        var id = (userId ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return ServiceResponse<bool>.Failure(ErrorMessages.Unauthorized, ["User id is required"]);
+        }
+
+        var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+        if (user is null)
+        {
+            return ServiceResponse<bool>.Failure(ErrorMessages.NotFound, ["User not found"]);
+        }
+
+        var refreshTokens = await dbContext.RefreshTokens.Where(x => x.UserId == id).ToListAsync();
+        dbContext.RefreshTokens.RemoveRange(refreshTokens);
+
+        var passwordResets = await dbContext.PasswordResetTokens.Where(x => x.UserId == id).ToListAsync();
+        dbContext.PasswordResetTokens.RemoveRange(passwordResets);
+
+        var otps = await dbContext.EmailVerificationOtps.Where(x => x.UserId == id).ToListAsync();
+        dbContext.EmailVerificationOtps.RemoveRange(otps);
+
+        var projectRoles = await dbContext.UserProjectRoles.Where(x => x.UserId == id).ToListAsync();
+        dbContext.UserProjectRoles.RemoveRange(projectRoles);
+
+        dbContext.Users.Remove(user);
+
+        try
+        {
+            await dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateException)
+        {
+            return ServiceResponse<bool>.Failure(
+                "Cannot delete account",
+                ["Your account is linked to project data and cannot be deleted automatically. Contact an administrator."]);
+        }
 
         return ServiceResponse<bool>.Success(true, "Deleted");
     }

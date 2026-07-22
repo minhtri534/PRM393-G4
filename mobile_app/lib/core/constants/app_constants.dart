@@ -300,4 +300,28 @@ class AppConstants {
   static const String managerUserFormRole = 'Role';
   static const String managerUserFormRoleHint = 'Role';
   static const String managerUserFormMissingRole = 'Role is required';
+
+  //// Profile Screen
+  static const String profileTitle = 'My Profile';
+  static const String profileSubtitle = 'View and manage your account';
+  static const String profileEdit = 'Edit profile';
+  static const String profileCancel = 'Cancel';
+  static const String profileSave = 'Save changes';
+  static const String profileSaved = 'Profile updated';
+  static const String profileDelete = 'Delete account';
+  static const String profileDeleteTitle = 'Delete account?';
+  static const String profileDeleteWarning =
+      'This permanently deletes your account. This action cannot be undone.';
+  static const String profileDeleteConfirm = 'Delete';
+  static const String profileDeleted = 'Account deleted';
+  static const String profileFullName = 'Full name';
+  static const String profileEmail = 'Email';
+  static const String profilePhone = 'Phone number';
+  static const String profileAddress = 'Address';
+  static const String profileGender = 'Gender';
+  static const String profileDateOfBirth = 'Date of birth';
+  static const String profileRole = 'Role';
+  static const String profileStatus = 'Status';
+  static const String profileMissingName = 'Name is required';
+  static const String profileNavLabel = 'Profile';
 }

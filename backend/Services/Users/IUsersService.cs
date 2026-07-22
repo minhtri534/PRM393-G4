@@ -10,11 +10,17 @@ public interface IUsersService
 
     Task<ServiceResponse<UserResponse>> GetByIdAsync(string actorUserId, string userId);
 
+    Task<ServiceResponse<UserResponse>> GetMeAsync(string userId);
+
     Task<ServiceResponse<UserResponse>> CreateAsync(string actorUserId, CreateUserRequest request);
 
     Task<ServiceResponse<UserResponse>> UpdateAsync(string actorUserId, string userId, UpdateUserRequest request);
 
+    Task<ServiceResponse<UserResponse>> UpdateMeAsync(string userId, UpdateOwnProfileRequest request);
+
     Task<ServiceResponse<bool>> DeleteAsync(string actorUserId, string userId);
+
+    Task<ServiceResponse<bool>> DeleteMeAsync(string userId);
 
     Task<ServiceResponse<List<UserSummaryResponse>>> SearchAsync(string actorUserId, string query, string? roleName = null);
 }

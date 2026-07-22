@@ -8,6 +8,7 @@ import '../models/auth/resend_email_verification_request.dart';
 import '../models/auth/verify_email_otp_request.dart';
 import '../models/auth/user_profile.dart';
 import '../models/common/api_error.dart';
+import '../models/manager/user_model.dart';
 import '../repositories/auth_repository.dart';
 
 enum AuthState { initial, loading, authenticated, unauthenticated, error }
@@ -17,8 +18,10 @@ class AuthProvider extends ChangeNotifier {
 
   AuthState _state = AuthState.initial;
   UserProfile? _userProfile;
+  UserModel? _profileDetail;
   String? _errorMessage;
   String? _accessToken;
+  bool _profileBusy = false;
 
   AuthProvider({AuthRepository? authRepository})
     : _authRepository = authRepository ?? AuthRepository();
@@ -26,10 +29,12 @@ class AuthProvider extends ChangeNotifier {
   // Getters
   AuthState get state => _state;
   UserProfile? get userProfile => _userProfile;
+  UserModel? get profileDetail => _profileDetail;
   String? get errorMessage => _errorMessage;
   String? get accessToken => _accessToken;
   bool get isAuthenticated => _state == AuthState.authenticated;
   bool get isLoading => _state == AuthState.loading;
+  bool get isProfileBusy => _profileBusy;
 
   /// Initialize authentication state on app startup
   Future<void> initialize() async {
@@ -211,6 +216,7 @@ class AuthProvider extends ChangeNotifier {
 
       _accessToken = null;
       _userProfile = null;
+      _profileDetail = null;
       _state = AuthState.unauthenticated;
       _errorMessage = null;
 
@@ -228,5 +234,117 @@ class AuthProvider extends ChangeNotifier {
   void clearError() {
     _errorMessage = null;
     notifyListeners();
+  }
+
+  /// Load full profile for the current user
+  Future<UserModel?> fetchProfile() async {
+    try {
+      _profileBusy = true;
+      _errorMessage = null;
+      notifyListeners();
+
+      final profile = await _authRepository.getMe();
+      _profileDetail = profile;
+      _userProfile = UserProfile(
+        id: profile.id,
+        fullName: profile.fullName,
+        email: profile.email,
+        roleId: profile.roleId,
+        roleName: profile.roleName,
+        status: profile.status,
+      );
+      _profileBusy = false;
+      notifyListeners();
+      return profile;
+    } on ApiError catch (e) {
+      _profileBusy = false;
+      _errorMessage = e.message;
+      notifyListeners();
+      return null;
+    } catch (e) {
+      _profileBusy = false;
+      _errorMessage = AppConstants.errorGeneric;
+      notifyListeners();
+      return null;
+    }
+  }
+
+  /// Update current user profile fields
+  Future<bool> updateProfile({
+    required String fullName,
+    required String email,
+    String? phoneNumber,
+    String? identifyNumber,
+    String? gender,
+    String? address,
+    DateTime? dateOfBirth,
+  }) async {
+    try {
+      _profileBusy = true;
+      _errorMessage = null;
+      notifyListeners();
+
+      final profile = await _authRepository.updateMe(
+        fullName: fullName,
+        email: email,
+        phoneNumber: phoneNumber,
+        identifyNumber: identifyNumber,
+        gender: gender,
+        address: address,
+        dateOfBirth: dateOfBirth,
+      );
+
+      _profileDetail = profile;
+      _userProfile = UserProfile(
+        id: profile.id,
+        fullName: profile.fullName,
+        email: profile.email,
+        roleId: profile.roleId,
+        roleName: profile.roleName,
+        status: profile.status,
+      );
+      _profileBusy = false;
+      notifyListeners();
+      return true;
+    } on ApiError catch (e) {
+      _profileBusy = false;
+      _errorMessage = e.message;
+      notifyListeners();
+      return false;
+    } catch (e) {
+      _profileBusy = false;
+      _errorMessage = AppConstants.errorGeneric;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Delete current account and clear local session
+  Future<bool> deleteAccount() async {
+    try {
+      _profileBusy = true;
+      _errorMessage = null;
+      notifyListeners();
+
+      await _authRepository.deleteMe();
+
+      _accessToken = null;
+      _userProfile = null;
+      _profileDetail = null;
+      _state = AuthState.unauthenticated;
+      _profileBusy = false;
+      notifyListeners();
+      return true;
+    } on ApiError catch (e) {
+      _profileBusy = false;
+      _errorMessage = e.message;
+      notifyListeners();
+      return false;
+    } catch (e) {
+      _profileBusy = false;
+      _errorMessage = AppConstants.errorGeneric;
+      notifyListeners();
+      return false;
+    }
   }
 }

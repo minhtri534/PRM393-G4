@@ -13,6 +13,7 @@ import '../models/auth/resend_email_verification_request.dart';
 import '../models/auth/verify_email_otp_request.dart';
 import '../models/common/api_error.dart';
 import '../models/common/service_response.dart';
+import '../models/manager/user_model.dart';
 import 'dio_client.dart';
 
 class AuthRepository {
@@ -238,6 +239,129 @@ class AuthRepository {
     } catch (_) {
       return null;
     }
+  }
+
+  /// Fetch the authenticated user's full profile from API
+  Future<UserModel> getMe() async {
+    try {
+      final response = await _dioClient.get(Environment.meEndpoint);
+      final serviceResponse = ServiceResponse.fromJson(
+        response.data,
+        (data) => UserModel.fromJson(data as Map<String, dynamic>),
+      );
+
+      if (!serviceResponse.isSuccess || serviceResponse.data == null) {
+        throw ApiError(
+          message: serviceResponse.message.isNotEmpty
+              ? serviceResponse.message
+              : AppConstants.errorGeneric,
+          code: 'GET_PROFILE_FAILED',
+        );
+      }
+
+      final profile = serviceResponse.data!;
+      await _persistSlimProfile(profile);
+      return profile;
+    } catch (e) {
+      Logger.error('❌ Get profile failed: $e');
+      rethrow;
+    }
+  }
+
+  /// Update the authenticated user's profile
+  Future<UserModel> updateMe({
+    required String fullName,
+    required String email,
+    String? phoneNumber,
+    String? identifyNumber,
+    String? gender,
+    String? address,
+    DateTime? dateOfBirth,
+  }) async {
+    try {
+      final response = await _dioClient.put(
+        Environment.meEndpoint,
+        data: {
+          'fullName': fullName,
+          'email': email,
+          'phoneNumber': phoneNumber,
+          'identifyNumber': identifyNumber,
+          'gender': gender,
+          'address': address,
+          'dateOfBirth': dateOfBirth == null
+              ? null
+              : '${dateOfBirth.year.toString().padLeft(4, '0')}-'
+                    '${dateOfBirth.month.toString().padLeft(2, '0')}-'
+                    '${dateOfBirth.day.toString().padLeft(2, '0')}',
+        },
+      );
+
+      final serviceResponse = ServiceResponse.fromJson(
+        response.data,
+        (data) => UserModel.fromJson(data as Map<String, dynamic>),
+      );
+
+      if (!serviceResponse.isSuccess || serviceResponse.data == null) {
+        throw ApiError(
+          message: serviceResponse.message.isNotEmpty
+              ? serviceResponse.message
+              : AppConstants.errorGeneric,
+          code: 'UPDATE_PROFILE_FAILED',
+        );
+      }
+
+      final profile = serviceResponse.data!;
+      await _persistSlimProfile(profile);
+      Logger.info('✅ Profile updated for: ${profile.email}');
+      return profile;
+    } catch (e) {
+      Logger.error('❌ Update profile failed: $e');
+      rethrow;
+    }
+  }
+
+  /// Delete the authenticated user's account
+  Future<void> deleteMe() async {
+    try {
+      final response = await _dioClient.delete(Environment.meEndpoint);
+      final serviceResponse = ServiceResponse.fromJson(
+        response.data,
+        (data) => data as bool? ?? true,
+      );
+
+      if (!serviceResponse.isSuccess) {
+        throw ApiError(
+          message: serviceResponse.message.isNotEmpty
+              ? serviceResponse.message
+              : AppConstants.errorGeneric,
+          code: 'DELETE_PROFILE_FAILED',
+        );
+      }
+
+      await _dioClient.clearAuthToken();
+      await _storage.delete(key: AppConstants.refreshTokenKey);
+      await _storage.delete(key: AppConstants.userProfileKey);
+      Logger.info('✅ Account deleted');
+    } catch (e) {
+      Logger.error('❌ Delete profile failed: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> _persistSlimProfile(UserModel user) async {
+    await _storage.write(
+      key: AppConstants.userProfileKey,
+      value: _encodeUserProfile(
+        UserProfile(
+          id: user.id,
+          fullName: user.fullName,
+          email: user.email,
+          roleId: user.roleId,
+          roleName: user.roleName,
+          status: user.status,
+        ),
+      ),
+    );
   }
 
   String _encodeUserProfile(UserProfile user) => jsonEncode(user.toJson());

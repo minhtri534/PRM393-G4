@@ -9,6 +9,7 @@ import '../models/chat/chat_models.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/register_screen.dart';
 import '../screens/auth/verify_email_screen.dart';
+import '../screens/common/profile_screen.dart';
 import '../screens/manager/dataset_detail_screen.dart';
 import '../screens/manager/dataset_upload_screen.dart';
 import '../screens/manager/manager_shell_screen.dart';
@@ -52,6 +53,9 @@ class AppRoutes {
   static const String managerPaymentDetail = '/manager/payments/detail';
   static const String managerPaymentHistory = '/manager/payments/history';
   static const String managerPaymentSuccess = '/manager/payments/success';
+
+  // Shared
+  static const String profile = '/profile';
 
   /// Legacy alias kept for older navigation calls.
   static const String tasks = annotatorHome;
@@ -167,6 +171,8 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => UserFormScreen(userId: userId),
         );
+      case profile:
+        return MaterialPageRoute(builder: (_) => const ProfileScreen());
       default:
         return _errorRoute('Route not found');
     }

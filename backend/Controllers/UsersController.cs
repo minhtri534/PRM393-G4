@@ -42,6 +42,66 @@ public sealed class UsersController(IUsersService usersService) : ControllerBase
         return this.ToOkOrBadRequest(result);
     }
 
+    [HttpGet("me")]
+    public async Task<ActionResult<ServiceResponse<UserResponse>>> GetMe()
+    {
+        var userId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized(ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await usersService.GetMeAsync(userId);
+        if (result.IsSuccess)
+        {
+            return Ok(result);
+        }
+
+        return result.Message == ErrorMessages.NotFound
+            ? NotFound(result)
+            : BadRequest(result);
+    }
+
+    [HttpPut("me")]
+    public async Task<ActionResult<ServiceResponse<UserResponse>>> UpdateMe([FromBody] UpdateOwnProfileRequest request)
+    {
+        var userId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized(ServiceResponse<UserResponse>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await usersService.UpdateMeAsync(userId, request);
+        if (result.IsSuccess)
+        {
+            return Ok(result);
+        }
+
+        return result.Message == ErrorMessages.NotFound
+            ? NotFound(result)
+            : BadRequest(result);
+    }
+
+    [HttpDelete("me")]
+    public async Task<ActionResult<ServiceResponse<bool>>> DeleteMe()
+    {
+        var userId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized(ServiceResponse<bool>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await usersService.DeleteMeAsync(userId);
+        if (result.IsSuccess)
+        {
+            return Ok(result);
+        }
+
+        return result.Message == ErrorMessages.NotFound
+            ? NotFound(result)
+            : BadRequest(result);
+    }
+
     [HttpGet("{userId}")]
     [Authorize(Roles = "Admin,Manager")]
     public async Task<ActionResult<ServiceResponse<UserResponse>>> GetById([FromRoute] string userId)

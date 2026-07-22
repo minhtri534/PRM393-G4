@@ -1,0 +1,72 @@
+{
+  "projectId": "6a5ddc5c293c10c9fb3921fd",
+  "generatedAt": "2026-07-20T08:43:21.4303821Z",
+  "filters": {},
+  "labels": [
+    {
+      "Id": "6a5ddca26ae8520136392202",
+      "Name": "label 1",
+      "YoloClassId": 0,
+      "CategoryId": null,
+      "AnnotationTypeId": null
+    },
+    {
+      "Id": "6a5ddcd60f6499012c392209",
+      "Name": "label 2",
+      "YoloClassId": 1,
+      "CategoryId": null,
+      "AnnotationTypeId": null
+    }
+  ],
+  "tasks": [
+    {
+      "Id": "6a5ddd65295a23f1a0392212",
+      "DataItemId": "6a5ddd4ca8438cd002392210",
+      "AnnotatorId": "6a2a2f5f0ccd1dcf37d700e6",
+      "Status": "Assigned",
+      "AssignedAt": "2026-07-20T08:33:41.8065361",
+      "CompletedAt": null
+    },
+    {
+      "Id": "6a5ddd6565a5c8ef02392213",
+      "DataItemId": "6a5ddd4cc8440f244839220f",
+      "AnnotatorId": "6a2a2f5f0ccd1dcf37d700e6",
+      "Status": "Completed",
+      "AssignedAt": "2026-07-20T08:33:41.8065623",
+      "CompletedAt": "2026-07-20T15:37:48.0553049"
+    }
+  ],
+  "reviews": [
+    {
+      "Id": "6a5dde5ca06135960a392219",
+      "AnnotationSetId": "6a5dddbd16e3460767392215",
+      "ReviewerId": "6a2a2f5ec5896e99e2d700e5",
+      "Result": "Approved",
+      "Score": 100,
+      "Comment": "excellent job",
+      "ReviewedAt": "2026-07-20T15:37:48.0431741"
+    }
+  ],
+  "annotations": [
+    {
+      "Id": "6a5dddbddc5c42aa96392217",
+      "AnnotationSetId": "6a5dddbd16e3460767392215",
+      "LabelId": "6a5ddcd60f6499012c392209",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:33,\u0022y\u0022:171,\u0022width\u0022:78,\u0022height\u0022:24}",
+      "Version": 1,
+      "CreatedAt": "2026-07-20T15:35:09.3527",
+      "UpdatedAt": "2026-07-20T15:35:09.3527"
+    },
+    {
+      "Id": "6a5dddbde7ae4c39f7392216",
+      "AnnotationSetId": "6a5dddbd16e3460767392215",
+      "LabelId": "6a5ddca26ae8520136392202",
+      "AnnotationType": "bbox",
+      "GeometryData": "{\u0022type\u0022:\u0022bbox\u0022,\u0022x\u0022:17,\u0022y\u0022:18,\u0022width\u0022:189,\u0022height\u0022:142}",
+      "Version": 1,
+      "CreatedAt": "2026-07-20T15:35:09.3527",
+      "UpdatedAt": "2026-07-20T15:35:09.3527"
+    }
+  ]
+}
