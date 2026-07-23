@@ -223,7 +223,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 16),
                     ActionButton(
-                      label: 'Retry',
+                      label: AppConstants.profileErrorRetry,
                       onPressed: _loadProfile,
                       width: 140,
                     ),
@@ -235,7 +235,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           final initial = profile.fullName.isNotEmpty
               ? profile.fullName[0].toUpperCase()
-              : 'U';
+              : AppConstants.profileFullNamePlaceholder;
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(AppConstants.paddingLarge),
@@ -277,7 +277,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '${profile.roleName ?? 'User'} • ${profile.statusLabel}',
+                              '${profile.roleName ?? AppConstants.profileRolePlaceholder} • ${profile.statusLabel}',
                               style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(color: AppTheme.textSecondaryColor),
                             ),
@@ -298,7 +298,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Row(
                           children: [
                             Text(
-                              'Details',
+                              AppConstants.profileDetailsTitle,
                               style: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(fontWeight: FontWeight.w700),
                             ),
@@ -342,10 +342,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           readOnly: !_isEditing,
                           validator: (v) {
                             if (v == null || v.trim().isEmpty) {
-                              return 'Email is required';
+                              return AppConstants.profileErrorMissingEmail;
                             }
                             if (!isValidEmail(v.trim())) {
-                              return 'Enter a valid email';
+                              return AppConstants.profileErrorInvalidEmail;
                             }
                             return null;
                           },
@@ -363,7 +363,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         CustomTextField(
                           controller: _addressController,
                           label: AppConstants.profileAddress,
-                          hintText: 'Your address',
+                          hintText: AppConstants.profileAddressHint,
                           prefixIcon: const Icon(Icons.location_on_outlined),
                           readOnly: !_isEditing,
                         ),
@@ -371,7 +371,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         CustomTextField(
                           controller: _genderController,
                           label: AppConstants.profileGender,
-                          hintText: 'Optional',
+                          hintText: AppConstants.profileGenderHint,
                           prefixIcon: const Icon(Icons.wc_outlined),
                           readOnly: !_isEditing,
                         ),

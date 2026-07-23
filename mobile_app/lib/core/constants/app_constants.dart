@@ -43,6 +43,7 @@ class AppConstants {
   static const double iconSizeMedium = 24.0;
   static const double iconSizeLarge = 32.0;
 
+
   // Manager Constants
   //// Shell Screen
   static const String managerShellRoleTitle = 'Manager';
@@ -301,7 +302,7 @@ class AppConstants {
   static const String managerUserFormRoleHint = 'Role';
   static const String managerUserFormMissingRole = 'Role is required';
 
-  //// Profile Screen
+  // Profile Screen
   static const String profileTitle = 'My Profile';
   static const String profileSubtitle = 'View and manage your account';
   static const String profileEdit = 'Edit profile';
@@ -324,4 +325,12 @@ class AppConstants {
   static const String profileStatus = 'Status';
   static const String profileMissingName = 'Name is required';
   static const String profileNavLabel = 'Profile';
+  static const String profileErrorRetry = 'Retry';
+  static const String profileFullNamePlaceholder = 'Username';
+  static const String profileRolePlaceholder = 'User';
+  static const String profileDetailsTitle = 'Details';
+  static const String profileErrorMissingEmail = 'Email is required';
+  static const String profileErrorInvalidEmail = 'Enter a valid email';
+  static const String profileAddressHint = 'Your address';
+  static const String profileGenderHint = 'Optional';
 }
