@@ -15,6 +15,7 @@ const backendOrigin = (process.env.BACKEND_URL || 'http://localhost:5000').repla
 const jwtSigningKey = process.env.JWT_SIGNING_KEY || '';
 const jwtIssuer = process.env.JWT_ISSUER || 'DLSS';
 const jwtAudience = process.env.JWT_AUDIENCE || 'DLSS';
+const internalEmitKey = process.env.INTERNAL_EMIT_KEY || 'DLSS_DEV_REALTIME_INTERNAL_KEY';
 
 if (!jwtSigningKey || jwtSigningKey.length < 32) {
   console.warn('[realtime] JWT_SIGNING_KEY is missing or too short. Socket auth will fail.');
@@ -75,6 +76,31 @@ async function ensureProjectAccess(token, projectId, cache) {
   return cache.projectIds.includes(projectId);
 }
 
+function userRoom(userId) {
+  return `user:${userId}`;
+}
+
+/** Backend → realtime push for in-app notifications. */
+app.post('/internal/emit', express.json({ limit: '1mb' }), (req, res) => {
+  const key = req.header('X-Internal-Key') || '';
+  if (!internalEmitKey || key !== internalEmitKey) {
+    return res.status(401).json({ ok: false, message: 'Unauthorized' });
+  }
+
+  const eventName = String(req.body?.eventName || 'notification:new').trim();
+  const deliveries = Array.isArray(req.body?.deliveries) ? req.body.deliveries : [];
+
+  let emitted = 0;
+  for (const item of deliveries) {
+    const userId = String(item?.userId || '').trim();
+    if (!userId || item?.data == null) continue;
+    io.to(userRoom(userId)).emit(eventName, item.data);
+    emitted += 1;
+  }
+
+  return res.json({ ok: true, emitted });
+});
+
 io.use((socket, next) => {
   const token = socket.handshake.auth?.token || socket.handshake.query?.token;
   const user = verifyToken(typeof token === 'string' ? token : null);
@@ -90,6 +116,9 @@ io.use((socket, next) => {
 io.on('connection', (socket) => {
   const user = socket.data.user;
   console.log(`[realtime] connected user=${user.userId} socket=${socket.id}`);
+
+  // Personal inbox room — always joined so notifications work outside chat rooms.
+  socket.join(userRoom(user.userId));
 
   socket.on('join:project', async (payload, ack) => {
     try {

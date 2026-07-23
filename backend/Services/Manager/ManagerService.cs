@@ -6,8 +6,10 @@ using DataLabellingSupportSystem.Api.Common.Results;
 using DataLabellingSupportSystem.Api.Configurations;
 using DataLabellingSupportSystem.Api.Database;
 using DataLabellingSupportSystem.Api.DTOs.Requests.Manager;
+using DataLabellingSupportSystem.Api.DTOs.Requests.Notifications;
 using DataLabellingSupportSystem.Api.DTOs.Responses.Manager;
 using DataLabellingSupportSystem.Api.Models;
+using DataLabellingSupportSystem.Api.Services.Notifications;
 using DataLabellingSupportSystem.Api.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -18,7 +20,8 @@ public sealed class ManagerService(
     AppDbContext dbContext,
     IHostEnvironment hostEnvironment,
     ILogger<ManagerService> logger,
-    IOptions<StorageOptions> storageOptions) : IManagerService
+    IOptions<StorageOptions> storageOptions,
+    INotificationService notificationService) : IManagerService
 {
     public async Task<ServiceResponse<List<ProjectResponse>>> GetProjectsAsync(string actorUserId)
     {
@@ -268,9 +271,43 @@ public sealed class ManagerService(
         await AddActivityLogAsync(actorUserId, "Manager.AssignUserProjectRole", "user_project_roles", $"{userId}:{projectId}:{roleId}");
         await dbContext.SaveChangesAsync();
 
+        var actorName = await dbContext.Users
+            .AsNoTracking()
+            .Where(x => x.Id == actorUserId)
+            .Select(x => x.FullName)
+            .FirstOrDefaultAsync() ?? "Manager";
+
+        await notificationService.NotifyProjectAssignedAsync(
+            actorUserId,
+            actorName,
+            userId,
+            project.Id,
+            project.Name);
+
         return ServiceResponse<UserProjectRoleResponse>.Success(
             new UserProjectRoleResponse(user.Id, user.Email, project.Id, project.Name, role.Id, role.Name),
             "Created");
+    }
+
+    public async Task<ServiceResponse<int>> SendProjectNotificationAsync(
+        string actorUserId,
+        string projectId,
+        SendProjectNotificationRequest request)
+    {
+        var access = await EnsureProjectAccessAsync(actorUserId, projectId);
+        if (access is not null)
+        {
+            return ServiceResponse<int>.Failure(access.Message, access.Errors);
+        }
+
+        var result = await notificationService.SendProjectAnnouncementAsync(actorUserId, projectId, request);
+        if (result.IsSuccess)
+        {
+            await AddActivityLogAsync(actorUserId, "Manager.SendProjectNotification", "projects", projectId);
+            await dbContext.SaveChangesAsync();
+        }
+
+        return result;
     }
 
     public async Task<ServiceResponse<bool>> RemoveProjectRole(string actorUserId, string projectId, string userId)

@@ -24,6 +24,8 @@ using DataLabellingSupportSystem.Api.Services.Manager;
 using DataLabellingSupportSystem.Api.Services.Admin;
 using DataLabellingSupportSystem.Api.Services.Projects;
 using DataLabellingSupportSystem.Api.Services.Chat;
+using DataLabellingSupportSystem.Api.Services.Notifications;
+using DataLabellingSupportSystem.Api.Services.Realtime;
 
 namespace DataLabellingSupportSystem.Api.Configurations;
 
@@ -107,7 +109,19 @@ public static class DependencyInjection
         services.AddScoped<IAdminService, AdminService>();
         services.AddScoped<IProjectMembershipService, ProjectMembershipService>();
         services.AddScoped<IChatService, ChatService>();
+        services.AddScoped<INotificationService, NotificationService>();
+        services.AddSingleton<IRealtimePublisher, RealtimePublisher>();
         services.AddHostedService<DevSeedHostedService>();
+        return services;
+    }
+
+    public static IServiceCollection AddDlssRealtime(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<RealtimeOptions>(configuration.GetSection("Realtime"));
+        services.AddHttpClient("Realtime", client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(5);
+        });
         return services;
     }
 

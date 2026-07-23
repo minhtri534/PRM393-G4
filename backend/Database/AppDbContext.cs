@@ -36,6 +36,7 @@ public class AppDbContext : DbContext
     public DbSet<ExportConfig> ExportConfigs { get; set; } = default!;
     public DbSet<ActivityLog> ActivityLogs { get; set; } = default!;
     public DbSet<ProjectChatMessage> ProjectChatMessages { get; set; } = default!;
+    public DbSet<Notification> Notifications { get; set; } = default!;
 
     public override int SaveChanges()
     {

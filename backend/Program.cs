@@ -7,6 +7,7 @@ builder.Services
     .AddDlssSwagger()
     .AddDlssDatabase(builder.Configuration)
     .AddDlssDomainServices()
+    .AddDlssRealtime(builder.Configuration)
     .AddDlssAiAssist(builder.Configuration)
     .AddDlssStorage(builder.Configuration)
     .AddDlssAuth(builder.Configuration);

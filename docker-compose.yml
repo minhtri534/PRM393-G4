@@ -17,6 +17,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=db;Database=DLSS_Db;User Id=sa;Password=AdminPassword123!;TrustServerCertificate=True;MultipleActiveResultSets=true
+      - Realtime__BaseUrl=http://realtime:5001
+      - Realtime__InternalKey=DLSS_DEV_REALTIME_INTERNAL_KEY
     volumes:
       - ./backend/storage/demo/images:/app/storage
     depends_on:
@@ -34,6 +36,7 @@ services:
       - JWT_SIGNING_KEY=DLSS_DEV_SIGNING_KEY_64CHARS_MIN__CHANGE_IN_PROD__2026_02_18
       - JWT_ISSUER=DLSS
       - JWT_AUDIENCE=DLSS
+      - INTERNAL_EMIT_KEY=DLSS_DEV_REALTIME_INTERNAL_KEY
     depends_on:
       - backend
 

@@ -1,5 +1,6 @@
 using DataLabellingSupportSystem.Api.Common.Results;
 using DataLabellingSupportSystem.Api.DTOs.Requests.Manager;
+using DataLabellingSupportSystem.Api.DTOs.Requests.Notifications;
 using DataLabellingSupportSystem.Api.DTOs.Responses.Manager;
 
 namespace DataLabellingSupportSystem.Api.Services.Manager;
@@ -13,6 +14,7 @@ public interface IManagerService
     Task<ServiceResponse<bool>> DeleteProjectAsync(string actorUserId, string projectId);
 
     Task<ServiceResponse<UserProjectRoleResponse>> AssignUserProjectRoleAsync(string actorUserId, AssignUserProjectRoleRequest request);
+    Task<ServiceResponse<int>> SendProjectNotificationAsync(string actorUserId, string projectId, SendProjectNotificationRequest request);
     Task<ServiceResponse<bool>> RemoveProjectRole(string actorUserId, string projectId, string userId);
     Task<ServiceResponse<List<UserProjectRoleResponse>>> GetProjectRolesAsync(string actorUserId, string projectId);
 

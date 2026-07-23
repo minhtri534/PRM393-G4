@@ -4,6 +4,7 @@ import 'core/theme/app_theme.dart';
 import 'providers/annotator_provider.dart';
 import 'providers/chat_provider.dart';
 import 'providers/manager_provider.dart';
+import 'providers/notification_provider.dart';
 import 'providers/reviewer_provider.dart';
 import 'routes/app_routes.dart';
 
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AnnotatorProvider()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
         ChangeNotifierProvider(create: (_) => ManagerProvider()),
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ChangeNotifierProvider(create: (_) => ReviewerProvider()),
       ],
       child: MaterialApp(

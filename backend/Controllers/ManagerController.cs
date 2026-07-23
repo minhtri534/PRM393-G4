@@ -2,6 +2,7 @@ using DataLabellingSupportSystem.Api.Common.Constants;
 using DataLabellingSupportSystem.Api.Common.Extensions;
 using DataLabellingSupportSystem.Api.Common.Results;
 using DataLabellingSupportSystem.Api.DTOs.Requests.Manager;
+using DataLabellingSupportSystem.Api.DTOs.Requests.Notifications;
 using DataLabellingSupportSystem.Api.DTOs.Requests.Users;
 using DataLabellingSupportSystem.Api.DTOs.Responses.Manager;
 using DataLabellingSupportSystem.Api.DTOs.Responses.Users;
@@ -158,6 +159,21 @@ public sealed class ManagerController(
         }
 
         var result = await managerService.AssignUserProjectRoleAsync(userId, request);
+        return this.ToOkOrBadRequest(result);
+    }
+
+    [HttpPost("projects/{projectId}/notifications")]
+    public async Task<ActionResult<ServiceResponse<int>>> SendProjectNotification(
+        [FromRoute] string projectId,
+        [FromBody] SendProjectNotificationRequest request)
+    {
+        var userId = User.GetUserId();
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized(ServiceResponse<int>.Failure(ErrorMessages.Unauthorized, ["Missing user id claim"]));
+        }
+
+        var result = await managerService.SendProjectNotificationAsync(userId, projectId, request);
         return this.ToOkOrBadRequest(result);
     }
 

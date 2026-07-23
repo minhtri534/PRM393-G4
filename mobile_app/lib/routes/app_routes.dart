@@ -9,6 +9,7 @@ import '../models/chat/chat_models.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/register_screen.dart';
 import '../screens/auth/verify_email_screen.dart';
+import '../screens/common/notifications_screen.dart';
 import '../screens/common/profile_screen.dart';
 import '../screens/manager/dataset_detail_screen.dart';
 import '../screens/manager/dataset_upload_screen.dart';
@@ -56,6 +57,7 @@ class AppRoutes {
 
   // Shared
   static const String profile = '/profile';
+  static const String notifications = '/notifications';
 
   /// Legacy alias kept for older navigation calls.
   static const String tasks = annotatorHome;
@@ -76,6 +78,8 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => VerifyEmailScreen(email: args['email'] as String),
         );
+      case notifications:
+        return MaterialPageRoute(builder: (_) => const NotificationsScreen());
       case annotatorHome:
         return MaterialPageRoute(builder: (_) => const AnnotatorShellScreen());
       case annotatorProjectTasks:

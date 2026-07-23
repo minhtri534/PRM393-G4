@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../core/constants/app_constants.dart';
 import '../core/theme/app_theme.dart';
 import '../providers/auth_provider.dart';
 import '../routes/app_routes.dart';
 import '../providers/chat_provider.dart';
+import '../providers/notification_provider.dart';
 import 'dlss_background.dart';
 
 class DlssNavDestination {
@@ -51,6 +51,10 @@ class _DlssDashboardScaffoldState extends State<DlssDashboardScaffold> {
   void initState() {
     super.initState();
     _index = widget.initialIndex;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<NotificationProvider>().start();
+    });
   }
 
   @override
@@ -72,6 +76,7 @@ class _DlssDashboardScaffoldState extends State<DlssDashboardScaffold> {
     final fullName =
         context.watch<AuthProvider>().userProfile?.fullName ?? 'User';
     final initial = fullName.isNotEmpty ? fullName[0].toUpperCase() : 'U';
+    final unread = context.watch<NotificationProvider>().unreadCount;
 
     return DlssBackground(
       showBlobs: false,
@@ -83,18 +88,26 @@ class _DlssDashboardScaffoldState extends State<DlssDashboardScaffold> {
           title: Text(widget.destinations[_index].label),
           actions: [
             IconButton(
-              icon: const Icon(Icons.notifications_none_outlined),
-              onPressed: () {},
+              icon: Badge(
+                isLabelVisible: unread > 0,
+                label: Text(unread > 99 ? '99+' : '$unread'),
+                child: const Icon(Icons.notifications_none_outlined),
+              ),
+              onPressed: () {
+                Navigator.of(context).pushNamed(AppRoutes.notifications);
+              },
             ),
             IconButton(
               icon: const Icon(Icons.logout),
               onPressed: () async {
-                await context.read<ChatProvider>().resetSession();
-                await context.read<AuthProvider>().logout();
-                if (!context.mounted) return;
-                Navigator.of(
-                  context,
-                ).pushNamedAndRemoveUntil(AppRoutes.login, (_) => false);
+                final navigator = Navigator.of(context);
+                final notificationProvider = context.read<NotificationProvider>();
+                final chatProvider = context.read<ChatProvider>();
+                final authProvider = context.read<AuthProvider>();
+                await notificationProvider.stop();
+                await chatProvider.resetSession();
+                await authProvider.logout();
+                navigator.pushNamedAndRemoveUntil(AppRoutes.login, (_) => false);
               },
             ),
           ],
@@ -198,20 +211,6 @@ class _DlssDashboardScaffoldState extends State<DlssDashboardScaffold> {
                           Navigator.pop(context);
                         },
                       ),
-                    ListTile(
-                      leading: const Icon(
-                        Icons.person_outline,
-                        color: AppTheme.textHintColor,
-                      ),
-                      title: const Text(AppConstants.profileNavLabel),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.of(context).pushNamed(AppRoutes.profile);
-                      },
-                    ),
                   ],
                 ),
               ),

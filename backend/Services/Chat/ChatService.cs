@@ -4,6 +4,7 @@ using DataLabellingSupportSystem.Api.Database;
 using DataLabellingSupportSystem.Api.DTOs.Requests.Chat;
 using DataLabellingSupportSystem.Api.DTOs.Responses.Chat;
 using DataLabellingSupportSystem.Api.Models;
+using DataLabellingSupportSystem.Api.Services.Notifications;
 using DataLabellingSupportSystem.Api.Services.Projects;
 using DataLabellingSupportSystem.Api.Services.Storage;
 using DataLabellingSupportSystem.Api.Utils;
@@ -30,7 +31,8 @@ public interface IChatService
 public sealed class ChatService(
     AppDbContext dbContext,
     IProjectMembershipService projectMembershipService,
-    IStorageService storageService) : IChatService
+    IStorageService storageService,
+    INotificationService notificationService) : IChatService
 {
     private const long MaxAttachmentBytes = 10 * 1024 * 1024;
 
@@ -139,20 +141,22 @@ public sealed class ChatService(
         dbContext.ProjectChatMessages.Add(entity);
         await dbContext.SaveChangesAsync();
 
-        return ServiceResponse<ChatMessageResponse>.Success(
-            MapMessage(
-                entity.Id,
-                entity.ProjectId,
-                entity.SenderUserId,
-                sender.FullName,
-                entity.MessageType,
-                entity.Content,
-                null,
-                null,
-                null,
-                null,
-                entity.CreatedAt),
-            "Sent");
+        var response = MapMessage(
+            entity.Id,
+            entity.ProjectId,
+            entity.SenderUserId,
+            sender.FullName,
+            entity.MessageType,
+            entity.Content,
+            null,
+            null,
+            null,
+            null,
+            entity.CreatedAt);
+
+        await NotifyChatRecipientsAsync(actorUserId, sender.FullName, normalizedProjectId, entity.Id, content);
+
+        return ServiceResponse<ChatMessageResponse>.Success(response, "Sent");
     }
 
     public async Task<ServiceResponse<ChatMessageResponse>> SendAttachmentMessageAsync(
@@ -235,20 +239,28 @@ public sealed class ChatService(
         dbContext.ProjectChatMessages.Add(entity);
         await dbContext.SaveChangesAsync();
 
-        return ServiceResponse<ChatMessageResponse>.Success(
-            MapMessage(
-                entity.Id,
-                entity.ProjectId,
-                entity.SenderUserId,
-                sender.FullName,
-                entity.MessageType,
-                entity.Content,
-                entity.AttachmentFileName,
-                entity.AttachmentContentType,
-                entity.AttachmentSizeBytes,
-                entity.AttachmentObjectKey,
-                entity.CreatedAt),
-            "Sent");
+        var preview = !string.IsNullOrWhiteSpace(trimmedCaption)
+            ? trimmedCaption
+            : messageType == "image"
+                ? $"Sent an image ({safeFileName})"
+                : $"Sent a file ({safeFileName})";
+
+        var response = MapMessage(
+            entity.Id,
+            entity.ProjectId,
+            entity.SenderUserId,
+            sender.FullName,
+            entity.MessageType,
+            entity.Content,
+            entity.AttachmentFileName,
+            entity.AttachmentContentType,
+            entity.AttachmentSizeBytes,
+            entity.AttachmentObjectKey,
+            entity.CreatedAt);
+
+        await NotifyChatRecipientsAsync(actorUserId, sender.FullName, normalizedProjectId, entity.Id, preview);
+
+        return ServiceResponse<ChatMessageResponse>.Success(response, "Sent");
     }
 
     public async Task<ServiceResponse<(Stream Stream, string ContentType, string FileName)?>> OpenAttachmentAsync(
@@ -283,6 +295,28 @@ public sealed class ChatService(
         var contentType = message.AttachmentContentType ?? opened.Value.ContentType;
         var fileName = message.AttachmentFileName ?? opened.Value.FileName;
         return ServiceResponse<(Stream, string, string)?>.Success((opened.Value.Stream, contentType, fileName), "OK");
+    }
+
+    private async Task NotifyChatRecipientsAsync(
+        string actorUserId,
+        string actorFullName,
+        string projectId,
+        string messageId,
+        string preview)
+    {
+        var projectName = await dbContext.Projects
+            .AsNoTracking()
+            .Where(x => x.Id == projectId)
+            .Select(x => x.Name)
+            .FirstOrDefaultAsync() ?? "Project";
+
+        await notificationService.NotifyChatMessageAsync(
+            actorUserId,
+            actorFullName,
+            projectId,
+            projectName,
+            messageId,
+            preview);
     }
 
     private static ChatMessageResponse MapMessage(
